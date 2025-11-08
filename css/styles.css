@@ -72,3 +72,14 @@ button.primary:hover\{filter:brightness(1.05)\}\
 .page h2\{margin:1.25rem 0 .5rem\}\
 .page p, .page li\{line-height:1.65\}\
 }
+/* Larger hit targets on small screens */
+@media (max-width: 600px){
+  .panel { max-width: 92vw; left: 4vw; }
+  .row button, .row select, .row input[type=range] { min-height: 40px; }
+}
+
+/* Button tweaks */
+button{appearance:none;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer}
+button:hover{background:#f6f6ff}
+button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
+button.secondary{background:#f2f2f8}
