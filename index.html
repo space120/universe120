@@ -1,37 +1,157 @@
-<h1>🫧 Universe120 Playground</h1>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Universe120 — 2D → 4D Playground</title>
+<style>
+  :root{--bg:#f7f7fb;--card:#ffffffcc;--ink:#111;--muted:#666;--border:#e7e7ee;--brand:#3538ff}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  .site-header,.site-footer{position:fixed;left:0;right:0;display:flex;align-items:center;gap:16px;background:#fff8;backdrop-filter:saturate(1.8) blur(8px);border-bottom:1px solid var(--border)}
+  .site-header{top:0;padding:10px 16px}
+  .site-footer{bottom:0;justify-content:center;border-top:1px solid var(--border);border-bottom:none;padding:10px 16px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:700}
+  .site-nav{margin-left:auto;display:flex;gap:14px}
+  .site-nav a{color:#222;text-decoration:none;padding:6px 10px;border-radius:8px}
+  .site-nav a.active{background:#eef2ff;color:#2730a3}
+  #ui.panel{position:fixed;left:16px;top:64px;z-index:10;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;max-width:340px;box-shadow:0 6px 22px rgba(0,0,0,.07)}
+  #ui h1{margin:.25rem 0 .5rem;font-size:18px}
+  .row{display:flex;gap:8px;align-items:center;margin:.35rem 0}
+  label{font-size:12px;color:#444;min-width:94px}
+  input[type=range]{flex:1}
+  select,input[type=checkbox]{font-size:13px}
+  .tip{font-size:11px;color:var(--muted)}
+  .small{font-size:11px}
+  .pill{display:inline-block;background:#eef2ff;color:#3730a3;font-weight:600;border-radius:999px;padding:2px 8px;font-size:11px}
+  fieldset{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:.5rem 0 0}
+  fieldset legend{font-size:12px;color:#333;padding:0 6px}
+  button{appearance:none;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer}
+  button:hover{background:#f6f6ff}
+  button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
+  button.secondary{background:#f2f2f8}
+  #canvas{display:block;width:100vw;height:100vh}
+  @media (max-width: 600px){
+    #ui.panel { max-width: 92vw; left: 4vw; }
+    .row button, .row select, .row input[type=range] { min-height: 40px; }
+  }
+  /* Password gate overlay */
+  #gate{position:fixed;inset:0;background:#0a0a0f;color:#eee;display:flex;align-items:center;justify-content:center;z-index:9999}
+  #gate .box{width:min(90vw,420px);background:#14141b;border:1px solid #2a2a35;border-radius:14px;padding:22px;box-shadow:0 10px 40px rgba(0,0,0,.35);text-align:center}
+  #gate h2{margin:.2rem 0 .75rem}
+  #gate p{margin:.2rem 0 .75rem;color:#bbb}
+  #gate input{width:100%;padding:12px;border-radius:10px;border:1px solid #39394a;background:#0e0e15;color:#eaeaf2}
+  #gate button{width:100%;margin-top:10px;background:#3538ff;color:#fff;border:0;padding:12px;border-radius:10px;font-size:15px}
+  #gate small{display:block;margin-top:12px;color:#8a8aa3}
+</style>
+</head>
+<body>
+  <div id="gate" aria-modal="true">
+    <div class="box">
+      <h2>Universe120 — Private Build</h2>
+      <p>Enter access key to view the playground.</p>
+      <input id="gateKey" type="password" placeholder="••••••">
+      <button id="gateBtn">Enter</button>
+      <small>Tip: change the access key in the code (ACCESS_KEY).</small>
+    </div>
+  </div>
 
-<div class="row">
-  <button id="preset2d" type="button">Preset: 2D</button>
-  <button id="preset3d" type="button">Preset: 3D</button>
-  <button id="preset4d" type="button">Preset: 4D</button>
-</div>
+  <header class="site-header">
+    <a class="brand" href="./"><span>Universe120</span></a>
+    <nav class="site-nav">
+      <a class="active" href="./">Playground</a>
+    </nav>
+  </header>
 
-<div class="row">
-  <label for="mode">Mode</label>
-  <select id="mode">
-    <option value="grid2d" selected>2D Bubble Grid</option>
-    <option value="cube3d">3D Cube</option>
-    <option value="tesseract4d">4D Tesseract</option>
-  </select>
-</div>
+  <aside id="ui" class="panel" hidden>
+    <h1>🫧 Universe120 Playground</h1>
 
-<div class="row"><label for="scale">Scale</label><input id="scale" type="range" min="0.3" max="2.5" step="0.01" value="1.1"></div>
-<div class="row"><label for="persp">Perspective</label><input id="persp" type="range" min="1.2" max="6" step="0.1" value="3.0"></div>
-<div class="row"><label for="stroke">Stroke</label><input id="stroke" type="range" min="0.5" max="3" step="0.1" value="1.3"></div>
-<div class="row"><label for="anim">Animate</label><input id="anim" type="checkbox" checked></div>
+    <div class="row">
+      <button id="preset2d" type="button">Preset: 2D</button>
+      <button id="preset3d" type="button">Preset: 3D</button>
+      <button id="preset4d" type="button">Preset: 4D</button>
+    </div>
 
-<div class="row">
-  <button id="resetView" class="secondary" type="button">Reset View</button>
-  <button id="toggleHelp" type="button">Help</button>
-</div>
+    <div class="row">
+      <label for="mode">Mode</label>
+      <select id="mode">
+        <option value="grid2d" selected>2D Bubble Grid</option>
+        <option value="cube3d">3D Cube</option>
+        <option value="tesseract4d">4D Tesseract</option>
+      </select>
+    </div>
+
+    <div class="row"><label for="scale">Scale</label><input id="scale" type="range" min="0.3" max="2.5" step="0.01" value="1.1"></div>
+    <div class="row"><label for="persp">Perspective</label><input id="persp" type="range" min="1.2" max="6" step="0.1" value="3.0"></div>
+    <div class="row"><label for="stroke">Stroke</label><input id="stroke" type="range" min="0.5" max="3" step="0.1" value="1.3"></div>
+    <div class="row"><label for="anim">Animate</label><input id="anim" type="checkbox" checked></div>
+
+    <div class="row">
+      <button id="resetView" class="secondary" type="button">Reset View</button>
+      <button id="toggleHelp" type="button">Help</button>
+    </div>
+
+    <fieldset>
+      <legend>Draw Mode (2D)</legend>
+      <div class="row"><label for="drawEnabled">Enable</label><input id="drawEnabled" type="checkbox"></div>
+      <div class="row"><label for="tool">Tool</label>
+        <select id="tool"><option value="dot">Dot</option><option value="line">Line</option><option value="bubble">Bubble</option><option value="erase">Erase</option></select>
+      </div>
+      <div class="row"><label for="brush">Size</label><input id="brush" type="range" min="3" max="40" step="1" value="10"></div>
+      <div class="row"><label for="color">Color</label><input id="color" type="color" value="#2b2b2b"></div>
+      <div class="row"><button id="undoBtn" type="button">Undo</button><button id="clearBtn" type="button">Clear</button></div>
+      <div class="row"><button id="saveBtn" class="primary" type="button">Save PNG</button></div>
+      <p class="tip small">Tip: hold <b>Space</b> to pan; hold <b>Shift</b> to snap to grid.</p>
+    </fieldset>
+
+    <div id="rotBlock">
+      <div class="row"><label class="pill">Rotate XY</label><input id="rXY" type="range" min="0" max="6.283" step="0.001" value="0.2"></div>
+      <div class="row"><label class="pill">Rotate XZ</label><input id="rXZ" type="range" min="0" max="6.283" step="0.001" value="0.5"></div>
+      <div class="row"><label class="pill">Rotate YZ</label><input id="rYZ" type="range" min="0" max="6.283" step="0.001" value="0.0"></div>
+      <div class="row"><label class="pill">4D XW</label><input id="rXW" type="range" min="0" max="6.283" step="0.001" value="0.3"></div>
+      <div class="row"><label class="pill">4D YW</label><input id="rYW" type="range" min="0" max="6.283" step="0.001" value="0.6"></div>
+      <div class="row"><label class="pill">4D ZW</label><input id="rZW" type="range" min="0" max="6.283" step="0.001" value="0.9"></div>
+    </div>
+
+    <p class="tip">2D: drag to pan (when Draw off or Space held). 3D/4D: drag to rotate; wheel/pinch to zoom.</p>
+  </aside>
+
+  <canvas id="canvas" aria-label="Interactive geometry canvas" hidden></canvas>
+
+  <footer class="site-footer">
+    <small>© <span id="year"></span> Universe120 • Private Build</small>
+  </footer>
+
 <script>
+/* ======== CONFIG: set your access key here ======== */
+const ACCESS_KEY = '120beta'; // set '' (empty string) to disable the gate
+/* ================================================== */
+
 document.getElementById('year').textContent = new Date().getFullYear();
 
-/** Canvas + DPR scaling **/
+/* Password gate (simple, client-side only) */
+const gate = document.getElementById('gate');
+const gateBtn = document.getElementById('gateBtn');
+const gateKey = document.getElementById('gateKey');
+function openSite(){
+  gate.remove();
+  document.getElementById('ui').hidden = false;
+  document.getElementById('canvas').hidden = false;
+  startUniverse();
+}
+function tryGate(){
+  if(ACCESS_KEY==='' || gateKey.value===ACCESS_KEY){ openSite(); }
+  else { alert('Incorrect key.'); gateKey.focus(); }
+}
+gateBtn.addEventListener('click', tryGate);
+gateKey.addEventListener('keydown', e=>{ if(e.key==='Enter') tryGate(); });
+if(ACCESS_KEY===''){ openSite(); } // skip gate if empty
+
+/* Main app */
+function startUniverse(){
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d', { alpha: true });
-let DPR = Math.min(devicePixelRatio || 1, 2); // cap for perf
-
+let DPR = Math.min(devicePixelRatio || 1, 2);
 function resize(){
   const w = innerWidth, h = innerHeight;
   canvas.style.width = w + 'px';
@@ -42,7 +162,6 @@ function resize(){
 }
 addEventListener('resize', resize); resize();
 
-/** UI **/
 const $ = id => document.getElementById(id);
 const ui = {
   preset2d: $('preset2d'), preset3d: $('preset3d'), preset4d: $('preset4d'),
@@ -55,24 +174,23 @@ const ui = {
 };
 ui.mode.addEventListener('change', ()=> ui.rotBlock.style.display = (ui.mode.value==='grid2d') ? 'none' : 'block');
 
-/** Interaction & state **/
+/* Interaction & state */
 let dragging=false, lastX=0,lastY=0;
 let userRot = {xy:0,xz:0,yz:0,xw:0,yw:0,zw:0};
-let targetRot = {...userRot}; // for easing
+let targetRot = {...userRot};
 let pan = {x:0,y:0};
 let zoom = 1;
-let spacePan = false; // hold Space to pan in 2D even when Draw is on
+let spacePan = false;
 
-// Touch pinch zoom
-let touchMode = { active:false, startDist:0, startZoom:1, lastMid:null };
+/* Touch pinch zoom */
+let touchMode = { active:false, startDist:0, startZoom:1 };
 function dist(a,b){ const dx=a.clientX-b.clientX, dy=a.clientY-b.clientY; return Math.hypot(dx,dy); }
-function mid(a,b){ return {x:(a.clientX+b.clientX)/2, y:(a.clientY+b.clientY)/2}; }
 
-/** Draw layer (2D only) **/
+/* Draw layer (2D only) */
 const shapes = [];
 let lineStart = null;
 
-/** Helpers **/
+/* Helpers */
 function rot2(a,b,theta){ const c=Math.cos(theta), s=Math.sin(theta); return [a*c - b*s, a*s + b*c]; }
 function project3to2(p3, persp){ const z = p3.z + persp; return { x: p3.x/persp * persp/z, y: p3.y/persp * persp/z, z: p3.z }; }
 function drawLine(x1,y1,x2,y2, alpha=1){ ctx.globalAlpha = alpha; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); ctx.globalAlpha = 1; }
@@ -103,7 +221,7 @@ function snapToGrid(clientX, clientY){
   return {x: best[0] + (pan.x % stepX), y: best[1] + (pan.y % stepY)};
 }
 
-/** 2D Grid **/
+/* 2D draw */
 function drawShapes(){
   shapes.forEach(s=>{
     ctx.save();
@@ -146,18 +264,18 @@ function drawBubbleGrid(){
   ctx.fillText(spacePan ? 'Space = Pan (2D)' : 'Tip: Hold Space to Pan in 2D', 20, canvas.height/DPR - 20);
 }
 
-/** 3D & 4D data **/
+/* 3D & 4D data */
 const cube = (()=>{ const v=[]; for(let x of [-1,1]) for(let y of [-1,1]) for(let z of [-1,1]) v.push({x,y,z}); return v; })();
 const cubeE = (()=>{ const e=[]; for(let i=0;i<8;i++){ for(let j=i+1;j<8;j++){ const a=cube[i], b=cube[j]; const d=(a.x!==b.x)+(a.y!==b.y)+(a.z!==b.z); if(d===1) e.push([i,j]); } } return e; })();
 const tess = (()=>{ const v=[]; for(let x of [-1,1]) for(let y of [-1,1]) for(let z of [-1,1]) for(let w of [-1,1]) v.push({x,y,z,w}); return v; })();
 const tessE = (()=>{ const e=[]; for(let i=0;i<16;i++){ for(let j=i+1;j<16;j++){ const a=tess[i], b=tess[j]; const d=(a.x!==b.x)+(a.y!==b.y)+(a.z!==b.z)+(a.w!==b.w); if(d===1) e.push([i,j]); } } return e; })();
 
-/** Renderers **/
+/* Renderers */
 function label(text){ ctx.fillStyle=getInk(); ctx.font='14px system-ui'; ctx.fillText(text, 20, canvas.height/DPR - 20); }
 
 function drawCube(time){
   ctx.lineWidth=+ui.stroke.value; ctx.strokeStyle=getStroke();
-  // ease towards target rotation for smoothness
+  // easing
   userRot.xy += (targetRot.xy - userRot.xy)*0.15;
   userRot.xz += (targetRot.xz - userRot.xz)*0.15;
   userRot.yz += (targetRot.yz - userRot.yz)*0.15;
@@ -187,7 +305,6 @@ function drawCube(time){
 
 function drawTesseract(time){
   ctx.lineWidth = +ui.stroke.value;
-
   // easing
   userRot.xy += (targetRot.xy - userRot.xy)*0.15;
   userRot.xz += (targetRot.xz - userRot.xz)*0.15;
@@ -225,7 +342,7 @@ function drawTesseract(time){
   label('4D Tesseract — use XW/YW/ZW; wheel/pinch to zoom');
 }
 
-/** Mouse / touch / keyboard **/
+/* Mouse / touch / keyboard */
 canvas.addEventListener('mousedown',e=>{
   dragging=true; lastX=e.clientX; lastY=e.clientY;
   if(ui.mode.value==='grid2d' && ui.drawEnabled.checked && !spacePan){
@@ -234,6 +351,15 @@ canvas.addEventListener('mousedown',e=>{
     if(ui.tool.value==='dot'){ shapes.push({type:'dot', x:pos.x, y:pos.y, color, size}); }
     else if(ui.tool.value==='bubble'){ shapes.push({type:'bubble', x:pos.x, y:pos.y, r:size, color, size}); }
     else if(ui.tool.value==='line'){ lineStart = pos; }
+    else if(ui.tool.value==='erase'){
+      let bestIdx=-1, best=1e9;
+      shapes.forEach((s,i)=>{
+        const cx = s.x ?? s.x1 ?? 0, cy = s.y ?? s.y1 ?? 0;
+        const d = Math.hypot(pos.x - cx, pos.y - cy);
+        if(d<best){best=d; bestIdx=i;}
+      });
+      if(bestIdx>=0) shapes.splice(bestIdx,1);
+    }
   }
 });
 addEventListener('mouseup',e=>{
@@ -264,7 +390,6 @@ canvas.addEventListener('touchstart', (e)=>{
     touchMode.active=true;
     touchMode.startDist = dist(e.touches[0], e.touches[1]);
     touchMode.startZoom = ui.mode.value==='grid2d' ? zoom : +ui.scale.value;
-    touchMode.lastMid = mid(e.touches[0], e.touches[1]);
   } else {
     dragging = true;
     lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
@@ -290,7 +415,7 @@ addEventListener('touchend', ()=>{ dragging=false; touchMode.active=false; }, {p
 addEventListener('keydown', (e)=>{ if(e.code==='Space'){ spacePan=true; } });
 addEventListener('keyup',   (e)=>{ if(e.code==='Space'){ spacePan=false; } });
 
-/** Undo / Clear / Save **/
+/* Undo / Clear / Save */
 ui.undoBtn.addEventListener('click', ()=> shapes.pop() );
 ui.clearBtn.addEventListener('click', ()=> shapes.length=0 );
 ui.saveBtn.addEventListener('click', ()=>{
@@ -300,14 +425,13 @@ ui.saveBtn.addEventListener('click', ()=>{
   link.click();
 });
 
-/** Presets + Reset **/
+/* Presets + Reset */
 ui.reset.addEventListener('click', ()=>{
   pan = {x:0,y:0}; zoom = 1;
   targetRot = {xy:0,xz:0,yz:0,xw:0,yw:0,zw:0};
   userRot = {...targetRot};
   ui.scale.value = 1.1; ui.persp.value = 3.0; ui.stroke.value = 1.3;
 });
-
 ui.preset2d.addEventListener('click', ()=>{
   ui.mode.value='grid2d'; pan={x:0,y:0}; zoom=1; ui.stroke.value=1.2;
 });
@@ -319,13 +443,11 @@ ui.preset4d.addEventListener('click', ()=>{
   targetRot={xy:0.2,xz:0.5,yz:0.1,xw:0.4,yw:0.6,zw:0.8};
 });
 
-/** Main render loop (frame cap for battery) **/
+/* Frame loop */
 let last = 0;
 function render(time){
-  // cap ~60fps
   if(time - last < 14){ requestAnimationFrame(render); return; }
   last = time;
-
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round';
   if(ui.mode.value==='grid2d') drawBubbleGrid();
@@ -335,4 +457,7 @@ function render(time){
   requestAnimationFrame(render);
 }
 requestAnimationFrame(render);
+} // end startUniverse
 </script>
+</body>
+</html>
