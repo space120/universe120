@@ -1,369 +1,107 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2761
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Universe120 — 2D → 4D Playground (Single File)</title>
+<style>
+  :root{--bg:#f7f7fb;--card:#ffffffcc;--ink:#111;--muted:#666;--border:#e7e7ee;--brand:#3538ff}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  .site-header,.site-footer{position:fixed;left:0;right:0;display:flex;align-items:center;gap:16px;background:#fff8;backdrop-filter:saturate(1.8) blur(8px);border-bottom:1px solid var(--border)}
+  .site-header{top:0;padding:10px 16px}
+  .site-footer{bottom:0;justify-content:center;border-top:1px solid var(--border);border-bottom:none;padding:10px 16px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:700}
+  .site-nav{margin-left:auto;display:flex;gap:14px}
+  .site-nav a{color:#222;text-decoration:none;padding:6px 10px;border-radius:8px}
+  .site-nav a.active{background:#eef2ff;color:#2730a3}
+  .panel{position:fixed;left:16px;top:64px;z-index:10;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;max-width:320px;box-shadow:0 6px 22px rgba(0,0,0,.07)}
+  .panel h1{margin:.25rem 0 .5rem;font-size:18px}
+  .row{display:flex;gap:8px;align-items:center;margin:.35rem 0}
+  label{font-size:12px;color:#444;min-width:94px}
+  input[type=range]{flex:1}
+  select,input[type=checkbox]{font-size:13px}
+  .tip{font-size:11px;color:var(--muted)}
+  .small{font-size:11px}
+  .pill{display:inline-block;background:#eef2ff;color:#3730a3;font-weight:600;border-radius:999px;padding:2px 8px;font-size:11px}
+  fieldset{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:.5rem 0 0}
+  fieldset legend{font-size:12px;color:#333;padding:0 6px}
+  button{appearance:none;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 10px;font-size:13px;cursor:pointer}
+  button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
+  #canvas{display:block;width:100vw;height:100vh}
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./"><span>Universe120</span></a>
+    <nav class="site-nav">
+      <a class="active" href="./">Playground</a>
+    </nav>
+  </header>
 
-\f0\fs24 \cf0 <!doctype html>\
-<html lang="en">\
-<head>\
-<meta charset="utf-8" />\
-<meta name="viewport" content="width=device-width,initial-scale=1" />\
-<title>Universe120 \'97 2D \uc0\u8594  4D Playground</title>\
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">\
-<link rel="preload" href="assets/logo.svg" as="image">\
-<link rel="stylesheet" href="css/styles.css">\
-</head>\
-<body>\
-  <header class="site-header">\
-    <a class="brand" href="./">\
-      <img class="logo" src="assets/logo.svg" alt="Universe120 logo" width="28" height="28">\
-      <span>Universe120</span>\
-    </a>\
-    <nav class="site-nav">\
-      <a class="active" href="./">Playground</a>\
-      <a href="about.html">About</a>\
-    </nav>\
-  </header>\
-\
-  <main class="main">\
-    <aside id="ui" class="panel">\
-      <h1>\uc0\u55358 \u57063  2D \u8594  4D Playground</h1>\
-\
-      <div class="row">\
-        <label for="mode">Mode</label>\
-        <select id="mode">\
-          <option value="grid2d" selected>2D Bubble Grid</option>\
-          <option value="cube3d">3D Cube</option>\
-          <option value="tesseract4d">4D Tesseract</option>\
-        </select>\
-      </div>\
-\
-      <div class="row"><label for="scale">Scale</label><input id="scale" type="range" min="0.3" max="2.5" step="0.01" value="1.1"></div>\
-      <div class="row"><label for="persp">Perspective</label><input id="persp" type="range" min="1.2" max="6" step="0.1" value="3.0"></div>\
-      <div class="row"><label for="stroke">Stroke</label><input id="stroke" type="range" min="0.5" max="3" step="0.1" value="1.2"></div>\
-      <div class="row"><label for="anim">Animate</label><input id="anim" type="checkbox" checked></div>\
-\
-      <!-- High Contrast toggle -->\
-      <div class="row"><label for="contrast">High Contrast</label><input id="contrast" type="checkbox"></div>\
-\
-      <!-- Draw mode (2D only) -->\
-      <fieldset class="toolbox">\
-        <legend>Draw Mode (2D)</legend>\
-        <div class="row">\
-          <label for="drawEnabled">Enable</label><input id="drawEnabled" type="checkbox">\
-        </div>\
-        <div class="row">\
-          <label for="tool">Tool</label>\
-          <select id="tool">\
-            <option value="dot">Dot</option>\
-            <option value="line">Line</option>\
-            <option value="bubble">Bubble</option>\
-            <option value="erase">Erase</option>\
-          </select>\
-        </div>\
-        <div class="row">\
-          <label for="brush">Size</label>\
-          <input id="brush" type="range" min="3" max="40" step="1" value="10">\
-        </div>\
-        <div class="row">\
-          <label for="color">Color</label>\
-          <input id="color" type="color" value="#2b2b2b">\
-        </div>\
-        <div class="row">\
-          <button id="undoBtn" type="button">Undo</button>\
-          <button id="clearBtn" type="button">Clear</button>\
-        </div>\
-        <div class="row">\
-          <button id="saveBtn" class="primary" type="button">Save PNG</button>\
-        </div>\
-        <p class="tip small">Tip: Snap to grid by holding <b>Shift</b> while clicking. Line tool: click start then end.</p>\
-      </fieldset>\
-\
-      <div id="rotBlock">\
-        <div class="row"><label for="rXY">Rotate XY</label><input id="rXY" type="range" min="0" max="6.283" step="0.001" value="0.2"></div>\
-        <div class="row"><label for="rXZ">Rotate XZ</label><input id="rXZ" type="range" min="0" max="6.283" step="0.001" value="0.5"></div>\
-        <div class="row"><label for="rYZ">Rotate YZ</label><input id="rYZ" type="range" min="0" max="6.283" step="0.001" value="0.0"></div>\
-        <div class="row"><label class="pill" for="rXW">4D XW</label><input id="rXW" type="range" min="0" max="6.283" step="0.001" value="0.3"></div>\
-        <div class="row"><label class="pill" for="rYW">4D YW</label><input id="rYW" type="range" min="0" max="6.283" step="0.001" value="0.6"></div>\
-        <div class="row"><label class="pill" for="rZW">4D ZW</label><input id="rZW" type="range" min="0" max="6.283" step="0.001" value="0.9"></div>\
-      </div>\
-\
-      <p class="tip">Tip: In <b>2D Grid</b>, drag to pan (Draw off). In 3D/4D, drag to rotate; wheel to zoom.</p>\
-    </aside>\
-\
-    <canvas id="canvas" aria-label="Interactive geometry canvas"></canvas>\
-  </main>\
-\
-  <footer class="site-footer">\
-    <small>\'a9 <span id="year"></span> Universe120 \'95 Built for curious minds</small>\
-  </footer>\
-\
-<script>\
-/** Year */\
-document.getElementById('year').textContent = new Date().getFullYear();\
-\
-/** Canvas setup **/\
-const canvas = document.getElementById('canvas');\
-const ctx = canvas.getContext('2d', \{ alpha: true \});\
-function resize()\{ canvas.width = innerWidth; canvas.height = innerHeight; \}\
-addEventListener('resize', resize); resize();\
-\
-/** UI/state **/\
-const ui = \{\
-  mode: document.getElementById('mode'),\
-  scale: document.getElementById('scale'),\
-  persp: document.getElementById('persp'),\
-  stroke: document.getElementById('stroke'),\
-  anim: document.getElementById('anim'),\
-  contrast: document.getElementById('contrast'),\
-  rXY: document.getElementById('rXY'),\
-  rXZ: document.getElementById('rXZ'),\
-  rYZ: document.getElementById('rYZ'),\
-  rXW: document.getElementById('rXW'),\
-  rYW: document.getElementById('rYW'),\
-  rZW: document.getElementById('rZW'),\
-  rotBlock: document.getElementById('rotBlock'),\
-  drawEnabled: document.getElementById('drawEnabled'),\
-  tool: document.getElementById('tool'),\
-  brush: document.getElementById('brush'),\
-  color: document.getElementById('color'),\
-  undoBtn: document.getElementById('undoBtn'),\
-  clearBtn: document.getElementById('clearBtn'),\
-  saveBtn: document.getElementById('saveBtn')\
-\};\
-ui.mode.addEventListener('change', ()=>\{ ui.rotBlock.style.display = (ui.mode.value==='grid2d') ? 'none' : 'block'; \});\
-ui.contrast.addEventListener('change', ()=>\{ document.documentElement.classList.toggle('contrast', ui.contrast.checked); \});\
-\
-/** Interaction **/\
-let dragging=false, lastX=0,lastY=0;\
-let userRot = \{xy:0,xz:0,yz:0,xw:0,yw:0,zw:0\};\
-let pan = \{x:0,y:0\};\
-let zoom = 1;\
-\
-/** Draw layer (2D only) **/\
-const shapes = []; // \{type:'dot'|'line'|'bubble', x,y,r,color,size\} or \{x1,y1,x2,y2\}\
-let lineStart = null;\
-\
-/** Helpers **/\
-function rot2(a,b,theta)\{ const c=Math.cos(theta), s=Math.sin(theta); return [a*c - b*s, a*s + b*c]; \}\
-function project3to2(p3, persp)\{ const z = p3.z + persp; return \{ x: p3.x/persp * persp/z, y: p3.y/persp * persp/z, z: p3.z \}; \}\
-function drawLine(x1,y1,x2,y2, alpha=1)\{ ctx.globalAlpha = alpha; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); ctx.globalAlpha = 1; \}\
-\
-/** Grid params **/\
-function getGridParams()\{\
-  const R = 26 * zoom;\
-  const stepX = R;\
-  const stepY = R*Math.sqrt(3)/2;\
-  return \{R, stepX, stepY\};\
-\}\
-function snapToGrid(clientX, clientY)\{\
-  const \{stepX, stepY\} = getGridParams();\
-  const x = clientX - (pan.x % stepX);\
-  const y = clientY - (pan.y % stepY);\
-  let best=[x,y], bestD=1e9;\
-  for(let dr=-2; dr<=2; dr++)\{\
-    for(let dc=-2; dc<=2; dc++)\{\
-      const rr = Math.round(y/stepY)+dr;\
-      const cc = Math.round((x - (rr%2? stepX/2:0))/stepX)+dc;\
-      const gx = cc*stepX + (rr%2? stepX/2:0);\
-      const gy = rr*stepY;\
-      const d2 = (gx-x)*(gx-x)+(gy-y)*(gy-y);\
-      if(d2<bestD)\{bestD=d2; best=[gx,gy];\}\
-    \}\
-  \}\
-  const sx = best[0] + (pan.x % stepX);\
-  const sy = best[1] + (pan.y % stepY);\
-  return \{x:sx, y:sy\};\
-\}\
-\
-/** 2D Bubble Grid **/\
-function getInk()\{ return getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#111'; \}\
-function getStroke()\{ return getInk(); \}\
-\
-function drawShapes()\{\
-  shapes.forEach(s=>\{\
-    ctx.save();\
-    ctx.lineWidth = s.size || +ui.stroke.value;\
-    ctx.strokeStyle = s.color || getInk();\
-    ctx.fillStyle = s.color || getInk();\
-    if(s.type==='dot')\{\
-      ctx.beginPath(); ctx.arc(s.x, s.y, (s.size||8)/2, 0, Math.PI*2); ctx.fill();\
-    \} else if(s.type==='bubble')\{\
-      ctx.beginPath(); ctx.arc(s.x, s.y, s.r || 18, 0, Math.PI*2); ctx.stroke();\
-    \} else if(s.type==='line')\{\
-      drawLine(s.x1, s.y1, s.x2, s.y2, 1);\
-    \}\
-    ctx.restore();\
-  \});\
-\}\
-\
-function drawBubbleGrid()\{\
-  const \{R, stepX, stepY\} = getGridParams();\
-  const w = canvas.width, h=canvas.height;\
-  const cols = Math.ceil(w/stepX)+4, rows = Math.ceil(h/stepY)+4;\
-\
-  ctx.save();\
-  ctx.translate(pan.x % stepX, pan.y % stepY);\
-  ctx.lineWidth = +ui.stroke.value;\
-  ctx.strokeStyle = getStroke();\
-\
-  for(let r= -2; r<rows; r++)\{\
-    for(let c= -2; c<cols; c++)\{\
-      const x = c*stepX + (r%2? stepX/2:0), y = r*stepY;\
-      ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2); ctx.stroke();\
-      ctx.globalAlpha=ui.contrast.checked?0.25:0.18;\
-      const neighbors = [\
-        [x+stepX, y],[x-stepX,y],\
-        [x+stepX/2, y+stepY],[x-stepX/2, y+stepY],\
-        [x+stepX/2, y-stepY],[x-stepX/2, y-stepY]\
-      ];\
-      neighbors.forEach(([nx,ny])=>\{ ctx.beginPath(); ctx.arc(nx,ny,R,0,Math.PI*2); ctx.stroke(); \});\
-      ctx.globalAlpha=1;\
-    \}\
-  \}\
-  ctx.restore();\
-\
-  // user drawings\
-  drawShapes();\
-\
-  ctx.fillStyle=getInk();\
-  ctx.font='14px system-ui';\
-  ctx.fillText('2D Bubble Grid \'97 drag to pan (Draw off). Draw: Enable, pick tool. Save: PNG', 20, canvas.height-20);\
-\}\
-\
-/** Mouse events **/\
-canvas.addEventListener('mousedown',e=>\{\
-  dragging=true; lastX=e.clientX; lastY=e.clientY;\
-\
-  if(ui.mode.value==='grid2d' && ui.drawEnabled.checked)\{\
-    const pos = e.shiftKey ? snapToGrid(e.clientX, e.clientY) : \{x:e.clientX, y:e.clientY\};\
-    const color = ui.color.value; const size = +ui.brush.value;\
-\
-    if(ui.tool.value==='dot')\{\
-      shapes.push(\{type:'dot', x:pos.x, y:pos.y, color, size\});\
-    \} else if(ui.tool.value==='bubble')\{\
-      shapes.push(\{type:'bubble', x:pos.x, y:pos.y, r:size, color, size\});\
-    \} else if(ui.tool.value==='line')\{\
-      lineStart = pos;\
-    \} else if(ui.tool.value==='erase')\{\
-      let bestIdx=-1, best=1e9;\
-      shapes.forEach((s,i)=>\{\
-        const cx = s.x ?? s.x1 ?? 0, cy = s.y ?? s.y1 ?? 0;\
-        const d = Math.hypot(pos.x - cx, pos.y - cy);\
-        if(d<best)\{best=d; bestIdx=i;\}\
-      \});\
-      if(bestIdx>=0) shapes.splice(bestIdx,1);\
-    \}\
-  \}\
-\});\
-addEventListener('mouseup',e=>\{\
-  if(ui.mode.value==='grid2d' && ui.drawEnabled.checked && ui.tool.value==='line' && lineStart)\{\
-    const pos = e.shiftKey ? snapToGrid(e.clientX, e.clientY) : \{x:e.clientX, y:e.clientY\};\
-    shapes.push(\{type:'line', x1:lineStart.x, y1:lineStart.y, x2:pos.x, y2:pos.y, color:ui.color.value, size:+ui.brush.value\});\
-    lineStart=null;\
-  \}\
-  dragging=false;\
-\});\
-addEventListener('mousemove',e=>\{\
-  if(!dragging) return;\
-  const dx = e.clientX-lastX, dy=e.clientY-lastY;\
-  lastX=e.clientX; lastY=e.clientY;\
-  if(ui.mode.value==='grid2d')\{\
-    if(!ui.drawEnabled.checked)\{ pan.x+=dx; pan.y+=dy; \}\
-  \} else \{\
-    userRot.xy += dx*0.005; userRot.xz += dy*0.005;\
-  \}\
-\});\
-canvas.addEventListener('wheel', (e)=>\{\
-  e.preventDefault();\
-  const factor = Math.exp(-e.deltaY*0.001);\
-  if(ui.mode.value==='grid2d') \{ zoom *= factor; \}\
-  else \{ ui.scale.value = (+ui.scale.value * factor).toFixed(2); \}\
-\},\{passive:false\});\
-\
-/** 3D Cube **/\
-const cube = (()=>\{ const v=[]; for(let x of [-1,1]) for(let y of [-1,1]) for(let z of [-1,1]) v.push(\{x,y,z\}); return v; \})();\
-const cubeE = (()=>\{ const e=[]; for(let i=0;i<8;i++)\{ for(let j=i+1;j<8;j++)\{ const a=cube[i], b=cube[j]; const d=(a.x!==b.x)+(a.y!==b.y)+(a.z!==b.z); if(d===1) e.push([i,j]); \} \} return e; \})();\
-\
-/** 4D Tesseract **/\
-const tess = (()=>\{ const v=[]; for(let x of [-1,1]) for(let y of [-1,1]) for(let z of [-1,1]) for(let w of [-1,1]) v.push(\{x,y,z,w\}); return v; \})();\
-const tessE = (()=>\{ const e=[]; for(let i=0;i<16;i++)\{ for(let j=i+1;j<16;j++)\{ const a=tess[i], b=tess[j]; const d=(a.x!==b.x)+(a.y!==b.y)+(a.z!==b.z)+(a.w!==b.w); if(d===1) e.push([i,j]); \} \} return e; \})();\
-\
-/** Draw 3D **/\
-function label(text)\{ ctx.fillStyle=getInk(); ctx.font='14px system-ui'; ctx.fillText(text, 20, canvas.height-20); \}\
-\
-function drawCube(time)\{\
-  ctx.lineWidth=+ui.stroke.value; ctx.strokeStyle=getStroke();\
-  const s = +ui.scale.value * 160, persp = +ui.persp.value;\
-  const ax= (+ui.rXY.value + userRot.xy) % (Math.PI*2);\
-  const ay= (+ui.rXZ.value + userRot.xz) % (Math.PI*2);\
-  const az= (+ui.rYZ.value + userRot.yz) % (Math.PI*2);\
-\
-  const pts2 = cube.map(p=>\{\
-    let [x,y] = rot2(p.x,p.y, ax); let [y2,z] = rot2(y,p.z, ay); let [x2,z2] = rot2(x,z, az);\
-    const p2 = project3to2(\{x:x2,y:y2,z:z2\}, persp);\
-    return \{x: canvas.width/2 + p2.x*s, y: canvas.height/2 + p2.y*s, z:p2.z\};\
-  \});\
-\
-  cubeE.slice().sort((a,b)=>\{\
-    const za=(pts2[a[0]].z+pts2[a[1]].z), zb=(pts2[b[0]].z+pts2[b[1]].z); return za - zb;\
-  \}).forEach(([i,j])=>\{\
-    const a=pts2[i], b=pts2[j];\
-    const alpha = 0.4 + 0.6 * ((a.z+b.z)/2 + 2)/(4);\
-    drawLine(a.x,a.y,b.x,b.y,alpha);\
-  \});\
-  label('3D Cube \'97 drag to rotate, wheel to zoom');\
-\}\
-\
-/** Draw 4D **/\
-function drawTesseract(time)\{\
-  const s = +ui.scale.value * 160, persp3 = +ui.persp.value, persp4 = 2.5;\
-  const t = ui.anim.checked ? time*0.0007 : 0;\
-  const aXY= +ui.rXY.value + userRot.xy + t*0.6;\
-  const aXZ= +ui.rXZ.value + userRot.xz + t*0.45;\
-  const aYZ= +ui.rYZ.value + userRot.yz + t*0.25;\
-  const aXW= +ui.rXW.value + userRot.xw + t*0.32;\
-  const aYW= +ui.rYW.value + userRot.yw + t*0.2;\
-  const aZW= +ui.rZW.value + userRot.zw + t*0.15;\
-\
-  ctx.lineWidth = +ui.stroke.value;\
-\
-  const pts2 = tess.map(p=>\{\
-    let x=p.x, y=p.y, z=p.z, w=p.w;\
-    [x,y] = rot2(x,y,aXY); [x,z] = rot2(x,z,aXZ); [y,z] = rot2(y,z,aYZ);\
-    [x,w] = rot2(x,w,aXW); [y,w] = rot2(y,w,aYW); [z,w] = rot2(z,w,aZW);\
-    const wFactor = persp4/(persp4 - w); const x3 = x*wFactor, y3 = y*wFactor, z3 = z*wFactor;\
-    const p2 = project3to2(\{x:x3,y:y3,z:z3\}, persp3);\
-    return \{x: canvas.width/2 + p2.x*s, y: canvas.height/2 + p2.y*s, z: z3\};\
-  \});\
-\
-  tessE.slice().sort((a,b)=>\{\
-    const za=(pts2[a[0]].z+pts2[a[1]].z), zb=(pts2[b[0]].z+pts2[b[1]].z); return za - zb;\
-  \}).forEach(([i,j])=>\{\
-    const a=pts2[i], b=pts2[j];\
-    const d = ((a.z+b.z)/2 + 4)/8;\
-    ctx.strokeStyle = ui.contrast.checked\
-      ? `hsla(210, 100%, $\{20+50*d\}%, $\{0.6+0.4*d\})`\
-      : `hsla($\{220 + 160*d\}, 70%, $\{30+35*d\}%, $\{0.45+0.45*d\})`;\
-    drawLine(a.x,a.y,b.x,b.y, 0.6+0.4*d);\
-  \});\
-  label('4D Tesseract \'97 rotate XW/YW/ZW (the \'93extra\'94 direction)');\
-\}\
-\
-/** Main render loop **/\
-function render(time)\{\
-  ctx.clearRect(0,0,canvas.width,canvas.height);\
-  ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round';\
-  if(ui.mode.value==='grid2d') drawBubbleGrid();\
-  else if(ui.mode.value==='cube3d') drawCube(time);\
-  else drawTesseract(time);\
-  ctx.restore();\
-  requestAnimationFrame(render);\
-\}\
-requestAnimationFrame(render);\
-</script>\
-</body>\
-</html>\
-}
+  <aside id="ui" class="panel">
+    <h1>🫧 2D → 4D Playground</h1>
+    <div class="row"><label>Mode</label>
+      <select id="mode">
+        <option value="grid2d" selected>2D Bubble Grid</option>
+        <option value="cube3d">3D Cube</option>
+        <option value="tesseract4d">4D Tesseract</option>
+      </select>
+    </div>
+    <div class="row"><label>Scale</label><input id="scale" type="range" min="0.3" max="2.5" step="0.01" value="1.1"></div>
+    <div class="row"><label>Perspective</label><input id="persp" type="range" min="1.2" max="6" step="0.1" value="3.0"></div>
+    <div class="row"><label>Stroke</label><input id="stroke" type="range" min="0.5" max="3" step="0.1" value="1.2"></div>
+    <div class="row"><label>Animate</label><input id="anim" type="checkbox" checked></div>
+    <fieldset>
+      <legend>Draw Mode (2D)</legend>
+      <div class="row"><label>Enable</label><input id="drawEnabled" type="checkbox"></div>
+      <div class="row"><label>Tool</label>
+        <select id="tool"><option value="dot">Dot</option><option value="line">Line</option><option value="bubble">Bubble</option><option value="erase">Erase</option></select>
+      </div>
+      <div class="row"><label>Size</label><input id="brush" type="range" min="3" max="40" step="1" value="10"></div>
+      <div class="row"><label>Color</label><input id="color" type="color" value="#2b2b2b"></div>
+      <div class="row"><button id="undoBtn" type="button">Undo</button><button id="clearBtn" type="button">Clear</button></div>
+      <div class="row"><button id="saveBtn" class="primary" type="button">Save PNG</button></div>
+      <p class="tip small">Tip: hold <b>Shift</b> to snap to grid.</p>
+    </fieldset>
+    <div id="rotBlock">
+      <div class="row"><label class="pill">Rotate XY</label><input id="rXY" type="range" min="0" max="6.283" step="0.001" value="0.2"></div>
+      <div class="row"><label class="pill">Rotate XZ</label><input id="rXZ" type="range" min="0" max="6.283" step="0.001" value="0.5"></div>
+      <div class="row"><label class="pill">Rotate YZ</label><input id="rYZ" type="range" min="0" max="6.283" step="0.001" value="0.0"></div>
+      <div class="row"><label class="pill">4D XW</label><input id="rXW" type="range" min="0" max="6.283" step="0.001" value="0.3"></div>
+      <div class="row"><label class="pill">4D YW</label><input id="rYW" type="range" min="0" max="6.283" step="0.001" value="0.6"></div>
+      <div class="row"><label class="pill">4D ZW</label><input id="rZW" type="range" min="0" max="6.283" step="0.001" value="0.9"></div>
+    </div>
+    <p class="tip">2D: drag to pan (when Draw off). 3D/4D: drag to rotate, wheel to zoom.</p>
+  </aside>
+
+  <canvas id="canvas"></canvas>
+
+  <footer class="site-footer">
+    <small>© <span id="year"></span> Universe120</small>
+  </footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');function resize(){canvas.width=innerWidth;canvas.height=innerHeight}addEventListener('resize',resize);resize();
+const ui={mode:mode,scale:scale,persp:persp,stroke:stroke,anim:anim,rXY:rXY,rXZ:rXZ,rYZ:rYZ,rXW:rXW,rYW:rYW,rZW:rZW,drawEnabled:drawEnabled,tool:tool,brush:brush,color:color,undoBtn:undoBtn,clearBtn:clearBtn,saveBtn:saveBtn,rotBlock:document.getElementById('rotBlock')};ui.mode.addEventListener('change',()=>{ui.rotBlock.style.display=(ui.mode.value==='grid2d')?'none':'block';});
+let dragging=false,lastX=0,lastY=0,userRot={xy:0,xz:0,yz:0,xw:0,yw:0,zw:0},pan={x:0,y:0},zoom=1;const shapes=[];let lineStart=null;
+function rot2(a,b,t){const c=Math.cos(t),s=Math.sin(t);return[a*c-b*s,a*s+b*c]}function project3to2(p3,p){const z=p3.z+p;return{x:p3.x/p*p/z,y:p3.y/p*p/z,z:p3.z}}function drawLine(x1,y1,x2,y2,a=1){ctx.globalAlpha=a;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.globalAlpha=1}
+function getGridParams(){const R=26*zoom,stepX=R,stepY=R*Math.sqrt(3)/2;return{R,stepX,stepY}}function snapToGrid(cx,cy){const{stepX,stepY}=getGridParams();const x=cx-(pan.x%stepX),y=cy-(pan.y%stepY);let best=[x,y],bestD=1e9;for(let dr=-2;dr<=2;dr++){for(let dc=-2;dc<=2;dc++){const rr=Math.round(y/stepY)+dr,cc=Math.round((x-(rr%2?stepX/2:0))/stepX)+dc,gx=cc*stepX+(rr%2?stepX/2:0),gy=rr*stepY,d2=(gx-x)*(gx-x)+(gy-y)*(gy-y);if(d2<bestD){bestD=d2;best=[gx,gy];}}}return{x:best[0]+(pan.x%stepX),y:best[1]+(pan.y%stepY)}}
+function getInk(){return'#111'}function getStroke(){return getInk()}
+function drawShapes(){shapes.forEach(s=>{ctx.save();ctx.lineWidth=s.size||+ui.stroke.value;ctx.strokeStyle=s.color||getInk();ctx.fillStyle=s.color||getInk();if(s.type==='dot'){ctx.beginPath();ctx.arc(s.x,s.y,(s.size||8)/2,0,Math.PI*2);ctx.fill()}else if(s.type==='bubble'){ctx.beginPath();ctx.arc(s.x,s.y,s.r||18,0,Math.PI*2);ctx.stroke()}else if(s.type==='line'){drawLine(s.x1,s.y1,s.x2,s.y2,1)}ctx.restore()})}
+function drawBubbleGrid(){const{R,stepX,stepY}=getGridParams(),w=canvas.width,h=canvas.height,cols=Math.ceil(w/stepX)+4,rows=Math.ceil(h/stepY)+4;ctx.save();ctx.translate(pan.x%stepX,pan.y%stepY);ctx.lineWidth=+ui.stroke.value;ctx.strokeStyle=getStroke();for(let r=-2;r<rows;r++){for(let c=-2;c<cols;c++){const x=c*stepX+(r%2?stepX/2:0),y=r*stepY;ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=.18;[[x+stepX,y],[x-stepX,y],[x+stepX/2,y+stepY],[x-stepX/2,y+stepY],[x+stepX/2,y-stepY],[x-stepX/2,y-stepY]].forEach(([nx,ny])=>{ctx.beginPath();ctx.arc(nx,ny,R,0,Math.PI*2);ctx.stroke()});ctx.globalAlpha=1}}ctx.restore();drawShapes();ctx.fillStyle=getInk();ctx.font='14px system-ui';ctx.fillText('2D Bubble Grid — drag to pan (Draw off). Draw: Enable, pick tool. Save: PNG',20,canvas.height-20)}
+canvas.addEventListener('mousedown',e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;if(ui.mode.value==='grid2d'&&ui.drawEnabled.checked){const pos=e.shiftKey?snapToGrid(e.clientX,e.clientY):{x:e.clientX,y:e.clientY},color=ui.color.value,size=+ui.brush.value;if(ui.tool.value==='dot'){shapes.push({type:'dot',x:pos.x,y:pos.y,color,size})}else if(ui.tool.value==='bubble'){shapes.push({type:'bubble',x:pos.x,y:pos.y,r:size,color,size})}else if(ui.tool.value==='line'){lineStart=pos}else if(ui.tool.value==='erase'){let bestIdx=-1,best=1e9;shapes.forEach((s,i)=>{const cx=s.x??s.x1??0,cy=s.y??s.y1??0,d=Math.hypot(pos.x-cx,pos.y-cy);if(d<best){best=d;bestIdx=i}});if(bestIdx>=0)shapes.splice(bestIdx,1)}}})
+addEventListener('mouseup',e=>{if(ui.mode.value==='grid2d'&&ui.drawEnabled.checked&&ui.tool.value==='line'&&lineStart){const pos=e.shiftKey?snapToGrid(e.clientX,e.clientY):{x:e.clientX,y:e.clientY};shapes.push({type:'line',x1:lineStart.x,y1:lineStart.y,x2:pos.x,y2:pos.y,color:ui.color.value,size:+ui.brush.value});lineStart=null}dragging=false})
+addEventListener('mousemove',e=>{if(!dragging)return;const dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;if(ui.mode.value==='grid2d'){if(!ui.drawEnabled.checked){pan.x+=dx;pan.y+=dy}}else{userRot.xy+=dx*.005;userRot.xz+=dy*.005}})
+canvas.addEventListener('wheel',e=>{e.preventDefault();const f=Math.exp(-e.deltaY*.001);if(ui.mode.value==='grid2d'){zoom*=f}else{ui.scale.value=(+ui.scale.value*f).toFixed(2)}},{passive:false})
+const cube=(()=>{const v=[];for(let x of[-1,1])for(let y of[-1,1])for(let z of[-1,1])v.push({x,y,z});return v})(),cubeE=(()=>{const e=[];for(let i=0;i<8;i++){for(let j=i+1;j<8;j++){const a=cube[i],b=cube[j],d=(a.x!==b.x)+(a.y!==b.y)+(a.z!==b.z);if(d===1)e.push([i,j])}}return e})();
+const tess=(()=>{const v=[];for(let x of[-1,1])for(let y of[-1,1])for(let z of[-1,1])for(let w of[-1,1])v.push({x,y,z,w});return v})(),tessE=(()=>{const e=[];for(let i=0;i<16;i++){for(let j=i+1;j<16;j++){const a=tess[i],b=tess[j],d=(a.x!==b.x)+(a.y!==b.y)+(a.z!==b.z)+(a.w!==b.w);if(d===1)e.push([i,j])}}return e})();
+function label(t){ctx.fillStyle=getInk();ctx.font='14px system-ui';ctx.fillText(t,20,canvas.height-20)}
+function drawCube(time){ctx.lineWidth=+ui.stroke.value;ctx.strokeStyle=getStroke();const s=+ui.scale.value*160,p=+ui.persp.value,ax=(+ui.rXY.value+userRot.xy)%(Math.PI*2),ay=(+ui.rXZ.value+userRot.xz)%(Math.PI*2),az=(+ui.rYZ.value+userRot.yz)%(Math.PI*2);const pts=cube.map(p3=>{let[x,y]=rot2(p3.x,p3.y,ax);let[y2,z]=rot2(y,p3.z,ay);let[x2,z2]=rot2(x,z,az);const p2=project3to2({x:x2,y:y2,z:z2},p);return{x:canvas.width/2+p2.x*s,y:canvas.height/2+p2.y*s,z:p2.z}});cubeE.slice().sort((a,b)=>{const za=(pts[a[0]].z+pts[a[1]].z),zb=(pts[b[0]].z+pts[b[1]].z);return za-zb}).forEach(([i,j])=>{const a=pts[i],b=pts[j],alpha=.4+.6*((a.z+b.z)/2+2)/4;drawLine(a.x,a.y,b.x,b.y,alpha)});label('3D Cube — drag to rotate, wheel to zoom')}
+function drawTesseract(time){ctx.lineWidth=+ui.stroke.value;const s=+ui.scale.value*160,p3=+ui.persp.value,p4=2.5,t=ui.anim.checked?time*.0007:0,aXY=+ui.rXY.value+userRot.xy+t*.6,aXZ=+ui.rXZ.value+userRot.xz+t*.45,aYZ=+ui.rYZ.value+userRot.yz+t*.25,aXW=+ui.rXW.value+userRot.xw+t*.32,aYW=+ui.rYW.value+userRot.yw+t*.2,aZW=+ui.rZW.value+userRot.zw+t*.15;const pts=tess.map(p=>{let x=p.x,y=p.y,z=p.z,w=p.w;[x,y]=rot2(x,y,aXY);[x,z]=rot2(x,z,aXZ);[y,z]=rot2(y,z,aYZ);[x,w]=rot2(x,w,aXW);[y,w]=rot2(y,w,aYW);[z,w]=rot2(z,w,aZW);const wf=p4/(p4-w),x3=x*wf,y3=y*wf,z3=z*wf,p2=project3to2({x:x3,y:y3,z:z3},p3);return{x:canvas.width/2+p2.x*s,y:canvas.height/2+p2.y*s,z:z3}});tessE.slice().sort((a,b)=>{const za=(pts[a[0]].z+pts[a[1]].z),zb=(pts[b[0]].z+pts[b[1]].z);return za-zb}).forEach(([i,j])=>{const a=pts[i],b=pts[j],d=((a.z+b.z)/2+4)/8;ctx.strokeStyle=`hsla(${220+160*d},70%,${30+35*d}%,${0.45+0.45*d})`;drawLine(a.x,a.y,b.x,b.y,.6+.4*d)});label('4D Tesseract — rotate XW/YW/ZW')}
+function render(time){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.save();ctx.lineCap='round';ctx.lineJoin='round';if(ui.mode.value==='grid2d')drawBubbleGrid();else if(ui.mode.value==='cube3d')drawCube(time);else drawTesseract(time);ctx.restore();requestAnimationFrame(render)}requestAnimationFrame(render);
+ui.undoBtn.addEventListener('click',()=>{shapes.pop()});ui.clearBtn.addEventListener('click',()=>{shapes.length=0});ui.saveBtn.addEventListener('click',()=>{const link=document.createElement('a');link.download='universe120.png';link.href=canvas.toDataURL('image/png');link.click()});
+</script>
+</body>
+</html>
