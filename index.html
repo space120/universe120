@@ -93,17 +93,35 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
   </div>
 
   <!-- Left toolbar -->
-  <div class="toolbar">
-    <div class="tool active" data-tool="select" title="Select (V)"><span>V</span></div>
-    <div class="tool" data-tool="pen" title="Pen / Polyline (P)"><span>P</span></div>
-    <div class="tool" data-tool="line" title="Line (L)"><span>L</span></div>
-    <div class="tool" data-tool="arc" title="Arc (A)"><span>A</span></div>
-    <div class="tool" data-tool="rect" title="Rectangle (R)"><span>R</span></div>
-    <div class="tool" data-tool="circ" title="Circle (O)"><span>O</span></div>
-    <div class="tool" data-tool="text" title="Text (T)"><span>T</span></div>
-    <div class="tool" data-tool="dim"  title="Dimension (D)"><span>D</span></div>
-    <div class="tool" data-tool="erase" title="Erase (E)"><span>E</span></div>
-  </div>
+ <div class="toolbar" aria-label="Tools">
+  <button class="tool active" data-tool="select" title="Select (V)" aria-label="Select">
+    <span class="icon">🖱️</span><span class="label">Select</span>
+  </button>
+  <button class="tool" data-tool="pen" title="Pen / Polyline (P)" aria-label="Pen / Polyline">
+    <span class="icon">✏️</span><span class="label">Pen</span>
+  </button>
+  <button class="tool" data-tool="line" title="Line (L)" aria-label="Line">
+    <span class="icon">⎯</span><span class="label">Line</span>
+  </button>
+  <button class="tool" data-tool="arc" title="Arc (A)" aria-label="Arc">
+    <span class="icon">⌒</span><span class="label">Arc</span>
+  </button>
+  <button class="tool" data-tool="rect" title="Rectangle (R)" aria-label="Rectangle">
+    <span class="icon">▭</span><span class="label">Rect</span>
+  </button>
+  <button class="tool" data-tool="circ" title="Circle (O)" aria-label="Circle">
+    <span class="icon">◯</span><span class="label">Circle</span>
+  </button>
+  <button class="tool" data-tool="text" title="Text (T)" aria-label="Text">
+    <span class="icon">T</span><span class="label">Text</span>
+  </button>
+  <button class="tool" data-tool="dim" title="Dimension (D)" aria-label="Dimension">
+    <span class="icon">⇄</span><span class="label">Dim</span>
+  </button>
+  <button class="tool" data-tool="erase" title="Erase (E)" aria-label="Erase">
+    <span class="icon">⌫</span><span class="label">Erase</span>
+  </button>
+</div>
 
   <!-- Right properties -->
   <div class="panel" id="props">
