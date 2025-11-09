@@ -1,517 +1,721 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Universe120 — Draft & 4D Explorer</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Universe120 — Draft • 3D • 4D • Space Lab</title>
 <style>
-  :root{--bg:#f7f7fb;--card:#ffffffcc;--ink:#111;--muted:#666;--border:#e7e7ee;--brand:#3538ff}
-  *{box-sizing:border-box}
-  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-  .site-header,.site-footer{position:fixed;left:0;right:0;display:flex;align-items:center;gap:16px;background:#fff8;backdrop-filter:saturate(1.8) blur(8px);border-bottom:1px solid var(--border);z-index:20}
-  .site-header{top:0;padding:10px 16px}
-  .site-footer{bottom:0;justify-content:center;border-top:1px solid var(--border);border-bottom:none;padding:8px 16px}
-  .brand{font-weight:800}
-  #ui.panel{position:fixed;left:16px;top:64px;z-index:15;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;max-width:360px;box-shadow:0 6px 22px rgba(0,0,0,.07)}
-  #ui h1{margin:.25rem 0 .5rem;font-size:18px}
-  .row{display:flex;gap:8px;align-items:center;margin:.35rem 0}
-  label{font-size:12px;color:#444;min-width:112px}
-  input[type=range]{flex:1}
-  select,input[type=checkbox]{font-size:13px}
-  fieldset{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:.5rem 0 0}
-  fieldset legend{font-size:12px;color:#333;padding:0 6px}
-  button{appearance:none;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer}
-  button:hover{background:#f6f6ff}
-  button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
-  .pill{display:inline-block;background:#eef2ff;color:#3730a3;font-weight:600;border-radius:999px;padding:2px 8px;font-size:11px}
-  .tip{font-size:11px;color:#666}
-  #canvas{display:block;width:100vw;height:100vh}
-  /* Password gate overlay */
-  #gate{position:fixed;inset:0;background:#0a0a0f;color:#eee;display:flex;align-items:center;justify-content:center;z-index:9999}
-  #gate .box{width:min(90vw,420px);background:#14141b;border:1px solid #2a2a35;border-radius:14px;padding:22px;box-shadow:0 10px 40px rgba(0,0,0,.35);text-align:center}
-  #gate input{width:100%;padding:12px;border-radius:10px;border:1px solid #39394a;background:#0e0e15;color:#eaeaf2}
-  #gate button{width:100%;margin-top:10px;background:#3538ff;color:#fff;border:0;padding:12px;border-radius:10px;font-size:15px}
-  @media (max-width: 600px){
-    #ui.panel { max-width: 92vw; left: 4vw; }
-    .row button, .row select, .row input[type=range] { min-height: 40px; }
-  }
+:root{--bg:#f7f7fb;--card:#ffffffcc;--ink:#111;--muted:#666;--border:#e7e7ee;--brand:#3538ff}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+.site-header,.site-footer{position:fixed;left:0;right:0;display:flex;align-items:center;gap:16px;background:#fff8;backdrop-filter:saturate(1.8) blur(8px);border-bottom:1px solid var(--border);z-index:20}
+.site-header{top:0;padding:10px 16px}
+.site-footer{bottom:0;justify-content:center;border-top:1px solid var(--border);border-bottom:none;padding:8px 16px}
+.brand{font-weight:800}
+#ui.panel{position:fixed;left:16px;top:64px;z-index:15;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;max-width:390px;box-shadow:0 6px 22px rgba(0,0,0,.07)}
+#ui h1{margin:.25rem 0 .5rem;font-size:18px}
+.row{display:flex;gap:8px;align-items:center;margin:.35rem 0}
+label{font-size:12px;color:#444;min-width:120px}
+input[type=range]{flex:1}
+select,input[type=checkbox],input[type=number]{font-size:13px}
+fieldset{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:.5rem 0 0}
+fieldset legend{font-size:12px;color:#333;padding:0 6px}
+button{appearance:none;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer}
+button:hover{background:#f6f6ff}
+button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
+button.ghost{background:transparent}
+.pill{display:inline-block;background:#eef2ff;color:#3730a3;font-weight:600;border-radius:999px;padding:2px 8px;font-size:11px}
+.tip{font-size:11px;color:#666}
+#canvas{display:block;width:100vw;height:100vh}
+@media (max-width: 640px){
+  #ui.panel { max-width: 92vw; left: 4vw; }
+  .row button, .row select, .row input[type=range], .row input[type=number] { min-height: 40px; }
+}
+/* Password gate overlay */
+#gate{position:fixed;inset:0;background:#0a0a0f;color:#eee;display:flex;align-items:center;justify-content:center;z-index:9999}
+#gate .box{width:min(90vw,440px);background:#14141b;border:1px solid #2a2a35;border-radius:14px;padding:22px;box-shadow:0 10px 40px rgba(0,0,0,.35);text-align:center}
+#gate input{width:100%;padding:12px;border-radius:10px;border:1px solid #39394a;background:#0e0e15;color:#eaeaf2}
+#gate button{width:100%;margin-top:10px;background:#3538ff;color:#fff;border:0;padding:12px;border-radius:10px;font-size:15px}
+.badge{font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:999px;background:#fff}
+kbd{background:#eee;border:1px solid #ccc;border-bottom-color:#bbb;border-radius:4px;padding:0 4px;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
 </style>
 </head>
 <body>
-  <div id="gate" aria-modal="true">
-    <div class="box">
-      <h2>Universe120 — Private Build</h2>
-      <p>Enter access key to view the playground.</p>
-      <input id="gateKey" type="password" placeholder="••••••">
-      <button id="gateBtn">Enter</button>
-      <small>Tip: change ACCESS_KEY in the code to set/disable this.</small>
-    </div>
+<!-- ====== PASSWORD GATE ====== -->
+<div id="gate" aria-modal="true">
+  <div class="box">
+    <h2>Universe120 — Private Build</h2>
+    <p>Enter access key to view the playground.</p>
+    <input id="gateKey" type="password" placeholder="••••••">
+    <button id="gateBtn">Enter</button>
+    <small>Tip: set <b>ACCESS_KEY</b> in the code to change/disable.</small>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="brand">Universe120 <span class="badge">Draft • 3D • 4D • Space</span></div>
+</header>
+
+<aside id="ui" class="panel" hidden>
+  <h1>Toolkit</h1>
+
+  <div class="row">
+    <label for="mode">Mode</label>
+    <select id="mode">
+      <option value="draft2d" selected>2D Drafting (Architect)</option>
+      <option value="shapes3d">3D Classroom</option>
+      <option value="builder4d">4D Builder</option>
+      <option value="spacelab">Space Lab (beta)</option>
+    </select>
   </div>
 
-  <header class="site-header">
-    <div class="brand">Universe120</div>
-  </header>
-
-  <aside id="ui" class="panel" hidden>
-    <h1>🫧 Drafting & 4D Explorer</h1>
-
-    <div class="row">
-      <label for="mode">Mode</label>
-      <select id="mode">
-        <option value="draft2d" selected>2D Bubble Drafting</option>
-        <option value="shape4d">4D Shapes</option>
-        <option value="cube3d">3D Cube (ref)</option>
+  <!-- 2D DRAFT -->
+  <fieldset id="draftBlock">
+    <legend>2D Drafting</legend>
+    <div class="row"><label>Tool</label>
+      <select id="tool2d">
+        <option value="point">Point</option>
+        <option value="segment" selected>Segment</option>
+        <option value="poly">Polyline (Walls)</option>
+        <option value="arc">Arc / Fillet</option>
+        <option value="circle">Circle</option>
+        <option value="erase">Erase</option>
       </select>
     </div>
+    <div class="row"><label>Snap</label>
+      <select id="snap2d">
+        <option value="intersections" selected>Intersections</option>
+        <option value="centers">Circle Centers</option>
+        <option value="midpoints">Midpoints</option>
+        <option value="free">Free</option>
+      </select>
+    </div>
+    <div class="row"><label>Angle Lock</label>
+      <select id="lockAngle">
+        <option value="off" selected>Off</option>
+        <option value="ortho">0/90°</option>
+        <option value="thirty">30/60/90°</option>
+        <option value="fortyfive">45/90°</option>
+      </select>
+    </div>
+    <div class="row"><label>Guides</label>
+      <span><input type="checkbox" id="guideParallel" checked> Parallel</span>
+      <span><input type="checkbox" id="guidePerp" checked> Perpendicular</span>
+    </div>
+    <div class="row"><label>Wall (px)</label><input id="wallThick" type="number" min="0" max="50" step="1" value="8"></div>
+    <div class="row"><label>Stroke</label><input id="stroke2d" type="range" min="0.6" max="3" step="0.1" value="1.4"></div>
+    <div class="row"><button id="undo2d">Undo</button><button id="clear2d">Clear</button><button id="exportSvg" class="primary">Export SVG</button></div>
+    <p class="tip">Hold <kbd>Space</kbd> to pan • Wheel/pinch to zoom • <kbd>Shift</kbd> stronger snap • Double-click to finish polyline</p>
+  </fieldset>
 
-    <fieldset id="draftBlock">
-      <legend>2D Drafting</legend>
-      <div class="row"><label>Tool</label>
-        <select id="tool">
-          <option value="point">Point</option>
-          <option value="segment">Segment</option>
-          <option value="poly">Polyline</option>
-          <option value="arc">Arc (semi)</option>
-          <option value="bubble">Circle</option>
-          <option value="erase">Erase</option>
-        </select>
-      </div>
-      <div class="row"><label>Snap</label>
-        <select id="snap">
-          <option value="intersections" selected>Intersections</option>
-          <option value="centers">Circle Centers</option>
-          <option value="free">Free</option>
-        </select>
-      </div>
-      <div class="row"><label>Auto-connect</label><input id="autoConnect" type="checkbox" checked></div>
-      <div class="row"><label>Stroke</label><input id="stroke2d" type="range" min="0.5" max="3" step="0.1" value="1.4"></div>
-      <div class="row"><button id="undo2d">Undo</button><button id="clear2d">Clear</button><button id="save2d" class="primary">Save PNG</button></div>
-      <p class="tip">Hold <b>Space</b> to pan. Wheel/pinch to zoom. Shift = stronger snap.</p>
-    </fieldset>
+  <!-- 3D CLASSROOM -->
+  <fieldset id="shapes3dBlock" style="display:none">
+    <legend>3D Classroom</legend>
+    <div class="row"><label>Shape</label>
+      <select id="shape3d">
+        <option value="cube" selected>Cube</option>
+        <option value="tetra">Tetrahedron</option>
+        <option value="octa">Octahedron</option>
+        <option value="dodeca">Dodecahedron</option>
+        <option value="icosa">Icosahedron</option>
+        <option value="prism6">Hexagonal Prism</option>
+        <option value="pyramid5">Square Pyramid</option>
+        <option value="cylinder">Cylinder (approx)</option>
+        <option value="cone">Cone (approx)</option>
+      </select>
+    </div>
+    <div class="row"><label>Build</label>
+      <select id="stage3d">
+        <option value="v">Vertices</option>
+        <option value="e" selected>Edges</option>
+        <option value="f">Faces</option>
+        <option value="net">Net (2D)</option>
+      </select>
+    </div>
+    <div class="row"><label>Scale</label><input id="scale3d" type="range" min="0.3" max="2.5" step="0.01" value="1.1"></div>
+    <div class="row"><label>Perspective</label><input id="persp3d" type="range" min="1.2" max="6" step="0.1" value="3.0"></div>
+    <div class="row"><label class="pill">XY</label><input id="rXY3" type="range" min="0" max="6.283" step="0.001" value="0.2"></div>
+    <div class="row"><label class="pill">XZ</label><input id="rXZ3" type="range" min="0" max="6.283" step="0.001" value="0.5"></div>
+    <div class="row"><label class="pill">YZ</label><input id="rYZ3" type="range" min="0" max="6.283" step="0.001" value="0.0"></div>
+    <div class="row"><button id="reset3d">Reset</button></div>
+    <p class="tip">Drag to rotate • Wheel/pinch to zoom • Switch stages to “explain” construction</p>
+  </fieldset>
 
-    <fieldset id="fourDBlock" style="display:none">
-      <legend>4D Shape</legend>
-      <div class="row"><label>Shape</label>
-        <select id="shape4dSel">
-          <option value="5cell">5-cell (simplex)</option>
-          <option value="8cell" selected>8-cell (tesseract)</option>
-          <option value="16cell">16-cell (cross-polytope)</option>
-          <option value="24cell">24-cell</option>
-        </select>
-      </div>
-      <div class="row"><label>Stage</label>
-        <select id="stage4d">
-          <option value="v">Vertices</option>
-          <option value="e" selected>Edges</option>
-        </select>
-      </div>
-      <div class="row"><label>Slice W</label><input id="sliceW" type="range" min="-1.5" max="1.5" step="0.01" value="0"></div>
-      <div class="row"><label>Thickness</label><input id="sliceT" type="range" min="0.01" max="0.8" step="0.01" value="0.25"></div>
-      <div class="row"><label>Scale</label><input id="scale" type="range" min="0.3" max="2.5" step="0.01" value="1.1"></div>
-      <div class="row"><label>Perspective</label><input id="persp" type="range" min="1.2" max="6" step="0.1" value="3.0"></div>
-      <div class="row"><label>Stroke</label><input id="stroke" type="range" min="0.5" max="3" step="0.1" value="1.2"></div>
-      <div class="row"><label class="pill">XY</label><input id="rXY" type="range" min="0" max="6.283" step="0.001" value="0.2"></div>
-      <div class="row"><label class="pill">XZ</label><input id="rXZ" type="range" min="0" max="6.283" step="0.001" value="0.5"></div>
-      <div class="row"><label class="pill">YZ</label><input id="rYZ" type="range" min="0" max="6.283" step="0.001" value="0.0"></div>
-      <div class="row"><label class="pill">XW</label><input id="rXW" type="range" min="0" max="6.283" step="0.001" value="0.3"></div>
-      <div class="row"><label class="pill">YW</label><input id="rYW" type="range" min="0" max="6.283" step="0.001" value="0.6"></div>
-      <div class="row"><label class="pill">ZW</label><input id="rZW" type="range" min="0" max="6.283" step="0.001" value="0.9"></div>
-      <div class="row"><button id="reset4d">Reset View</button></div>
-      <p class="tip">Use Stage & Slice W to “build” the 4D shape so it clicks.</p>
-    </fieldset>
-  </aside>
+  <!-- 4D BUILDER -->
+  <fieldset id="builder4dBlock" style="display:none">
+    <legend>4D Builder</legend>
+    <div class="row"><label>Polytope</label>
+      <select id="shape4dSel">
+        <option value="5cell">5-cell (simplex)</option>
+        <option value="8cell" selected>8-cell (tesseract)</option>
+        <option value="16cell">16-cell (cross-polytope)</option>
+        <option value="24cell">24-cell</option>
+      </select>
+    </div>
+    <div class="row"><label>Stage</label>
+      <select id="stage4d">
+        <option value="plan">Plan (Schlegel)</option>
+        <option value="v" selected>Vertices</option>
+        <option value="e">Edges</option>
+        <option value="c">Cells (by slice)</option>
+      </select>
+    </div>
+    <div class="row"><label>Step</label><input id="step4d" type="range" min="0" max="1" step="0.01" value="1"></div>
+    <div class="row"><label>Slice W</label><input id="sliceW" type="range" min="-1.5" max="1.5" step="0.01" value="0"></div>
+    <div class="row"><label>Thickness</label><input id="sliceT" type="range" min="0.01" max="0.8" step="0.01" value="0.25"></div>
+    <div class="row"><label>Scale</label><input id="scale4d" type="range" min="0.3" max="2.5" step="0.01" value="1.1"></div>
+    <div class="row"><label>Perspective</label><input id="persp4d" type="range" min="1.6" max="6" step="0.1" value="3.0"></div>
+    <div class="row"><label class="pill">XY</label><input id="rXY4" type="range" min="0" max="6.283" step="0.001" value="0.2"></div>
+    <div class="row"><label class="pill">XZ</label><input id="rXZ4" type="range" min="0" max="6.283" step="0.001" value="0.5"></div>
+    <div class="row"><label class="pill">YZ</label><input id="rYZ4" type="range" min="0" max="6.283" step="0.001" value="0.0"></div>
+    <div class="row"><label class="pill">XW</label><input id="rXW4" type="range" min="0" max="6.283" step="0.001" value="0.3"></div>
+    <div class="row"><label class="pill">YW</label><input id="rYW4" type="range" min="0" max="6.283" step="0.001" value="0.6"></div>
+    <div class="row"><label class="pill">ZW</label><input id="rZW4" type="range" min="0" max="6.283" step="0.001" value="0.9"></div>
+    <div class="row"><button id="reset4d">Reset</button><button id="toggleHints" class="ghost">Hints</button></div>
+    <p class="tip">Use <b>Stage</b> + <b>Step</b> to “build” the polytope; <b>Plan</b> shows Schlegel diagram. Slice W = 3D cross-section of 4D.</p>
+  </fieldset>
 
-  <canvas id="canvas" hidden></canvas>
+  <!-- SPACE LAB -->
+  <fieldset id="spacelabBlock" style="display:none">
+    <legend>Space Lab (beta)</legend>
+    <div class="row"><label>Mode</label>
+      <select id="spaceMode">
+        <option value="bubble">3D Bubble Grid</option>
+        <option value="solar" selected>Mini Solar System</option>
+      </select>
+    </div>
+    <div class="row"><label>Ship speed (km/s)</label><input id="shipSpeed" type="number" min="0.1" max="300000" step="0.1" value="10"></div>
+    <div class="row"><label>Time to Moon</label><span id="moonTime">—</span></div>
+    <div class="row"><button id="resetSpace">Reset View</button></div>
+    <p class="tip">Drag to rotate • Wheel/pinch to zoom • Simple two-body orbit (Earth–Moon) + Sun for scale</p>
+  </fieldset>
+</aside>
 
-  <footer class="site-footer">
-    <small>© <span id="year"></span> Universe120 • Learn by seeing more</small>
-  </footer>
+<canvas id="canvas" hidden></canvas>
+
+<footer class="site-footer">
+  <small>© <span id="year"></span> Universe120 • Learn by seeing more</small>
+</footer>
 
 <script>
-/* ===== CONFIG — access key for private build ('' disables gate) ===== */
-const ACCESS_KEY = '120beta';
-/* ================================================================== */
-
+/* ================= CONFIG ================= */
+const ACCESS_KEY = '120beta'; // set '' to disable gate
+/* ========================================= */
 document.getElementById('year').textContent = new Date().getFullYear();
 
+/* Gate */
 const gate = document.getElementById('gate');
 const gateBtn = document.getElementById('gateBtn');
 const gateKey = document.getElementById('gateKey');
-function openSite(){
-  gate.remove();
-  document.getElementById('ui').hidden = false;
-  document.getElementById('canvas').hidden = false;
-  startUniverse();
-}
-function tryGate(){
-  if(ACCESS_KEY==='' || gateKey.value===ACCESS_KEY) openSite();
-  else { alert('Incorrect key'); gateKey.focus(); }
-}
+function openSite(){ gate.remove(); document.getElementById('ui').hidden=false; document.getElementById('canvas').hidden=false; startApp(); }
+function tryGate(){ if(ACCESS_KEY==='' || gateKey.value===ACCESS_KEY) openSite(); else alert('Incorrect key'); }
 gateBtn.addEventListener('click', tryGate);
 gateKey.addEventListener('keydown', e=>{ if(e.key==='Enter') tryGate(); });
 if(ACCESS_KEY==='') openSite();
 
-/* ===================== APP ===================== */
-function startUniverse(){
-const canvas=document.getElementById('canvas');
-const ctx=canvas.getContext('2d');
-let DPR=Math.min(devicePixelRatio||1,2);
-function resize(){ const w=innerWidth,h=innerHeight; canvas.style.width=w+'px'; canvas.style.height=h+'px'; canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR); ctx.setTransform(DPR,0,0,DPR,0,0);} addEventListener('resize',resize); resize();
+/* ================= APP ================= */
+function startApp(){
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d',{alpha:true});
+let DPR = Math.min(devicePixelRatio||1,2);
+function resize(){ const w=innerWidth,h=innerHeight; canvas.style.width=w+'px'; canvas.style.height=h+'px'; canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR); ctx.setTransform(DPR,0,0,DPR,0,0); }
+addEventListener('resize',resize); resize();
 
 const $=id=>document.getElementById(id);
 const ui={
-  mode:$('mode'), draftBlock:$('draftBlock'), fourDBlock:$('fourDBlock'),
-  tool:$('tool'), snap:$('snap'), autoConnect:$('autoConnect'),
-  stroke2d:$('stroke2d'), undo2d:$('undo2d'), clear2d:$('clear2d'), save2d:$('save2d'),
-  shapeSel:$('shape4dSel'), stage4d:$('stage4d'), sliceW:$('sliceW'), sliceT:$('sliceT'),
-  scale:$('scale'), persp:$('persp'), stroke:$('stroke'),
-  rXY:$('rXY'), rXZ:$('rXZ'), rYZ:$('rYZ'), rXW:$('rXW'), rYW:$('rYW'), rZW:$('rZW'), reset4d:$('reset4d')
+  mode:$('mode'),
+  // 2D
+  draftBlock:$('draftBlock'), tool2d:$('tool2d'), snap2d:$('snap2d'), lockAngle:$('lockAngle'),
+  guideParallel:$('guideParallel'), guidePerp:$('guidePerp'), wallThick:$('wallThick'),
+  stroke2d:$('stroke2d'), undo2d:$('undo2d'), clear2d:$('clear2d'), exportSvg:$('exportSvg'),
+  // 3D
+  shapes3dBlock:$('shapes3dBlock'), shape3d:$('shape3d'), stage3d:$('stage3d'), scale3d:$('scale3d'), persp3d:$('persp3d'),
+  rXY3:$('rXY3'), rXZ3:$('rXZ3'), rYZ3:$('rYZ3'), reset3d:$('reset3d'),
+  // 4D
+  builder4dBlock:$('builder4dBlock'), shape4dSel:$('shape4dSel'), stage4d:$('stage4d'), step4d:$('step4d'),
+  sliceW:$('sliceW'), sliceT:$('sliceT'), scale4d:$('scale4d'), persp4d:$('persp4d'),
+  rXY4:$('rXY4'), rXZ4:$('rXZ4'), rYZ4:$('rYZ4'), rXW4:$('rXW4'), rYW4:$('rYW4'), rZW4:$('rZW4'),
+  reset4d:$('reset4d'), toggleHints:$('toggleHints'),
+  // Space
+  spacelabBlock:$('spacelabBlock'), spaceMode:$('spaceMode'), shipSpeed:$('shipSpeed'), moonTime:$('moonTime'), resetSpace:$('resetSpace')
 };
-ui.mode.addEventListener('change', ()=>{
+ui.mode.addEventListener('change', syncPanels);
+function syncPanels(){
   ui.draftBlock.style.display = ui.mode.value==='draft2d' ? '' : 'none';
-  ui.fourDBlock.style.display = ui.mode.value==='shape4d' ? '' : 'none';
-});
+  ui.shapes3dBlock.style.display = ui.mode.value==='shapes3d' ? '' : 'none';
+  ui.builder4dBlock.style.display = ui.mode.value==='builder4d' ? '' : 'none';
+  ui.spacelabBlock.style.display = ui.mode.value==='spacelab' ? '' : 'none';
+}
+syncPanels();
 
-/* ===== 2D Bubble Drafting ===== */
-let pan={x:0,y:0}, zoom=1, spacePan=false, dragging=false, lastX=0,lastY=0;
+/* ========= 2D CAD-lite ========= */
+let pan2d={x:0,y:0}, zoom2d=1, drag=false, spacePan=false, lastXY=[0,0];
+const Rbase=26;
+function gridParams(){ const R=Rbase*zoom2d, stepX=R, stepY=R*Math.sqrt(3)/2; return {R,stepX,stepY}; }
+const sketch=[]; // primitives: {type:'pt'|'seg'|'arc'|'circ'|'poly', ...}
+let polyLive=null, arcStart=null;
 
-const Rbase=26; // base circle radius (grid)
-function gridParams(){ const R=Rbase*zoom, stepX=R, stepY=R*Math.sqrt(3)/2; return {R,stepX,stepY}; }
-
-function centersNear(x,y,range=2){
+function centersNear(x,y,range=3){
   const {stepX,stepY}=gridParams();
   const rr=Math.round(y/stepY), cc=Math.round((x-(rr%2? stepX/2:0))/stepX);
   const pts=[];
-  for(let dr=-range;dr<=range;dr++){
+  for(let dr=-range;dr<=range;dr++)
     for(let dc=-range;dc<=range;dc++){
-      const r=rr+dr, c=cc+dc;
-      const gx=c*stepX+(r%2? stepX/2:0), gy=r*stepY;
-      pts.push({x:gx,y:gy,type:'center'});
-      // intersections of neighbor pairs are also on hex lattice, so centers suffice for snapping targets
+      const r=rr+dr,c=cc+dc,gx=c*stepX+(r%2? stepX/2:0), gy=r*stepY;
+      pts.push({x:gx,y:gy,kind:'center'});
+    }
+  // add midpoints of nearby center pairs to enable midpoint snapping
+  const mids=[];
+  for(let i=0;i<pts.length;i++){
+    const a=pts[i];
+    for(let j=i+1;j<pts.length;j++){
+      const b=pts[j]; if(Math.hypot(a.x-b.x,a.y-b.y) < stepX*1.1){ mids.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,kind:'mid'}); }
     }
   }
-  return pts;
+  return pts.concat(mids);
 }
-function snapPoint(clientX,clientY,strong=false){
-  if(ui.snap.value==='free') return {x:clientX, y:clientY};
+function applyAngleLock(a0,a1,mode){
+  if(mode==='off') return a1;
+  const dx=a1.x-a0.x, dy=a1.y-a0.y, ang=Math.atan2(dy,dx);
+  let snaps=[];
+  if(mode==='ortho') snaps=[0,Math.PI/2,Math.PI,3*Math.PI/2];
+  else if(mode==='thirty') snaps=[0,Math.PI/6,Math.PI/3,Math.PI/2,2*Math.PI/3,5*Math.PI/6,Math.PI,7*Math.PI/6,4*Math.PI/3,3*Math.PI/2,5*Math.PI/3,11*Math.PI/6];
+  else if(mode==='fortyfive') snaps=[0,Math.PI/4,Math.PI/2,3*Math.PI/4,Math.PI,5*Math.PI/4,3*Math.PI/2,7*Math.PI/4];
+  let best=ang,bd=1e9; snaps.forEach(s=>{const d=Math.abs(((ang-s+Math.PI)%(2*Math.PI))-Math.PI); if(d<bd){bd=d;best=s;}});
+  const len=Math.hypot(dx,dy);
+  return {x:a0.x+Math.cos(best)*len,y:a0.y+Math.sin(best)*len};
+}
+function snap2D(clientX,clientY,strong){
   const {stepX,stepY}=gridParams();
-  const x = clientX - (pan.x % stepX);
-  const y = clientY - (pan.y % stepY);
-  const cand = centersNear(x,y,strong?3:2);
+  if(ui.snap2d.value==='free') return {x:clientX,y:clientY};
+  const x = clientX - (pan2d.x % stepX);
+  const y = clientY - (pan2d.y % stepY);
+  const cand = centersNear(x,y,strong?4:3);
   let best=null,bd=1e9;
   cand.forEach(p=>{
-    const sx=p.x + (pan.x % stepX); const sy=p.y + (pan.y % stepY);
+    const sx=p.x + (pan2d.x % stepX), sy=p.y + (pan2d.y % stepY);
     const d2=(sx-clientX)*(sx-clientX)+(sy-clientY)*(sy-clientY);
-    if(d2<bd){bd=d2; best={x:sx,y:sy};}
+    if(d2<bd){bd=d2; best={x:sx,y:sy,kind:p.kind};}
   });
   return best || {x:clientX,y:clientY};
 }
-
-const drawings=[]; // {type:'pt'|'seg'|'poly'|'arc'|'circ', ...}
-let polyCurrent=null; // {points:[{x,y},...]}
-let arcFirst=null; // first endpoint for arc
-
 function drawGrid(){
   const {R,stepX,stepY}=gridParams();
-  const w=canvas.width/DPR, h=canvas.height/DPR;
-  const cols=Math.ceil(w/stepX)+4, rows=Math.ceil(h/stepY)+4;
-
-  ctx.save();
-  ctx.translate(pan.x % stepX, pan.y % stepY);
+  const w=canvas.width/DPR,h=canvas.height/DPR,cols=Math.ceil(w/stepX)+4,rows=Math.ceil(h/stepY)+4;
+  ctx.save(); ctx.translate(pan2d.x % stepX, pan2d.y % stepY);
   ctx.lineWidth=0.9; ctx.strokeStyle='#00000018';
   for(let r=-2;r<rows;r++){
     for(let c=-2;c<cols;c++){
       const x=c*stepX+(r%2? stepX/2:0), y=r*stepY;
       ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2); ctx.stroke();
-      // faint neighbors to show 120°
       ctx.globalAlpha=0.18;
-      [[x+stepX,y],[x-stepX,y],[x+stepX/2,y+stepY],[x-stepX/2,y+stepY],[x+stepX/2,y-stepY],[x-stepX/2,y-stepY]]
-        .forEach(([nx,ny])=>{ ctx.beginPath(); ctx.arc(nx,ny,R,0,Math.PI*2); ctx.stroke(); });
+      [[x+stepX,y],[x-stepX,y],[x+stepX/2,y+stepY],[x-stepX/2,y+stepY],[x+stepX/2,y-stepY],[x-stepX/2,y-stepY]].forEach(([nx,ny])=>{ctx.beginPath();ctx.arc(nx,ny,R,0,Math.PI*2);ctx.stroke();});
       ctx.globalAlpha=1;
     }
   }
   ctx.restore();
 }
-
+function drawGuides(mouse){
+  if(!mouse) return;
+  ctx.save(); ctx.strokeStyle='#4b9cff88'; ctx.lineWidth=1;
+  // parallel/perp guides: use last segment direction
+  const lastSeg = [...sketch].reverse().find(s=>s.type==='seg');
+  if(lastSeg && (ui.guideParallel.checked || ui.guidePerp.checked)){
+    const dx = lastSeg.b.x-lastSeg.a.x, dy=lastSeg.b.y-lastSeg.a.y;
+    const base = Math.atan2(dy,dx);
+    const dirs = [];
+    if(ui.guideParallel.checked) dirs.push(base);
+    if(ui.guidePerp.checked) dirs.push(base+Math.PI/2);
+    dirs.forEach(a=>{
+      const L=5000, x1=mouse.x-Math.cos(a)*L, y1=mouse.y-Math.sin(a)*L, x2=mouse.x+Math.cos(a)*L, y2=mouse.y+Math.sin(a)*L;
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    });
+  }
+  ctx.restore();
+}
 function draw2D(){
   drawGrid();
-  // drawings
   ctx.lineWidth=+ui.stroke2d.value; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
-  drawings.forEach(d=>{
-    if(d.type==='pt'){
-      ctx.beginPath(); ctx.arc(d.x,d.y,3,0,Math.PI*2); ctx.fill();
-    } else if(d.type==='seg'){
-      ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke();
-    } else if(d.type==='poly'){
-      if(d.points.length>1){
-        ctx.beginPath();
-        ctx.moveTo(d.points[0].x,d.points[0].y);
-        for(let i=1;i<d.points.length;i++) ctx.lineTo(d.points[i].x,d.points[i].y);
-        if(d.closed) ctx.closePath();
-        ctx.stroke();
-      }
-    } else if(d.type==='arc'){
-      // semicircle arc between endpoints d.a, d.b (center at midpoint, radius half)
-      const mx=(d.a.x+d.b.x)/2, my=(d.a.y+d.b.y)/2;
-      const r=Math.hypot(d.b.x-d.a.x,d.b.y-d.a.y)/2;
-      const a1=Math.atan2(d.a.y-my,d.a.x-mx), a2=Math.atan2(d.b.y-my,d.b.x-mx);
-      // pick the larger half (semicircle) consistently
-      let start=a1, end=a2;
-      // force 180° sweep:
-      const mid=(start+end)/2;
-      ctx.beginPath(); ctx.arc(mx,my,r,start,end, false); ctx.stroke();
-      // draw the opposite semicircle if short (optional): skip for clarity
-    } else if(d.type==='circ'){
-      ctx.beginPath(); ctx.arc(d.c.x,d.c.y,d.r,0,Math.PI*2); ctx.stroke();
-    }
+  sketch.forEach(d=>{
+    if(d.type==='pt'){ ctx.beginPath(); ctx.arc(d.x,d.y,3,0,Math.PI*2); ctx.fill(); }
+    if(d.type==='seg'){ ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke(); if(d.wall>0){ // draw wall thickness
+      const nx = d.b.y-d.a.y, ny = -(d.b.x-d.a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L, t=d.wall/2;
+      ctx.beginPath(); ctx.moveTo(d.a.x+ux*t,d.a.y+uy*t); ctx.lineTo(d.b.x+ux*t,d.b.y+uy*t); ctx.lineTo(d.b.x-ux*t,d.b.y-uy*t); ctx.lineTo(d.a.x-ux*t,d.a.y-uy*t); ctx.closePath(); ctx.stroke();
+    }}
+    if(d.type==='arc'){ ctx.beginPath(); ctx.arc(d.c.x,d.c.y,d.r,d.a1,d.a2,d.ccw||false); ctx.stroke(); }
+    if(d.type==='circ'){ ctx.beginPath(); ctx.arc(d.c.x,d.c.y,d.r,0,Math.PI*2); ctx.stroke(); }
   });
-  // HUD
+  if(polyLive && polyLive.points.length){
+    ctx.beginPath(); ctx.moveTo(polyLive.points[0].x,polyLive.points[0].y);
+    for(let i=1;i<polyLive.points.length;i++) ctx.lineTo(polyLive.points[i].x,polyLive.points[i].y);
+    ctx.stroke();
+  }
   ctx.fillStyle='#222'; ctx.font='12px system-ui';
-  ctx.fillText('2D Draft: Space=Pan • Shift=Stronger Snap • Auto-connect polyline to build houses/bridges', 16, canvas.height/DPR-18);
+  ctx.fillText('2D CAD-lite: Space=Pan • Shift=strong snap • Angle Locks for clean plans • Export SVG', 16, canvas.height/DPR-18);
 }
+function exportSVG(){
+  const w=canvas.width/DPR,h=canvas.height/DPR;
+  const p=[]; const esc = s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  p.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none" stroke="#111" stroke-width="${+ui.stroke2d.value}">`);
+  sketch.forEach(d=>{
+    if(d.type==='seg'){ p.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}" />`); }
+    if(d.type==='circ'){ p.push(`<circle cx="${d.c.x}" cy="${d.c.y}" r="${d.r}" />`); }
+    if(d.type==='arc'){ p.push(`<path d="M ${d.c.x+d.r*Math.cos(d.a1)} ${d.c.y+d.r*Math.sin(d.a1)} A ${d.r} ${d.r} 0 0 ${d.ccw?1:0} ${d.c.x+d.r*Math.cos(d.a2)} ${d.c.y+d.r*Math.sin(d.a2)}" />`); }
+  });
+  p.push(`</svg>`);
+  const blob = new Blob([p.join('\n')], {type:'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='universe120-draft.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+ui.exportSvg.addEventListener('click', exportSVG);
 
-/* Events (2D) */
-canvas.addEventListener('mousedown',e=>{
-  if(ui.mode.value!=='draft2d'){ dragging=true; lastX=e.clientX; lastY=e.clientY; return; }
-  // drafting mode
+canvas.addEventListener('mousedown', e=>{
+  if(ui.mode.value!=='draft2d'){ drag=true; lastXY=[e.clientX,e.clientY]; return; }
   if(e.button!==0) return;
-  const snap = snapPoint(e.clientX,e.clientY, e.shiftKey);
-  const tool=ui.tool.value;
-  if(tool==='point'){
-    drawings.push({type:'pt', x:snap.x, y:snap.y});
-    if(ui.autoConnect.checked){
-      // connect to previous point with a segment
-      const last=drawings.slice().reverse().find(d=>d.type==='pt' && d!==drawings[drawings.length-1]);
-      if(last) drawings.push({type:'seg', a:{x:last.x,y:last.y}, b:{x:snap.x,y:snap.y}});
-    }
-  } else if(tool==='segment'){
-    if(!polyCurrent){ polyCurrent={points:[snap]}; }
+  const strong=e.shiftKey;
+  let P = snap2D(e.clientX,e.clientY,strong);
+  const tool=ui.tool2d.value;
+  if(tool==='point'){ sketch.push({type:'pt', x:P.x,y:P.y}); }
+  if(tool==='segment'){
+    if(!polyLive) polyLive={points:[P]};
     else{
-      const a=polyCurrent.points[polyCurrent.points.length-1];
-      drawings.push({type:'seg', a:{x:a.x,y:a.y}, b:{x:snap.x,y:snap.y}});
+      let A=polyLive.points[polyLive.points.length-1], B=P;
+      if(ui.lockAngle.value!=='off') B=applyAngleLock(A,B,ui.lockAngle.value);
+      sketch.push({type:'seg', a:A,b:B, wall:+ui.wallThick.value||0});
+      polyLive=null;
     }
-    polyCurrent={points:[snap]}; // reset so next click starts new segment
-  } else if(tool==='poly'){
-    if(!polyCurrent) polyCurrent={points:[]};
-    polyCurrent.points.push(snap);
-    if(ui.autoConnect.checked && polyCurrent.points.length>1){
-      // store segment piecewise for visibility/undo granularity
-      const a=polyCurrent.points[polyCurrent.points.length-2], b=snap;
-      drawings.push({type:'seg', a:{x:a.x,y:a.y}, b:{x:b.x,y:b.y}});
-    }
-  } else if(tool==='arc'){
-    if(!arcFirst){ arcFirst=snap; }
+  }
+  if(tool==='poly'){
+    if(!polyLive) polyLive={points:[P]};
     else{
-      drawings.push({type:'arc', a:arcFirst, b:snap});
-      arcFirst=null;
+      let A=polyLive.points[polyLive.points.length-1], B=P;
+      if(ui.lockAngle.value!=='off') B=applyAngleLock(A,B,ui.lockAngle.value);
+      polyLive.points.push(B);
+      sketch.push({type:'seg', a:A,b:B, wall:+ui.wallThick.value||0});
     }
-  } else if(tool==='bubble'){
-    // a bubble centered at snap with grid radius
+  }
+  if(tool==='arc'){
+    if(!arcStart) arcStart=P;
+    else{
+      const mx=(arcStart.x+P.x)/2,my=(arcStart.y+P.y)/2, r=Math.hypot(P.x-arcStart.x,P.y-arcStart.y)/2;
+      const a1=Math.atan2(arcStart.y-my,arcStart.x-mx), a2=Math.atan2(P.y-my,P.x-mx);
+      sketch.push({type:'arc', c:{x:mx,y:my}, r, a1, a2});
+      arcStart=null;
+    }
+  }
+  if(tool==='circle'){
     const {R}=gridParams();
-    drawings.push({type:'circ', c:snap, r:R});
-  } else if(tool==='erase'){
-    // remove closest primitive
-    let bi=-1, bd=1e9, bx= snap.x, by=snap.y;
-    drawings.forEach((d,i)=>{
-      let px,py;
-      if(d.type==='pt'){px=d.x;py=d.y;}
-      else if(d.type==='seg'){px=(d.a.x+d.b.x)/2; py=(d.a.y+d.b.y)/2;}
-      else if(d.type==='arc'){px=(d.a.x+d.b.x)/2; py=(d.a.y+d.b.y)/2;}
-      else if(d.type==='circ'){px=d.c.x; py=d.c.y;}
-      else if(d.type==='poly'){ if(d.points.length) {const p=d.points[0]; px=p.x; py=p.y;} }
-      const dd=(px-bx)*(px-bx)+(py-by)*(py-by);
+    sketch.push({type:'circ', c:{x:P.x,y:P.y}, r:R});
+  }
+  if(tool==='erase'){
+    // find nearest element center
+    let bi=-1, bd=1e9;
+    sketch.forEach((d,i)=>{
+      let cx=0,cy=0;
+      if(d.type==='seg'){cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2;}
+      else if(d.type==='circ'){cx=d.c.x; cy=d.c.y;}
+      else if(d.type==='arc'){cx=d.c.x; cy=d.c.y;}
+      else if(d.type==='pt'){cx=d.x; cy=d.y;}
+      const dd=(cx-P.x)*(cx-P.x)+(cy-P.y)*(cy-P.y);
       if(dd<bd){bd=dd; bi=i;}
     });
-    if(bi>=0) drawings.splice(bi,1);
+    if(bi>=0) sketch.splice(bi,1);
   }
 });
 addEventListener('dblclick', e=>{
-  if(ui.mode.value==='draft2d' && ui.tool.value==='poly' && polyCurrent && polyCurrent.points.length>1){
-    // close polyline nicely
-    const pts=polyCurrent.points.slice();
-    drawings.push({type:'poly', points:pts, closed:false});
-    polyCurrent=null;
-  }
+  if(ui.mode.value==='draft2d' && ui.tool2d.value==='poly' && polyLive && polyLive.points.length>1){ polyLive=null; }
 });
-addEventListener('mouseup',()=>{ dragging=false; });
-addEventListener('mousemove',e=>{
+addEventListener('mousemove', e=>{
   if(ui.mode.value==='draft2d'){
-    if(spacePan && dragging){ pan.x += (e.movementX||0); pan.y += (e.movementY||0); }
-  } else if(dragging){
-    userRot.xy += (e.movementX||0)*0.005;
-    userRot.xz += (e.movementY||0)*0.005;
-    targetRot.xy=userRot.xy; targetRot.xz=userRot.xz;
+    if(spacePan && drag){ pan2d.x += (e.movementX||0); pan2d.y += (e.movementY||0); }
+  } else if(drag){
+    rot3.xy += (e.movementX||0)*0.005; rot3.xz += (e.movementY||0)*0.005;
   }
 });
+addEventListener('mouseup', ()=>{ drag=false; });
 canvas.addEventListener('wheel', e=>{
   e.preventDefault();
   const f=Math.exp(-e.deltaY*0.001);
-  if(ui.mode.value==='draft2d') zoom=Math.max(0.25, Math.min(5, zoom*f));
-  else ui.scale.value=(+ui.scale.value * f).toFixed(2);
+  if(ui.mode.value==='draft2d') zoom2d=Math.max(0.25,Math.min(5, zoom2d*f));
+  else if(ui.mode.value==='shapes3d') ui.scale3d.value=(+ui.scale3d.value*f).toFixed(2);
+  else if(ui.mode.value==='builder4d') ui.scale4d.value=(+ui.scale4d.value*f).toFixed(2);
 },{passive:false});
-addEventListener('keydown', e=>{ if(e.code==='Space'){ spacePan=true; dragging=true; } });
-addEventListener('keyup',   e=>{ if(e.code==='Space'){ spacePan=false; dragging=false; } });
-ui.undo2d.addEventListener('click',()=>{ drawings.pop(); });
-ui.clear2d.addEventListener('click',()=>{ drawings.length=0; polyCurrent=null; arcFirst=null; });
-ui.save2d.addEventListener('click',()=>{
-  const link=document.createElement('a'); link.download='universe120-2d.png'; link.href=canvas.toDataURL('image/png'); link.click();
-});
+addEventListener('keydown', e=>{ if(e.code==='Space'){ spacePan=true; drag=true; } });
+addEventListener('keyup', e=>{ if(e.code==='Space'){ spacePan=false; drag=false; } });
+ui.undo2d.addEventListener('click', ()=>{ sketch.pop(); });
+ui.clear2d.addEventListener('click', ()=>{ sketch.length=0; polyLive=null; arcStart=null; });
 
-/* ===== 4D Explorer ===== */
-let userRot={xy:0,xz:0,yz:0,xw:0,yw:0,zw:0}, targetRot={...userRot};
-
+/* ========= 3D CLASSROOM ========= */
 function rot2(a,b,t){const c=Math.cos(t),s=Math.sin(t);return[a*c-b*s,a*s+b*c]}
-function project3to2(p3, persp){const z=p3.z+persp;return {x:p3.x/persp*persp/z,y:p3.y/persp*persp/z,z:p3.z}}
+function proj3(p, persp){ const z=p.z+persp; return {x:p.x/persp*persp/z, y:p.y/persp*persp/z, z:p.z}; }
+let rot3={xy:0,xz:0,yz:0};
+ui.reset3d.addEventListener('click', ()=>{ ui.scale3d.value=1.1; ui.persp3d.value=3.0; ui.rXY3.value=0.2; ui.rXZ3.value=0.5; ui.rYZ3.value=0.0; rot3={xy:0,xz:0,yz:0}; });
 
-function make4D(shape){
-  // returns {v:[{x,y,z,w}], e:[[i,j],...]}
-  if(shape==='5cell'){ // simplex: 5 vertices equally spaced
-    // centered version
-    const v=[
-      [ 1, 1, 1,-1/Math.sqrt(5)],
-      [ 1,-1,-1,-1/Math.sqrt(5)],
-      [-1, 1,-1,-1/Math.sqrt(5)],
-      [-1,-1, 1,-1/Math.sqrt(5)],
-      [ 0, 0, 0, 4/Math.sqrt(5)]
-    ].map(a=>({x:a[0],y:a[1],z:a[2],w:a[3]}));
-    const e=[];
-    for(let i=0;i<5;i++)for(let j=i+1;j<5;j++)e.push([i,j]);
-    return {v, e};
+function shapeData3D(kind){
+  // returns {v:[{x,y,z}], e:[[i,j]], f:[[indices...]], net?:[edges to cut]}
+  const v=[],e=[],f=[];
+  if(kind==='cube'){
+    for(let x of[-1,1])for(let y of[-1,1])for(let z of[-1,1]) v.push({x,y,z});
+    for(let i=0;i<8;i++)for(let j=i+1;j<8;j++){const a=v[i],b=v[j]; if((a.x!==b.x)+(a.y!==b.y)+(a.z!==b.z)===1) e.push([i,j]);}
+    f.push([0,1,3,2],[4,5,7,6],[0,1,5,4],[2,3,7,6],[0,2,6,4],[1,3,7,5]);
+    return {v,e,f,net:[[0,1],[1,3],[1,5],[5,7],[2,3],[2,6],[4,6]]};
   }
-  if(shape==='8cell'){ // tesseract
-    const v=[]; for(let x of[-1,1])for(let y of[-1,1])for(let z of[-1,1])for(let w of[-1,1]) v.push({x,y,z,w});
-    const e=[]; for(let i=0;i<16;i++)for(let j=i+1;j<16;j++){
-      const a=v[i],b=v[j]; const d=(a.x!==b.x)+(a.y!==b.y)+(a.z!==b.z)+(a.w!==b.w); if(d===1)e.push([i,j]);
+  if(kind==='tetra'){
+    v.push({x:1,y:1/Math.sqrt(2),z:-1/3},{x:-1,y:1/Math.sqrt(2),z:-1/3},{x:0,y:-Math.sqrt(2),z:-1/3},{x:0,y:0,z:1});
+    [[0,1],[1,2],[2,0],[0,3],[1,3],[2,3]].forEach(p=>e.push(p));
+    f.push([0,1,3],[1,2,3],[2,0,3],[0,2,1]); return {v,e,f};
+  }
+  if(kind==='octa'){
+    [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]].forEach(a=>v.push({x:a[0],y:a[1],z:a[2]}));
+    const pairs=[[0,2],[0,3],[0,4],[0,5],[1,2],[1,3],[1,4],[1,5],[2,4],[2,5],[3,4],[3,5]]; pairs.forEach(p=>e.push(p));
+    f.push([0,2,4],[0,4,3],[0,3,5],[0,5,2],[1,2,4],[1,4,3],[1,3,5],[1,5,2]); return {v,e,f};
+  }
+  if(kind==='dodeca' || kind==='icosa'){
+    const phi=(1+Math.sqrt(5))/2;
+    if(kind==='icosa'){
+      const pts=[[0,-1,phi],[0,1,phi],[0,-1,-phi],[0,1,-phi],[1,phi,0],[-1,phi,0],[1,-phi,0],[-1,-phi,0],[phi,0,1],[phi,0,-1],[-phi,0,1],[-phi,0,-1]];
+      pts.forEach(p=>v.push({x:p[0],y:p[1],z:p[2]}));
+      const edges=[[0,1],[0,8],[0,10],[1,4],[1,5],[2,3],[2,6],[2,7],[3,9],[3,11],[4,5],[4,8],[4,9],[5,10],[5,11],[6,7],[6,8],[6,9],[7,10],[7,11],[8,9],[10,11]];
+      edges.forEach(p=>e.push(p)); // faces omitted for brevity
+      return {v,e,f:[]};
+    } else {
+      const a=1/phi, b=1;
+      const pts=[];
+      for(let s of[-1,1]) for(let t of[-1,1]){
+        pts.push([0,s*a,t*b]); pts.push([s*a,t*b,0]); pts.push([s*b,0,t*a]);
+      }
+      pts.forEach(p=>v.push({x:p[0],y:p[1],z:p[2]}));
+      // approximate edges by unit threshold
+      for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++){
+        const d2=(v[i].x-v[j].x)**2+(v[i].y-v[j].y)**2+(v[i].z-v[j].z)**2;
+        if(d2<1.6) e.push([i,j]);
+      }
+      return {v,e,f:[]};
     }
-    return {v,e};
   }
-  if(shape==='16cell'){ // cross-polytope
+  if(kind==='prism6'){
+    const R=1; for(let z of[-1,1]) for(let k=0;k<6;k++){ const a=k*Math.PI/3; v.push({x:R*Math.cos(a),y:R*Math.sin(a),z}); }
+    for(let k=0;k<6;k++){ e.push([k,(k+1)%6]); e.push([k+6,6+((k+1)%6)]); e.push([k,k+6]); }
+    return {v,e,f:[]};
+  }
+  if(kind==='pyramid5'){
+    const s=1; v.push({x:-s,y:-s,z:-1},{x:s,y:-s,z:-1},{x:s,y:s,z:-1},{x:-s,y:s,z:-1},{x:0,y:0,z:1});
+    [[0,1],[1,2],[2,3],[3,0],[0,4],[1,4],[2,4],[3,4]].forEach(p=>e.push(p)); return {v,e,f:[]};
+  }
+  if(kind==='cylinder'|| kind==='cone'){
+    const n=24,R=1,H=2; const topZ=H/2, botZ=-H/2;
+    for(let k=0;k<n;k++){ const a=2*Math.PI*k/n; v.push({x:R*Math.cos(a),y:R*Math.sin(a),z:botZ}); }
+    if(kind==='cylinder'){ for(let k=0;k<n;k++){ const a=2*Math.PI*k/n; v.push({x:R*Math.cos(a),y:R*Math.sin(a),z:topZ}); } }
+    else { v.push({x:0,y:0,z:topZ}); }
+    if(kind==='cylinder'){
+      for(let k=0;k<n;k++){ e.push([k,(k+1)%n]); e.push([k,n+k]); e.push([n+k,n+((k+1)%n)]); }
+    } else { const apex=v.length-1; for(let k=0;k<n;k++){ e.push([k,(k+1)%n]); e.push([k,apex]); } }
+    return {v,e,f:[]};
+  }
+  return shapeData3D('cube');
+}
+function draw3D(){
+  const s=+ui.scale3d.value*160, p=+ui.persp3d.value;
+  const ax=+ui.rXY3.value+rot3.xy, ay=+ui.rXZ3.value+rot3.xz, az=+ui.rYZ3.value+rot3.yz;
+  const S=shapeData3D(ui.shape3d.value);
+  const pts=S.v.map(P=>{
+    let x=P.x,y=P.y,z=P.z; [x,y]=rot2(x,y,ax); [y,z]=rot2(y,z,ay); [x,z]=rot2(x,z,az);
+    const q=proj3({x,y,z},p); return {x:canvas.width/DPR/2+q.x*s, y:canvas.height/DPR/2+q.y*s, z:q.z};
+  });
+  ctx.lineWidth=1.2; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
+  if(ui.stage3d.value==='v'){ pts.forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,2.2,0,Math.PI*2); ctx.fill(); }); }
+  else if(ui.stage3d.value==='e'){ S.e.forEach(([i,j])=>{ const a=pts[i],b=pts[j]; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }); }
+  else if(ui.stage3d.value==='f'){ // simple face fill/wire
+    ctx.globalAlpha=0.12;
+    S.f.forEach(face=>{
+      ctx.beginPath(); ctx.moveTo(pts[face[0]].x,pts[face[0]].y);
+      for(let k=1;k<face.length;k++) ctx.lineTo(pts[face[k]].x,pts[face[k]].y);
+      ctx.closePath(); ctx.fill();
+    });
+    ctx.globalAlpha=1;
+    S.e.forEach(([i,j])=>{ const a=pts[i],b=pts[j]; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); });
+  } else { // net: super-simple orth projection of edges
+    const offx=canvas.width/DPR/2-200, offy=canvas.height/DPR/2-120;
+    ctx.strokeStyle='#333'; ctx.setLineDash([6,6]);
+    S.e.forEach(([i,j])=>{ const a=S.v[i],b=S.v[j]; ctx.beginPath(); ctx.moveTo(offx+80*a.x, offy+80*a.y); ctx.lineTo(offx+80*b.x, offy+80*b.y); ctx.stroke(); });
+    ctx.setLineDash([]);
+  }
+  ctx.fillStyle='#222'; ctx.font='12px system-ui'; ctx.fillText('3D Classroom: Vertices→Edges→Faces→Net • Drag=rotate • Wheel=zoom',16,canvas.height/DPR-18);
+}
+
+/* ========= 4D BUILDER ========= */
+function proj4to3(x,y,z,w,p4=2.4){ const wf=p4/(p4-w); return {x:x*wf,y:y*wf,z:z*wf}; }
+function make4D(kind){
+  if(kind==='5cell'){
+    const v=[[1,1,1,-1/Math.sqrt(5)],[1,-1,-1,-1/Math.sqrt(5)],[-1,1,-1,-1/Math.sqrt(5)],[-1,-1,1,-1/Math.sqrt(5)],[0,0,0,4/Math.sqrt(5)]].map(a=>({x:a[0],y:a[1],z:a[2],w:a[3]}));
+    const e=[]; for(let i=0;i<5;i++)for(let j=i+1;j<5;j++) e.push([i,j]);
+    const cells=[[0,1,2,4],[0,1,3,4],[0,2,3,4],[1,2,3,4],[0,1,2,3]];
+    return {v,e,cells};
+  }
+  if(kind==='8cell'){
+    const v=[]; for(let x of[-1,1])for(let y of[-1,1])for(let z of[-1,1])for(let w of[-1,1]) v.push({x,y,z,w});
+    const e=[]; for(let i=0;i<16;i++)for(let j=i+1;j<16;j++){const a=v[i],b=v[j]; const d=(a.x!==b.x)+(a.y!==b.y)+(a.z!==b.z)+(a.w!==b.w); if(d===1)e.push([i,j]);}
+    // 8 cubic cells can be specified by w=±1 subsets; skip full listing for brevity
+    return {v,e,cells:[]};
+  }
+  if(kind==='16cell'){
+    const v=[]; [[1,0,0,0],[-1,0,0,0],[0,1,0,0],[0,-1,0,0],[0,0,1,0],[0,0,-1,0],[0,0,0,1],[0,0,0,-1]].forEach(p=>v.push({x:p[0],y:p[1],z:p[2],w:p[3]}));
+    const e=[]; for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++){ const a=v[i],b=v[j]; const opp=(a.x===-b.x&&a.y===-b.y&&a.z===-b.z&&a.w===-b.w); if(!opp) e.push([i,j]); }
+    return {v,e,cells:[]};
+  }
+  if(kind==='24cell'){
     const v=[];
     [[1,0,0,0],[-1,0,0,0],[0,1,0,0],[0,-1,0,0],[0,0,1,0],[0,0,-1,0],[0,0,0,1],[0,0,0,-1]].forEach(p=>v.push({x:p[0],y:p[1],z:p[2],w:p[3]}));
-    const e=[];
-    for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++){
-      // connect all except opposites
-      const a=v[i],b=v[j];
-      const opp=(a.x===-b.x && a.y===-b.y && a.z===-b.z && a.w===-b.w);
-      if(!opp) e.push([i,j]);
-    }
-    return {v,e};
-  }
-  if(shape==='24cell'){ // 24-cell (self-dual)
-    const v=[];
-    // 8 vertices: (±1,0,0,0) perms (like 16-cell without sign pairs?) and 16 vertices (±1/2,±1/2,±1/2,±1/2) even number of minus signs
-    // Actually 24-cell vertices are permutations of (±1,0,0,0) and (±1/2,±1/2,±1/2,±1/2)
-    [[1,0,0,0],[-1,0,0,0],[0,1,0,0],[0,-1,0,0],[0,0,1,0],[0,0,-1,0],[0,0,0,1],[0,0,0,-1]]
-      .forEach(p=>v.push({x:p[0],y:p[1],z:p[2],w:p[3]}));
-    for(let s of [-0.5,0.5]){
-      for(let a of [-0.5,0.5]) for(let b of [-0.5,0.5]) for(let c of [-0.5,0.5]){
-        const countMinus = [s,a,b,c].filter(t=>t<0).length;
-        // include all 16 corners (no parity filter needed here)
-        v.push({x:s,y:a,z:b,w:c});
-      }
-    }
-    // edges: connect pairs at unit distance in this coordinate system
-    const e=[];
-    for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++){
-      const a=v[i],b=v[j];
-      const d2=(a.x-b.x)**2+(a.y-b.y)**2+(a.z-b.z)**2+(a.w-b.w)**2;
-      if(Math.abs(d2-1)<1e-6) e.push([i,j]);
-    }
-    return {v,e};
+    for(let s of [-0.5,0.5]) for(let a of [-0.5,0.5]) for(let b of [-0.5,0.5]) for(let c of [-0.5,0.5]) v.push({x:s,y:a,z:b,w:c});
+    const e=[]; for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++){ const a=v[i],b=v[j]; const d2=(a.x-b.x)**2+(a.y-b.y)**2+(a.z-b.z)**2+(a.w-b.w)**2; if(Math.abs(d2-1)<1e-6) e.push([i,j]); }
+    return {v,e,cells:[]};
   }
   return make4D('8cell');
 }
+let poly4=make4D(ui.shape4dSel.value);
+ui.shape4dSel.addEventListener('change', ()=>{ poly4=make4D(ui.shape4dSel.value); });
 
-let poly = make4D(ui.shapeSel.value);
+let rot4={xy:0,xz:0,yz:0,xw:0,yw:0,zw:0};
+ui.reset4d.addEventListener('click', ()=>{ ui.scale4d.value=1.1; ui.persp4d.value=3.0; ui.sliceW.value=0; ui.sliceT.value=0.25; ui.step4d.value=1; rot4={xy:0,xz:0,yz:0,xw:0,yw:0,zw:0}; });
 
-ui.shapeSel.addEventListener('change', ()=>{ poly=make4D(ui.shapeSel.value); });
-ui.reset4d.addEventListener('click', ()=>{
-  userRot={xy:0,xz:0,yz:0,xw:0,yw:0,zw:0}; targetRot={...userRot};
-  ui.scale.value=1.1; ui.persp.value=3.0; ui.stroke.value=1.2; ui.sliceW.value=0; ui.sliceT.value=0.25; ui.stage4d.value='e';
-});
+let showHints=false; ui.toggleHints.addEventListener('click',()=>{ showHints=!showHints; });
 
-function draw4D(time){
-  // easing
-  ['xy','xz','yz','xw','yw','zw'].forEach(k=> userRot[k]+= (targetRot[k]-userRot[k])*0.15 );
+function draw4D(){
+  const s=+ui.scale4d.value*160, p3=+ui.persp4d.value, p4=2.4;
+  const aXY=+ui.rXY4.value+rot4.xy, aXZ=+ui.rXZ4.value+rot4.xz, aYZ=+ui.rYZ4.value+rot4.yz;
+  const aXW=+ui.rXW4.value+rot4.xw, aYW=+ui.rYW4.value+rot4.yw, aZW=+ui.rZW4.value+rot4.zw;
+  const w0=+ui.sliceW.value, thick=+ui.sliceT.value, step=+ui.step4d.value;
 
-  const s=+ui.scale.value*160, persp3=+ui.persp.value, persp4=2.3;
-  const aXY=+ui.rXY.value + userRot.xy, aXZ=+ui.rXZ.value + userRot.xz, aYZ=+ui.rYZ.value + userRot.yz;
-  const aXW=+ui.rXW.value + userRot.xw, aYW=+ui.rYW.value + userRot.yw, aZW=+ui.rZW.value + userRot.zw;
-  const w0=+ui.sliceW.value, thick=+ui.sliceT.value;
-
-  // rotate + slice
-  const pts2=[];
-  poly.v.forEach(p=>{
+  // rotate → slice → project
+  const pts2=poly4.v.map(p=>{
     let x=p.x,y=p.y,z=p.z,w=p.w;
     [x,y]=rot2(x,y,aXY); [x,z]=rot2(x,z,aXZ); [y,z]=rot2(y,z,aYZ);
     [x,w]=rot2(x,w,aXW); [y,w]=rot2(y,w,aYW); [z,w]=rot2(z,w,aZW);
-    if(Math.abs(w-w0)<=thick){ // slice window
-      const wf=persp4/(persp4 - w), x3=x*wf, y3=y*wf, z3=z*wf;
-      const p2=project3to2({x:x3,y:y3,z:z3}, persp3);
-      pts2.push({x:canvas.width/DPR/2 + p2.x*s, y:canvas.height/DPR/2 + p2.y*s, z:z3, ok:true});
-    } else {
-      pts2.push({x:0,y:0,z:0,ok:false});
-    }
+    const ok = Math.abs(w-w0)<=thick;
+    const q3 = proj4to3(x,y,z,w,p4);
+    const q2 = proj3({x:q3.x,y:q3.y,z:q3.z}, p3);
+    return {ok, x:canvas.width/DPR/2+q2.x*s, y:canvas.height/DPR/2+q2.y*s, z:q3.z};
   });
 
-  ctx.lineWidth=+ui.stroke.value; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
-  if(ui.stage4d.value==='v'){
-    pts2.forEach(p=>{ if(p.ok){ ctx.beginPath(); ctx.arc(p.x,p.y,2.2,0,Math.PI*2); ctx.fill(); }});
-  } else {
-    // edges
-    poly.e.forEach(([i,j])=>{
-      const a=pts2[i], b=pts2[j];
-      if(a.ok && b.ok){
-        const alpha = 0.45 + 0.45*((a.z+b.z)/2 + 3.5)/7;
-        ctx.globalAlpha = alpha;
-        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
-        ctx.globalAlpha = 1;
-      }
-    });
+  ctx.lineWidth=1.2; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
+  const stage=ui.stage4d.value;
+
+  if(stage==='plan'){ // Schlegel diagram (simple variant): draw edges with no slice, mild radial scale
+    ctx.globalAlpha=1;
+    poly4.e.forEach(([i,j])=>{ const a=pts2[i],b=pts2[j]; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); });
+  } else if(stage==='v'){
+    // progressive reveal by step
+    const n=Math.floor(pts2.length*step);
+    for(let i=0;i<n;i++){ const p=pts2[i]; if(p.ok){ ctx.beginPath(); ctx.arc(p.x,p.y,2.2,0,Math.PI*2); ctx.fill(); } }
+  } else if(stage==='e'){
+    const m=Math.floor(poly4.e.length*step);
+    for(let k=0;k<m;k++){ const [i,j]=poly4.e[k]; const a=pts2[i],b=pts2[j]; if(a.ok && b.ok){ const alpha=0.45+0.45*((a.z+b.z)/2+3.5)/7; ctx.globalAlpha=alpha; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); } }
+    ctx.globalAlpha=1;
+  } else if(stage==='c'){
+    // very simple "cells by slice": draw thicker edges for edges whose endpoints are within slice (hints of 3D cells)
+    ctx.lineWidth=2.0;
+    poly4.e.forEach(([i,j])=>{ const a=pts2[i],b=pts2[j]; if(a.ok && b.ok){ ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); } });
+    ctx.lineWidth=1.2;
   }
+
+  if(showHints){
+    ctx.fillStyle='#222'; ctx.font='12px system-ui';
+    const lines=[
+      'Hints:',
+      '• Vertices are 4D points; we rotate in XY/XZ/YZ and XW/YW/ZW planes.',
+      '• Slice W keeps only points with |w − W0| ≤ thickness.',
+      '• Schlegel plan is a “shadow” that shows connectivity like a blueprint.',
+      '• Drag to rotate; use Step slider to build the shape gradually.'
+    ];
+    let y=20; lines.forEach(t=>{ ctx.fillText(t,16,y); y+=16; });
+  }
+
   ctx.fillStyle='#222'; ctx.font='12px system-ui';
-  ctx.fillText('4D: Stage→Vertices/Edges • Slice W to see cross-sections • Drag to rotate • Wheel/pinch to zoom', 16, canvas.height/DPR-18);
+  ctx.fillText('4D Builder: Stage + Step + Slice • Plan=Schlegel • Drag=rotate • Wheel=zoom', 16, canvas.height/DPR-18);
 }
 
-/* ===== 3D Cube (reference) ===== */
-const cube = (()=>{ const v=[]; for(let x of[-1,1])for(let y of[-1,1])for(let z of[-1,1]) v.push({x,y,z}); return v; })();
-const cubeE = (()=>{ const e=[]; for(let i=0;i<8;i++)for(let j=i+1;j<8;j++){ const a=cube[i],b=cube[j]; const d=(a.x!==b.x)+(a.y!==b.y)+(a.z!==b.z); if(d===1)e.push([i,j]); } return e; })();
-function drawCube(){
-  ctx.lineWidth=+ui.stroke.value; ctx.strokeStyle='#111';
-  const s=+ui.scale.value*160, p=+ui.persp.value;
-  const ax=+ui.rXY.value+userRot.xy, ay=+ui.rXZ.value+userRot.xz, az=+ui.rYZ.value+userRot.yz;
-  const pts=cube.map(P=>{
-    let [x,y]=rot2(P.x,P.y,ax); let [y2,z]=rot2(y,P.z,ay); let [x2,z2]=rot2(x,z,az);
-    const p2=project3to2({x:x2,y:y2,z:z2},p);
-    return {x:canvas.width/DPR/2+p2.x*s, y:canvas.height/DPR/2+p2.y*s, z:p2.z};
-  });
-  cubeE.forEach(([i,j])=>{ const a=pts[i],b=pts[j]; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); });
-}
+/* ========= Space Lab ========= */
+let rotSpace={xy:0,xz:0}; let scaleSpace=1.0, perspSpace=3.0;
+ui.resetSpace.addEventListener('click', ()=>{ rotSpace={xy:0,xz:0}; scaleSpace=1.0; perspSpace=3.0; });
 
-/* Shared input (rotate / pan / zoom outside 2D drafting pan) */
-addEventListener('mousedown',e=>{ if(ui.mode.value!=='draft2d'){ dragging=true; lastX=e.clientX; lastY=e.clientY; }});
-addEventListener('mousemove',e=>{
-  if(!dragging || ui.mode.value==='draft2d') return;
-  const dx=e.clientX-lastX, dy=e.clientY-lastY; lastX=e.clientX; lastY=e.clientY;
-  targetRot.xy += dx*0.005; targetRot.xz += dy*0.005;
+function drawSpace(){
+  const mode=ui.spaceMode.value;
+  if(mode==='bubble'){
+    // 3D bubble grid: render layers of sphere outlines
+    const s=180*scaleSpace, p=perspSpace;
+    const layers=8;
+    for(let k=0;k<layers;k++){
+      const z = -1.5 + 3*k/(layers-1);
+      // circle projected
+      const pts=[]; const n=64;
+      for(let i=0;i<=n;i++){
+        const a=i*2*Math.PI/n, x=Math.cos(a), y=Math.sin(a);
+        let X=x, Y=y, Z=z; [X,Y]=rot2(X,Y,rotSpace.xy+0.2); [Y,Z]=rot2(Y,Z,rotSpace.xz+0.5);
+        const q=proj3({x:X,y:Y,z:Z},p);
+        pts.push({x:canvas.width/DPR/2+q.x*s, y:canvas.height/DPR/2+q.y*s});
+      }
+      ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.beginPath(); pts.forEach((pt,i)=>{ if(i===0) ctx.moveTo(pt.x,pt.y); else ctx.lineTo(pt.x,pt.y); }); ctx.stroke();
+    }
+    ctx.fillStyle='#222'; ctx.font='12px system-ui'; ctx.fillText('3D Bubble Grid: drag to rotate • wheel to zoom',16,canvas.height/DPR-18);
+  } else {
+    // Mini solar system: scaled Earth–Moon with Sun as big disc; compute time to Moon
+    const AU=149_597_870; // km (not to scale here)
+    const earthMoon=384_400; // km
+    const s=1.0; // logical scale
+    const centerX=canvas.width/DPR/2, centerY=canvas.height/DPR/2;
+    // Sun (disc)
+    ctx.fillStyle='rgba(255,180,60,0.25)'; ctx.beginPath(); ctx.arc(centerX-220, centerY, 90, 0, Math.PI*2); ctx.fill();
+    // Earth orbit small ring
+    ctx.strokeStyle='rgba(0,0,0,.2)'; ctx.beginPath(); ctx.arc(centerX, centerY, 120, 0, Math.PI*2); ctx.stroke();
+    // Earth
+    ctx.fillStyle='#2c6cff'; ctx.beginPath(); ctx.arc(centerX+120, centerY, 8, 0, Math.PI*2); ctx.fill();
+    // Moon orbit
+    ctx.strokeStyle='rgba(0,0,0,.2)'; ctx.beginPath(); ctx.arc(centerX+120, centerY, 28, 0, Math.PI*2); ctx.stroke();
+    // Moon (positioned)
+    ctx.fillStyle='#bbb'; ctx.beginPath(); ctx.arc(centerX+120+28, centerY, 3.5, 0, Math.PI*2); ctx.fill();
+
+    // Time to Moon calc (straight-line ideal)
+    const speed = Math.max(0.1, +ui.shipSpeed.value||10); // km/s
+    const hours = (earthMoon / speed) / 3600;
+    const h = Math.floor(hours), m=Math.floor((hours-h)*60), sec=Math.round(((hours-h)*60 - m)*60);
+    ui.moonTime.textContent = `${h}h ${m}m ${sec}s @ ${speed} km/s`;
+
+    ctx.fillStyle='#222'; ctx.font='12px system-ui';
+    ctx.fillText('Mini Solar System (not to scale): Sun–Earth–Moon • Enter ship speed for time-to-Moon',16,canvas.height/DPR-18);
+  }
+}
+ui.shipSpeed.addEventListener('input', ()=>{} );
+
+/* ========= Shared interactions for 3D/4D/Space ========= */
+addEventListener('mousedown', e=>{
+  if(ui.mode.value==='draft2d') return;
+  drag=true; lastXY=[e.clientX,e.clientY];
 });
-addEventListener('mouseup',()=>{ dragging=false; });
+addEventListener('mousemove', e=>{
+  if(!drag || ui.mode.value==='draft2d') return;
+  const dx=e.clientX-lastXY[0], dy=e.clientY-lastXY[1]; lastXY=[e.clientX,e.clientY];
+  if(ui.mode.value==='shapes3d'){ rot3.xy += dx*0.005; rot3.xz += dy*0.005; }
+  else if(ui.mode.value==='builder4d'){ rot4.xy += dx*0.005; rot4.xz += dy*0.005; }
+  else if(ui.mode.value==='spacelab'){ rotSpace.xy += dx*0.005; rotSpace.xz += dy*0.005; }
+});
+addEventListener('mouseup', ()=>{ drag=false; });
 
-/* Render loop */
+/* ========= Main render loop ========= */
 let last=0;
-function render(t){
-  if(t-last<14){ requestAnimationFrame(render); return; }
+function frame(t){
+  if(t-last<14){ requestAnimationFrame(frame); return; }
   last=t;
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round';
-  if(ui.mode.value==='draft2d'){ draw2D(); }
-  else if(ui.mode.value==='shape4d'){ draw4D(t); }
-  else { drawCube(); }
+  if(ui.mode.value==='draft2d'){ draw2D(); drawGuides(null); } 
+  else if(ui.mode.value==='shapes3d'){ draw3D(); }
+  else if(ui.mode.value==='builder4d'){ draw4D(); }
+  else { drawSpace(); }
   ctx.restore();
-  requestAnimationFrame(render);
+  requestAnimationFrame(frame);
 }
-requestAnimationFrame(render);
-} // end startUniverse
+requestAnimationFrame(frame);
+} // startApp
 </script>
 </body>
 </html>
