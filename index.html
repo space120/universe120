@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Universe120 — Draft • 3D • 4D • Space Lab</title>
+<title>Universe120 — Architect • Sim Lab</title>
 <style>
 :root{--bg:#f7f7fb;--card:#ffffffcc;--ink:#111;--muted:#666;--border:#e7e7ee;--brand:#3538ff}
 *{box-sizing:border-box}
@@ -12,32 +12,30 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family
 .site-header{top:0;padding:10px 16px}
 .site-footer{bottom:0;justify-content:center;border-top:1px solid var(--border);border-bottom:none;padding:8px 16px}
 .brand{font-weight:800}
-#ui.panel{position:fixed;left:16px;top:64px;z-index:15;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;max-width:390px;box-shadow:0 6px 22px rgba(0,0,0,.07)}
+#ui.panel{position:fixed;left:16px;top:64px;z-index:15;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;max-width:460px;box-shadow:0 6px 22px rgba(0,0,0,.07)}
 #ui h1{margin:.25rem 0 .5rem;font-size:18px}
 .row{display:flex;gap:8px;align-items:center;margin:.35rem 0}
 label{font-size:12px;color:#444;min-width:120px}
 input[type=range]{flex:1}
-select,input[type=checkbox],input[type=number]{font-size:13px}
+select,input[type=checkbox],input[type=number],input[type=text]{font-size:13px}
 fieldset{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:.5rem 0 0}
 fieldset legend{font-size:12px;color:#333;padding:0 6px}
 button{appearance:none;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer}
 button:hover{background:#f6f6ff}
 button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
-button.ghost{background:transparent}
-.pill{display:inline-block;background:#eef2ff;color:#3730a3;font-weight:600;border-radius:999px;padding:2px 8px;font-size:11px}
-.tip{font-size:11px;color:#666}
+.badge{font-size:11px;padding:2px 8px;border:1px solid var(--border);border-radius:999px;background:#fff}
+.kbd{background:#eee;border:1px solid #ccc;border-bottom-color:#bbb;border-radius:4px;padding:0 4px;font-family:ui-monospace,Menlo,Consolas,monospace}
 #canvas{display:block;width:100vw;height:100vh}
+.overlay{position:fixed;right:16px;top:64px;z-index:16;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 12px;max-width:460px;box-shadow:0 6px 22px rgba(0,0,0,.07);font-size:13px}
 @media (max-width: 640px){
   #ui.panel { max-width: 92vw; left: 4vw; }
-  .row button, .row select, .row input[type=range], .row input[type=number] { min-height: 40px; }
+  .row button, .row select, .row input[type=range], .row input[type=number], .row input[type=text] { min-height: 40px; }
 }
-/* Password gate overlay */
+/* Password gate */
 #gate{position:fixed;inset:0;background:#0a0a0f;color:#eee;display:flex;align-items:center;justify-content:center;z-index:9999}
-#gate .box{width:min(90vw,440px);background:#14141b;border:1px solid #2a2a35;border-radius:14px;padding:22px;box-shadow:0 10px 40px rgba(0,0,0,.35);text-align:center}
+#gate .box{width:min(90vw,460px);background:#14141b;border:1px solid #2a2a35;border-radius:14px;padding:22px;box-shadow:0 10px 40px rgba(0,0,0,.35);text-align:center}
 #gate input{width:100%;padding:12px;border-radius:10px;border:1px solid #39394a;background:#0e0e15;color:#eaeaf2}
 #gate button{width:100%;margin-top:10px;background:#3538ff;color:#fff;border:0;padding:12px;border-radius:10px;font-size:15px}
-.badge{font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:999px;background:#fff}
-kbd{background:#eee;border:1px solid #ccc;border-bottom-color:#bbb;border-radius:4px;padding:0 4px;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
 </style>
 </head>
 <body>
@@ -45,7 +43,7 @@ kbd{background:#eee;border:1px solid #ccc;border-bottom-color:#bbb;border-radius
 <div id="gate" aria-modal="true">
   <div class="box">
     <h2>Universe120 — Private Build</h2>
-    <p>Enter access key to view the playground.</p>
+    <p>Enter access key to view.</p>
     <input id="gateKey" type="password" placeholder="••••••">
     <button id="gateBtn">Enter</button>
     <small>Tip: set <b>ACCESS_KEY</b> in the code to change/disable.</small>
@@ -53,35 +51,36 @@ kbd{background:#eee;border:1px solid #ccc;border-bottom-color:#bbb;border-radius
 </div>
 
 <header class="site-header">
-  <div class="brand">Universe120 <span class="badge">Draft • 3D • 4D • Space</span></div>
+  <div class="brand">Universe120 <span class="badge">Architect • Sim Lab</span></div>
 </header>
 
 <aside id="ui" class="panel" hidden>
   <h1>Toolkit</h1>
-
   <div class="row">
     <label for="mode">Mode</label>
     <select id="mode">
-      <option value="draft2d" selected>2D Drafting (Architect)</option>
-      <option value="shapes3d">3D Classroom</option>
-      <option value="builder4d">4D Builder</option>
-      <option value="spacelab">Space Lab (beta)</option>
+      <option value="architect2d" selected>2D Architect</option>
+      <option value="simlab">Sim Lab (Math & Physics)</option>
     </select>
   </div>
 
-  <!-- 2D DRAFT -->
-  <fieldset id="draftBlock">
-    <legend>2D Drafting</legend>
+  <!-- 2D Architect -->
+  <fieldset id="arch2dBlock">
+    <legend>2D Architect</legend>
     <div class="row"><label>Tool</label>
       <select id="tool2d">
-        <option value="point">Point</option>
         <option value="segment" selected>Segment</option>
-        <option value="poly">Polyline (Walls)</option>
-        <option value="arc">Arc / Fillet</option>
-        <option value="circle">Circle</option>
+        <option value="poly">Polyline (walls)</option>
+        <option value="arc">Arc (two clicks)</option>
+        <option value="circle">Circle (grid radius)</option>
+        <option value="dim">Dimension</option>
+        <option value="door">Door (swing)</option>
+        <option value="window">Window</option>
+        <option value="label">Room Label</option>
         <option value="erase">Erase</option>
       </select>
     </div>
+
     <div class="row"><label>Snap</label>
       <select id="snap2d">
         <option value="intersections" selected>Intersections</option>
@@ -90,6 +89,7 @@ kbd{background:#eee;border:1px solid #ccc;border-bottom-color:#bbb;border-radius
         <option value="free">Free</option>
       </select>
     </div>
+
     <div class="row"><label>Angle Lock</label>
       <select id="lockAngle">
         <option value="off" selected>Off</option>
@@ -98,124 +98,80 @@ kbd{background:#eee;border:1px solid #ccc;border-bottom-color:#bbb;border-radius
         <option value="fortyfive">45/90°</option>
       </select>
     </div>
-    <div class="row"><label>Guides</label>
-      <span><input type="checkbox" id="guideParallel" checked> Parallel</span>
-      <span><input type="checkbox" id="guidePerp" checked> Perpendicular</span>
-    </div>
-    <div class="row"><label>Wall (px)</label><input id="wallThick" type="number" min="0" max="50" step="1" value="8"></div>
+
+    <div class="row"><label>Wall (px)</label><input id="wallThick" type="number" min="0" max="60" step="1" value="10"></div>
     <div class="row"><label>Stroke</label><input id="stroke2d" type="range" min="0.6" max="3" step="0.1" value="1.4"></div>
+
+    <div class="row"><label>View</label>
+      <span><input type="checkbox" id="lockView" checked> Lock View</span>
+      <button id="recenter2d" type="button">Recenter</button>
+      <button id="zoomReset2d" type="button">Reset Zoom</button>
+    </div>
+
     <div class="row"><button id="undo2d">Undo</button><button id="clear2d">Clear</button><button id="exportSvg" class="primary">Export SVG</button></div>
-    <p class="tip">Hold <kbd>Space</kbd> to pan • Wheel/pinch to zoom • <kbd>Shift</kbd> stronger snap • Double-click to finish polyline</p>
+
+    <div class="row"><label>Background</label><input id="bgUpload" type="file" accept="image/*"></div>
+    <div class="row"><label>BG Opacity</label><input id="bgAlpha" type="range" min="0" max="1" step="0.01" value="0.5"></div>
+    <div class="row"><label>BG Scale</label><input id="bgScale" type="range" min="0.1" max="4" step="0.01" value="1"></div>
+    <div class="row"><label>BG Rotate</label><input id="bgRot" type="range" min="-180" max="180" step="1" value="0"></div>
+    <div class="row"><label>BG Offset</label><input id="bgOffX" type="number" value="0" style="width:80px"> <input id="bgOffY" type="number" value="0" style="width:80px"></div>
+    <div class="row"><label>Calibrate</label><button id="calibStart">Pick 2 pts</button><input id="calibSteps" type="number" min="1" max="50" step="1" value="4" style="width:80px"></div>
+    <p style="font-size:11px;color:#666">Tips: <span class="kbd">Shift</span> stronger snap • Double-click ends polyline • Locked view keeps you from “losing” your plan on zoom</p>
   </fieldset>
 
-  <!-- 3D CLASSROOM -->
-  <fieldset id="shapes3dBlock" style="display:none">
-    <legend>3D Classroom</legend>
-    <div class="row"><label>Shape</label>
-      <select id="shape3d">
-        <option value="cube" selected>Cube</option>
-        <option value="tetra">Tetrahedron</option>
-        <option value="octa">Octahedron</option>
-        <option value="dodeca">Dodecahedron</option>
-        <option value="icosa">Icosahedron</option>
-        <option value="prism6">Hexagonal Prism</option>
-        <option value="pyramid5">Square Pyramid</option>
-        <option value="cylinder">Cylinder (approx)</option>
-        <option value="cone">Cone (approx)</option>
-      </select>
-    </div>
-    <div class="row"><label>Build</label>
-      <select id="stage3d">
-        <option value="v">Vertices</option>
-        <option value="e" selected>Edges</option>
-        <option value="f">Faces</option>
-        <option value="net">Net (2D)</option>
-      </select>
-    </div>
-    <div class="row"><label>Scale</label><input id="scale3d" type="range" min="0.3" max="2.5" step="0.01" value="1.1"></div>
-    <div class="row"><label>Perspective</label><input id="persp3d" type="range" min="1.2" max="6" step="0.1" value="3.0"></div>
-    <div class="row"><label class="pill">XY</label><input id="rXY3" type="range" min="0" max="6.283" step="0.001" value="0.2"></div>
-    <div class="row"><label class="pill">XZ</label><input id="rXZ3" type="range" min="0" max="6.283" step="0.001" value="0.5"></div>
-    <div class="row"><label class="pill">YZ</label><input id="rYZ3" type="range" min="0" max="6.283" step="0.001" value="0.0"></div>
-    <div class="row"><button id="reset3d">Reset</button></div>
-    <p class="tip">Drag to rotate • Wheel/pinch to zoom • Switch stages to “explain” construction</p>
-  </fieldset>
-
-  <!-- 4D BUILDER -->
-  <fieldset id="builder4dBlock" style="display:none">
-    <legend>4D Builder</legend>
-    <div class="row"><label>Polytope</label>
-      <select id="shape4dSel">
-        <option value="5cell">5-cell (simplex)</option>
-        <option value="8cell" selected>8-cell (tesseract)</option>
-        <option value="16cell">16-cell (cross-polytope)</option>
-        <option value="24cell">24-cell</option>
-      </select>
-    </div>
-    <div class="row"><label>Stage</label>
-      <select id="stage4d">
-        <option value="plan">Plan (Schlegel)</option>
-        <option value="v" selected>Vertices</option>
-        <option value="e">Edges</option>
-        <option value="c">Cells (by slice)</option>
-      </select>
-    </div>
-    <div class="row"><label>Step</label><input id="step4d" type="range" min="0" max="1" step="0.01" value="1"></div>
-    <div class="row"><label>Slice W</label><input id="sliceW" type="range" min="-1.5" max="1.5" step="0.01" value="0"></div>
-    <div class="row"><label>Thickness</label><input id="sliceT" type="range" min="0.01" max="0.8" step="0.01" value="0.25"></div>
-    <div class="row"><label>Scale</label><input id="scale4d" type="range" min="0.3" max="2.5" step="0.01" value="1.1"></div>
-    <div class="row"><label>Perspective</label><input id="persp4d" type="range" min="1.6" max="6" step="0.1" value="3.0"></div>
-    <div class="row"><label class="pill">XY</label><input id="rXY4" type="range" min="0" max="6.283" step="0.001" value="0.2"></div>
-    <div class="row"><label class="pill">XZ</label><input id="rXZ4" type="range" min="0" max="6.283" step="0.001" value="0.5"></div>
-    <div class="row"><label class="pill">YZ</label><input id="rYZ4" type="range" min="0" max="6.283" step="0.001" value="0.0"></div>
-    <div class="row"><label class="pill">XW</label><input id="rXW4" type="range" min="0" max="6.283" step="0.001" value="0.3"></div>
-    <div class="row"><label class="pill">YW</label><input id="rYW4" type="range" min="0" max="6.283" step="0.001" value="0.6"></div>
-    <div class="row"><label class="pill">ZW</label><input id="rZW4" type="range" min="0" max="6.283" step="0.001" value="0.9"></div>
-    <div class="row"><button id="reset4d">Reset</button><button id="toggleHints" class="ghost">Hints</button></div>
-    <p class="tip">Use <b>Stage</b> + <b>Step</b> to “build” the polytope; <b>Plan</b> shows Schlegel diagram. Slice W = 3D cross-section of 4D.</p>
-  </fieldset>
-
-  <!-- SPACE LAB -->
-  <fieldset id="spacelabBlock" style="display:none">
-    <legend>Space Lab (beta)</legend>
+  <!-- Sim Lab -->
+  <fieldset id="simBlock" style="display:none">
+    <legend>Sim Lab (Math & Physics)</legend>
     <div class="row"><label>Mode</label>
-      <select id="spaceMode">
-        <option value="bubble">3D Bubble Grid</option>
-        <option value="solar" selected>Mini Solar System</option>
+      <select id="simMode">
+        <option value="learn" selected>Learn (guided)</option>
+        <option value="answer">Answer (quick)</option>
       </select>
     </div>
-    <div class="row"><label>Ship speed (km/s)</label><input id="shipSpeed" type="number" min="0.1" max="300000" step="0.1" value="10"></div>
-    <div class="row"><label>Time to Moon</label><span id="moonTime">—</span></div>
-    <div class="row"><button id="resetSpace">Reset View</button></div>
-    <p class="tip">Drag to rotate • Wheel/pinch to zoom • Simple two-body orbit (Earth–Moon) + Sun for scale</p>
+    <div class="row"><label>Scenario</label>
+      <select id="scenario">
+        <option value="projectile" selected>Projectile Motion</option>
+        <option value="incline">Inclined Plane (μ)</option>
+        <option value="circular">Circular Motion</option>
+        <option value="vectors">Vector Addition</option>
+        <option value="quadratic">Quadratic Grapher</option>
+      </select>
+    </div>
+
+    <!-- Controls change per scenario -->
+    <div id="controls"></div>
+    <div class="row"><label>View</label><button id="resetSim">Reset</button></div>
+    <p style="font-size:11px;color:#666">Drag in canvas to rotate (3D scenes) • Wheel to zoom • Learn = step-by-step walkthrough</p>
   </fieldset>
 </aside>
 
+<div id="coach" class="overlay" hidden></div>
 <canvas id="canvas" hidden></canvas>
 
 <footer class="site-footer">
-  <small>© <span id="year"></span> Universe120 • Learn by seeing more</small>
+  <small>© <span id="year"></span> Universe120 • Learn by building & simulating</small>
 </footer>
 
 <script>
-/* ================= CONFIG ================= */
-const ACCESS_KEY = '120beta'; // set '' to disable gate
-/* ========================================= */
+/* ===== CONFIG ===== */
+const ACCESS_KEY = '120beta'; // set '' to disable the gate
+/* ================== */
 document.getElementById('year').textContent = new Date().getFullYear();
 
 /* Gate */
 const gate = document.getElementById('gate');
 const gateBtn = document.getElementById('gateBtn');
 const gateKey = document.getElementById('gateKey');
-function openSite(){ gate.remove(); document.getElementById('ui').hidden=false; document.getElementById('canvas').hidden=false; startApp(); }
+function openSite(){ gate.remove(); document.getElementById('ui').hidden=false; document.getElementById('canvas').hidden=false; document.getElementById('coach').hidden=false; startApp(); }
 function tryGate(){ if(ACCESS_KEY==='' || gateKey.value===ACCESS_KEY) openSite(); else alert('Incorrect key'); }
 gateBtn.addEventListener('click', tryGate);
 gateKey.addEventListener('keydown', e=>{ if(e.key==='Enter') tryGate(); });
 if(ACCESS_KEY==='') openSite();
 
-/* ================= APP ================= */
+/* ===== APP ===== */
 function startApp(){
 const canvas = document.getElementById('canvas');
+const coach = document.getElementById('coach');
 const ctx = canvas.getContext('2d',{alpha:true});
 let DPR = Math.min(devicePixelRatio||1,2);
 function resize(){ const w=innerWidth,h=innerHeight; canvas.style.width=w+'px'; canvas.style.height=h+'px'; canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR); ctx.setTransform(DPR,0,0,DPR,0,0); }
@@ -225,35 +181,33 @@ const $=id=>document.getElementById(id);
 const ui={
   mode:$('mode'),
   // 2D
-  draftBlock:$('draftBlock'), tool2d:$('tool2d'), snap2d:$('snap2d'), lockAngle:$('lockAngle'),
-  guideParallel:$('guideParallel'), guidePerp:$('guidePerp'), wallThick:$('wallThick'),
-  stroke2d:$('stroke2d'), undo2d:$('undo2d'), clear2d:$('clear2d'), exportSvg:$('exportSvg'),
-  // 3D
-  shapes3dBlock:$('shapes3dBlock'), shape3d:$('shape3d'), stage3d:$('stage3d'), scale3d:$('scale3d'), persp3d:$('persp3d'),
-  rXY3:$('rXY3'), rXZ3:$('rXZ3'), rYZ3:$('rYZ3'), reset3d:$('reset3d'),
-  // 4D
-  builder4dBlock:$('builder4dBlock'), shape4dSel:$('shape4dSel'), stage4d:$('stage4d'), step4d:$('step4d'),
-  sliceW:$('sliceW'), sliceT:$('sliceT'), scale4d:$('scale4d'), persp4d:$('persp4d'),
-  rXY4:$('rXY4'), rXZ4:$('rXZ4'), rYZ4:$('rYZ4'), rXW4:$('rXW4'), rYW4:$('rYW4'), rZW4:$('rZW4'),
-  reset4d:$('reset4d'), toggleHints:$('toggleHints'),
-  // Space
-  spacelabBlock:$('spacelabBlock'), spaceMode:$('spaceMode'), shipSpeed:$('shipSpeed'), moonTime:$('moonTime'), resetSpace:$('resetSpace')
+  arch2dBlock:$('arch2dBlock'), tool2d:$('tool2d'), snap2d:$('snap2d'), lockAngle:$('lockAngle'),
+  wallThick:$('wallThick'), stroke2d:$('stroke2d'),
+  lockView:$('lockView'), recenter2d:$('recenter2d'), zoomReset2d:$('zoomReset2d'),
+  undo2d:$('undo2d'), clear2d:$('clear2d'), exportSvg:$('exportSvg'),
+  bgUpload:$('bgUpload'), bgAlpha:$('bgAlpha'), bgScale:$('bgScale'), bgRot:$('bgRot'), bgOffX:$('bgOffX'), bgOffY:$('bgOffY'),
+  calibStart:$('calibStart'), calibSteps:$('calibSteps'),
+  // Sim Lab
+  simBlock:$('simBlock'), simMode:$('simMode'), scenario:$('scenario'), controls:$('controls'), resetSim:$('resetSim')
 };
-ui.mode.addEventListener('change', syncPanels);
-function syncPanels(){
-  ui.draftBlock.style.display = ui.mode.value==='draft2d' ? '' : 'none';
-  ui.shapes3dBlock.style.display = ui.mode.value==='shapes3d' ? '' : 'none';
-  ui.builder4dBlock.style.display = ui.mode.value==='builder4d' ? '' : 'none';
-  ui.spacelabBlock.style.display = ui.mode.value==='spacelab' ? '' : 'none';
-}
-syncPanels();
+ui.mode.addEventListener('change', ()=>{
+  ui.arch2dBlock.style.display = ui.mode.value==='architect2d' ? '' : 'none';
+  ui.simBlock.style.display    = ui.mode.value==='simlab' ? '' : 'none';
+  coach.innerHTML = '';
+  render(0,true);
+});
 
-/* ========= 2D CAD-lite ========= */
-let pan2d={x:0,y:0}, zoom2d=1, drag=false, spacePan=false, lastXY=[0,0];
+/* ===== 2D Architect (locked grid) ===== */
+let pan={x:0,y:0}, zoom=1;
+const ORIGIN={x:0,y:0};
+ui.recenter2d.addEventListener('click', ()=>{ pan.x=0; pan.y=0; });
+ui.zoomReset2d.addEventListener('click', ()=>{ zoom=1; });
+
 const Rbase=26;
-function gridParams(){ const R=Rbase*zoom2d, stepX=R, stepY=R*Math.sqrt(3)/2; return {R,stepX,stepY}; }
-const sketch=[]; // primitives: {type:'pt'|'seg'|'arc'|'circ'|'poly', ...}
-let polyLive=null, arcStart=null;
+function gridParams(){ const R=Rbase*zoom, stepX=R, stepY=R*Math.sqrt(3)/2; return {R,stepX,stepY}; }
+
+const sketch=[]; // primitives including annotations
+let polyLive=null, arcStart=null, dimStart=null, doorStart=null, winStart=null, labelPending=false;
 
 function centersNear(x,y,range=3){
   const {stepX,stepY}=gridParams();
@@ -264,15 +218,29 @@ function centersNear(x,y,range=3){
       const r=rr+dr,c=cc+dc,gx=c*stepX+(r%2? stepX/2:0), gy=r*stepY;
       pts.push({x:gx,y:gy,kind:'center'});
     }
-  // add midpoints of nearby center pairs to enable midpoint snapping
+  // midpoints
   const mids=[];
   for(let i=0;i<pts.length;i++){
     const a=pts[i];
     for(let j=i+1;j<pts.length;j++){
-      const b=pts[j]; if(Math.hypot(a.x-b.x,a.y-b.y) < stepX*1.1){ mids.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,kind:'mid'}); }
+      const b=pts[j]; if(Math.hypot(a.x-b.x,a.y-b.y) < stepX*1.05){ mids.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,kind:'mid'}); }
     }
   }
   return pts.concat(mids);
+}
+function snap2D(clientX,clientY,strong){
+  const {stepX,stepY}=gridParams();
+  if(ui.snap2d.value==='free') return {x:clientX,y:clientY};
+  const x = clientX - (pan.x % stepX);
+  const y = clientY - (pan.y % stepY);
+  const cand = centersNear(x,y,strong?4:3);
+  let best=null,bd=1e9;
+  cand.forEach(p=>{
+    const sx=p.x + (pan.x % stepX), sy=p.y + (pan.y % stepY);
+    const d2=(sx-clientX)*(sx-clientX)+(sy-clientY)*(sy-clientY);
+    if(d2<bd){bd=d2; best={x:sx,y:sy,kind:p.kind};}
+  });
+  return best || {x:clientX,y:clientY};
 }
 function applyAngleLock(a0,a1,mode){
   if(mode==='off') return a1;
@@ -285,437 +253,515 @@ function applyAngleLock(a0,a1,mode){
   const len=Math.hypot(dx,dy);
   return {x:a0.x+Math.cos(best)*len,y:a0.y+Math.sin(best)*len};
 }
-function snap2D(clientX,clientY,strong){
-  const {stepX,stepY}=gridParams();
-  if(ui.snap2d.value==='free') return {x:clientX,y:clientY};
-  const x = clientX - (pan2d.x % stepX);
-  const y = clientY - (pan2d.y % stepY);
-  const cand = centersNear(x,y,strong?4:3);
-  let best=null,bd=1e9;
-  cand.forEach(p=>{
-    const sx=p.x + (pan2d.x % stepX), sy=p.y + (pan2d.y % stepY);
-    const d2=(sx-clientX)*(sx-clientX)+(sy-clientY)*(sy-clientY);
-    if(d2<bd){bd=d2; best={x:sx,y:sy,kind:p.kind};}
-  });
-  return best || {x:clientX,y:clientY};
-}
+
 function drawGrid(){
   const {R,stepX,stepY}=gridParams();
-  const w=canvas.width/DPR,h=canvas.height/DPR,cols=Math.ceil(w/stepX)+4,rows=Math.ceil(h/stepY)+4;
-  ctx.save(); ctx.translate(pan2d.x % stepX, pan2d.y % stepY);
+  const w=canvas.width/DPR,h=canvas.height/DPR;
+  ctx.save();
+  ctx.translate((w/2 + ORIGIN.x) % stepX, (h/2 + ORIGIN.y) % stepY);
   ctx.lineWidth=0.9; ctx.strokeStyle='#00000018';
+  const cols=Math.ceil(w/stepX)+4, rows=Math.ceil(h/stepY)+4;
   for(let r=-2;r<rows;r++){
     for(let c=-2;c<cols;c++){
       const x=c*stepX+(r%2? stepX/2:0), y=r*stepY;
       ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2); ctx.stroke();
-      ctx.globalAlpha=0.18;
-      [[x+stepX,y],[x-stepX,y],[x+stepX/2,y+stepY],[x-stepX/2,y+stepY],[x+stepX/2,y-stepY],[x-stepX/2,y-stepY]].forEach(([nx,ny])=>{ctx.beginPath();ctx.arc(nx,ny,R,0,Math.PI*2);ctx.stroke();});
-      ctx.globalAlpha=1;
     }
   }
   ctx.restore();
 }
-function drawGuides(mouse){
-  if(!mouse) return;
-  ctx.save(); ctx.strokeStyle='#4b9cff88'; ctx.lineWidth=1;
-  // parallel/perp guides: use last segment direction
-  const lastSeg = [...sketch].reverse().find(s=>s.type==='seg');
-  if(lastSeg && (ui.guideParallel.checked || ui.guidePerp.checked)){
-    const dx = lastSeg.b.x-lastSeg.a.x, dy=lastSeg.b.y-lastSeg.a.y;
-    const base = Math.atan2(dy,dx);
-    const dirs = [];
-    if(ui.guideParallel.checked) dirs.push(base);
-    if(ui.guidePerp.checked) dirs.push(base+Math.PI/2);
-    dirs.forEach(a=>{
-      const L=5000, x1=mouse.x-Math.cos(a)*L, y1=mouse.y-Math.sin(a)*L, x2=mouse.x+Math.cos(a)*L, y2=mouse.y+Math.sin(a)*L;
-      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
-    });
+
+/* Background image (photo align) */
+const bg={img:null, alpha:0.5, scale:1, rot:0, offX:0, offY:0, calib:[]};
+ui.bgUpload.addEventListener('change', (e)=>{
+  const file=e.target.files[0]; if(!file) return;
+  const fr=new FileReader(); fr.onload=()=>{ const im=new Image(); im.onload=()=>{ bg.img=im; render(0,true); }; im.src=fr.result; }; fr.readAsDataURL(file);
+});
+ui.bgAlpha.addEventListener('input', ()=>{ bg.alpha=+ui.bgAlpha.value; });
+ui.bgScale.addEventListener('input', ()=>{ bg.scale=+ui.bgScale.value; });
+ui.bgRot.addEventListener('input',  ()=>{ bg.rot=+ui.bgRot.value*Math.PI/180; });
+ui.bgOffX.addEventListener('input', ()=>{ bg.offX=+ui.bgOffX.value; });
+ui.bgOffY.addEventListener('input', ()=>{ bg.offY=+ui.bgOffY.value; });
+
+ui.calibStart.addEventListener('click', ()=>{
+  bg.calib=[]; alert('Calibration: click two points on the photo that should be N grid steps apart (set N).');
+  calibMode=true;
+});
+let calibMode=false;
+canvas.addEventListener('click', e=>{
+  if(ui.mode.value!=='architect2d' || !calibMode || !bg.img) return;
+  const p={x:e.clientX, y:e.clientY}; bg.calib.push(p);
+  if(bg.calib.length===2){
+    const N= Math.max(1, +ui.calibSteps.value||4);
+    const dx=bg.calib[1].x - bg.calib[0].x, dy=bg.calib[1].y - bg.calib[0].y;
+    const dist=Math.hypot(dx,dy);
+    const {stepX}=gridParams();
+    const target = N*stepX;
+    const s = target / dist;
+    bg.scale *= s;
+    bg.rot = Math.atan2(dy,dx); // align to grid x-axis
+    // snap first pick to nearest grid center
+    const snapped = snap2D(bg.calib[0].x, bg.calib[0].y, true);
+    bg.offX += snapped.x - bg.calib[0].x;
+    bg.offY += snapped.y - bg.calib[0].y;
+    ui.bgScale.value = bg.scale.toFixed(2);
+    ui.bgRot.value   = Math.round(bg.rot*180/Math.PI);
+    ui.bgOffX.value  = Math.round(bg.offX);
+    ui.bgOffY.value  = Math.round(bg.offY);
+    calibMode=false; bg.calib=[];
+    alert('Calibrated. Fine-tune with the sliders if needed.');
   }
-  ctx.restore();
-}
-function draw2D(){
-  drawGrid();
-  ctx.lineWidth=+ui.stroke2d.value; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
-  sketch.forEach(d=>{
-    if(d.type==='pt'){ ctx.beginPath(); ctx.arc(d.x,d.y,3,0,Math.PI*2); ctx.fill(); }
-    if(d.type==='seg'){ ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke(); if(d.wall>0){ // draw wall thickness
-      const nx = d.b.y-d.a.y, ny = -(d.b.x-d.a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L, t=d.wall/2;
-      ctx.beginPath(); ctx.moveTo(d.a.x+ux*t,d.a.y+uy*t); ctx.lineTo(d.b.x+ux*t,d.b.y+uy*t); ctx.lineTo(d.b.x-ux*t,d.b.y-uy*t); ctx.lineTo(d.a.x-ux*t,d.a.y-uy*t); ctx.closePath(); ctx.stroke();
-    }}
-    if(d.type==='arc'){ ctx.beginPath(); ctx.arc(d.c.x,d.c.y,d.r,d.a1,d.a2,d.ccw||false); ctx.stroke(); }
-    if(d.type==='circ'){ ctx.beginPath(); ctx.arc(d.c.x,d.c.y,d.r,0,Math.PI*2); ctx.stroke(); }
-  });
-  if(polyLive && polyLive.points.length){
-    ctx.beginPath(); ctx.moveTo(polyLive.points[0].x,polyLive.points[0].y);
-    for(let i=1;i<polyLive.points.length;i++) ctx.lineTo(polyLive.points[i].x,polyLive.points[i].y);
-    ctx.stroke();
-  }
-  ctx.fillStyle='#222'; ctx.font='12px system-ui';
-  ctx.fillText('2D CAD-lite: Space=Pan • Shift=strong snap • Angle Locks for clean plans • Export SVG', 16, canvas.height/DPR-18);
-}
+});
+
+/* Architect drawing + annotations */
+ui.undo2d.addEventListener('click', ()=>{ sketch.pop(); render(0,true); });
+ui.clear2d.addEventListener('click', ()=>{ sketch.length=0; render(0,true); });
+ui.exportSvg.addEventListener('click', exportSVG);
+
 function exportSVG(){
   const w=canvas.width/DPR,h=canvas.height/DPR;
-  const p=[]; const esc = s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
-  p.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none" stroke="#111" stroke-width="${+ui.stroke2d.value}">`);
+  const p=[]; p.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none" stroke="#111" stroke-width="${+ui.stroke2d.value}">`);
   sketch.forEach(d=>{
-    if(d.type==='seg'){ p.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}" />`); }
-    if(d.type==='circ'){ p.push(`<circle cx="${d.c.x}" cy="${d.c.y}" r="${d.r}" />`); }
-    if(d.type==='arc'){ p.push(`<path d="M ${d.c.x+d.r*Math.cos(d.a1)} ${d.c.y+d.r*Math.sin(d.a1)} A ${d.r} ${d.r} 0 0 ${d.ccw?1:0} ${d.c.x+d.r*Math.cos(d.a2)} ${d.c.y+d.r*Math.sin(d.a2)}" />`); }
+    if(d.type==='seg') p.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`);
+    if(d.type==='circ') p.push(`<circle cx="${d.c.x}" cy="${d.c.y}" r="${d.r}"/>`);
+    if(d.type==='arc'){
+      const x1=d.c.x+d.r*Math.cos(d.a1), y1=d.c.y+d.r*Math.sin(d.a1);
+      const x2=d.c.x+d.r*Math.cos(d.a2), y2=d.c.y+d.r*Math.sin(d.a2);
+      p.push(`<path d="M ${x1} ${y1} A ${d.r} ${d.r} 0 0 ${d.ccw?1:0} ${x2} ${y2}"/>`);
+    }
+    if(d.type==='dim'){
+      p.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`);
+      p.push(`<line x1="${d.ta.x}" y1="${d.ta.y}" x2="${d.tb.x}" y2="${d.tb.y}"/>`);
+      p.push(`<line x1="${d.h1.x}" y1="${d.h1.y}" x2="${d.a.x}" y2="${d.a.y}"/>`);
+      p.push(`<line x1="${d.h2.x}" y1="${d.h2.y}" x2="${d.b.x}" y2="${d.b.y}"/>`);
+      p.push(`<text x="${d.label.x}" y="${d.label.y}" font-size="12" fill="#111">${d.text}</text>`);
+    }
+    if(d.type==='door' || d.type==='window'){
+      p.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`);
+      if(d.type==='door'){
+        p.push(`<path d="M ${d.a.x} ${d.a.y} A ${d.r} ${d.r} 0 0 ${d.ccw?1:0} ${d.arc.x} ${d.arc.y}"/>`);
+      }
+    }
+    if(d.type==='label'){
+      p.push(`<text x="${d.p.x}" y="${d.p.y}" font-size="14" fill="#111">${d.text}</text>`);
+    }
   });
   p.push(`</svg>`);
   const blob = new Blob([p.join('\n')], {type:'image/svg+xml'});
   const url = URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download='universe120-draft.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
+  const a=document.createElement('a'); a.href=url; a.download='universe120-architect.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
-ui.exportSvg.addEventListener('click', exportSVG);
+
+let dragging=false, lastX=0,lastY=0, spacePan=false;
+function addSeg(A,B){ const wall=+ui.wallThick.value||0; sketch.push({type:'seg', a:A, b:B, wall}); }
+function dimObj(A,B){
+  // offset dimension line outward
+  const off=16, nx=B.y-A.y, ny=-(B.x-A.x), L=Math.hypot(nx,ny)||1, ux=nx/L, uy=ny/L;
+  const ta={x:A.x+ux*off,y:A.y+uy*off}, tb={x:B.x+ux*off,y:B.y+uy*off};
+  const h1={x:ta.x-ux*6, y:ta.y-uy*6}, h2={x:tb.x+ux*6, y:tb.y+uy*6};
+  const dist = Math.hypot(B.x-A.x,B.y-A.y);
+  return {type:'dim', a:A,b:B, ta,tb, h1,h2, label:{x:(ta.x+tb.x)/2, y:(ta.y+tb.y)/2-6}, text:dist.toFixed(1)+' px'};
+}
 
 canvas.addEventListener('mousedown', e=>{
-  if(ui.mode.value!=='draft2d'){ drag=true; lastXY=[e.clientX,e.clientY]; return; }
+  if(ui.mode.value!=='architect2d'){ dragging=true; lastX=e.clientX; lastY=e.clientY; return; }
   if(e.button!==0) return;
-  const strong=e.shiftKey;
-  let P = snap2D(e.clientX,e.clientY,strong);
+  const strong=e.shiftKey; let P = snap2D(e.clientX,e.clientY,strong);
   const tool=ui.tool2d.value;
-  if(tool==='point'){ sketch.push({type:'pt', x:P.x,y:P.y}); }
-  if(tool==='segment'){
+
+  if(tool==='segment' || tool==='poly'){
     if(!polyLive) polyLive={points:[P]};
     else{
       let A=polyLive.points[polyLive.points.length-1], B=P;
-      if(ui.lockAngle.value!=='off') B=applyAngleLock(A,B,ui.lockAngle.value);
-      sketch.push({type:'seg', a:A,b:B, wall:+ui.wallThick.value||0});
-      polyLive=null;
+      B = applyAngleLock(A,B,ui.lockAngle.value);
+      polyLive.points.push(B); addSeg(A,B);
+      if(tool==='segment') polyLive=null;
     }
-  }
-  if(tool==='poly'){
-    if(!polyLive) polyLive={points:[P]};
-    else{
-      let A=polyLive.points[polyLive.points.length-1], B=P;
-      if(ui.lockAngle.value!=='off') B=applyAngleLock(A,B,ui.lockAngle.value);
-      polyLive.points.push(B);
-      sketch.push({type:'seg', a:A,b:B, wall:+ui.wallThick.value||0});
-    }
-  }
-  if(tool==='arc'){
+  } else if(tool==='arc'){
     if(!arcStart) arcStart=P;
     else{
-      const mx=(arcStart.x+P.x)/2,my=(arcStart.y+P.y)/2, r=Math.hypot(P.x-arcStart.x,P.y-arcStart.y)/2;
+      const mx=(arcStart.x+P.x)/2, my=(arcStart.y+P.y)/2, r=Math.hypot(P.x-arcStart.x,P.y-arcStart.y)/2;
       const a1=Math.atan2(arcStart.y-my,arcStart.x-mx), a2=Math.atan2(P.y-my,P.x-mx);
-      sketch.push({type:'arc', c:{x:mx,y:my}, r, a1, a2});
-      arcStart=null;
+      sketch.push({type:'arc', c:{x:mx,y:my}, r, a1, a2, ccw:false}); arcStart=null;
     }
-  }
-  if(tool==='circle'){
-    const {R}=gridParams();
-    sketch.push({type:'circ', c:{x:P.x,y:P.y}, r:R});
-  }
-  if(tool==='erase'){
-    // find nearest element center
+  } else if(tool==='circle'){
+    const {R}=gridParams(); sketch.push({type:'circ', c:{x:P.x,y:P.y}, r:R});
+  } else if(tool==='dim'){
+    if(!dimStart) dimStart=P;
+    else { sketch.push(dimObj(dimStart,P)); dimStart=null; }
+  } else if(tool==='door'){
+    if(!doorStart) doorStart=P;
+    else{
+      const A=doorStart, B=P; const r=Math.hypot(B.x-A.x,B.y-A.y); // interpret as radius (door width)
+      const mid={x:(A.x+B.x)/2,y:(A.y+B.y)/2};
+      // swing arc from A to a 90° rotation point
+      const ang=Math.atan2(B.y-A.y,B.x-A.x);
+      const arcEnd={x:A.x+r*Math.cos(ang+Math.PI/2), y:A.y+r*Math.sin(ang+Math.PI/2)};
+      sketch.push({type:'door', a:A,b:B, r, ccw:true, arc:arcEnd});
+      doorStart=null;
+    }
+  } else if(tool==='window'){
+    if(!winStart) winStart=P;
+    else{
+      const A=winStart,B=P; sketch.push({type:'window', a:A,b:B}); winStart=null;
+    }
+  } else if(tool==='label'){
+    if(!labelPending){ labelPending=true; const text=prompt('Room name / label:','Living Room'); if(text){ sketch.push({type:'label', p:P, text}); } labelPending=false; }
+  } else if(tool==='erase'){
     let bi=-1, bd=1e9;
     sketch.forEach((d,i)=>{
       let cx=0,cy=0;
-      if(d.type==='seg'){cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2;}
-      else if(d.type==='circ'){cx=d.c.x; cy=d.c.y;}
-      else if(d.type==='arc'){cx=d.c.x; cy=d.c.y;}
-      else if(d.type==='pt'){cx=d.x; cy=d.y;}
-      const dd=(cx-P.x)*(cx-P.x)+(cy-P.y)*(cy-P.y);
-      if(dd<bd){bd=dd; bi=i;}
+      if(d.type==='seg'){cx=(d.a.x+d.b.x)/2;cy=(d.a.y+d.b.y)/2;}
+      else if(d.type==='arc'){cx=d.c.x;cy=d.c.y;}
+      else if(d.type==='circ'){cx=d.c.x;cy=d.c.y;}
+      else if(d.type==='dim'){cx=d.label.x;cy=d.label.y;}
+      else if(d.type==='door'||d.type==='window'){cx=(d.a.x+d.b.x)/2;cy=(d.a.y+d.b.y)/2;}
+      else if(d.type==='label'){cx=d.p.x;cy=d.p.y;}
+      const dd=(cx-P.x)*(cx-P.x)+(cy-P.y)*(cy-P.y); if(dd<bd){bd=dd; bi=i;}
     });
     if(bi>=0) sketch.splice(bi,1);
   }
+  render(0,true);
 });
-addEventListener('dblclick', e=>{
-  if(ui.mode.value==='draft2d' && ui.tool2d.value==='poly' && polyLive && polyLive.points.length>1){ polyLive=null; }
-});
+addEventListener('dblclick', e=>{ if(ui.mode.value==='architect2d' && ui.tool2d.value==='poly' && polyLive) polyLive=null; });
 addEventListener('mousemove', e=>{
-  if(ui.mode.value==='draft2d'){
-    if(spacePan && drag){ pan2d.x += (e.movementX||0); pan2d.y += (e.movementY||0); }
-  } else if(drag){
-    rot3.xy += (e.movementX||0)*0.005; rot3.xz += (e.movementY||0)*0.005;
-  }
+  if(ui.mode.value==='architect2d'){
+    if(!ui.lockView.checked && (spacePan || dragging)){ pan.x += (e.movementX||0); pan.y += (e.movementY||0); }
+  } else if(dragging){ rot.xy += (e.movementX||0)*0.005; rot.xz += (e.movementY||0)*0.005; }
 });
-addEventListener('mouseup', ()=>{ drag=false; });
+addEventListener('mouseup', ()=>{ dragging=false; });
 canvas.addEventListener('wheel', e=>{
   e.preventDefault();
   const f=Math.exp(-e.deltaY*0.001);
-  if(ui.mode.value==='draft2d') zoom2d=Math.max(0.25,Math.min(5, zoom2d*f));
-  else if(ui.mode.value==='shapes3d') ui.scale3d.value=(+ui.scale3d.value*f).toFixed(2);
-  else if(ui.mode.value==='builder4d') ui.scale4d.value=(+ui.scale4d.value*f).toFixed(2);
+  if(ui.mode.value==='architect2d'){
+    const before=zoom; zoom = Math.max(0.25, Math.min(5, zoom*f));
+    if(ui.lockView.checked){ pan.x=0; pan.y=0; }
+    else{ const w=canvas.width/DPR,h=canvas.height/DPR,cx=w/2,cy=h/2; pan.x = cx - (cx - pan.x) * (zoom/before); pan.y = cy - (cy - pan.y) * (zoom/before); }
+  } else {
+    scale3d = Math.max(0.3, Math.min(3.0, scale3d * f));
+  }
 },{passive:false});
-addEventListener('keydown', e=>{ if(e.code==='Space'){ spacePan=true; drag=true; } });
-addEventListener('keyup', e=>{ if(e.code==='Space'){ spacePan=false; drag=false; } });
-ui.undo2d.addEventListener('click', ()=>{ sketch.pop(); });
-ui.clear2d.addEventListener('click', ()=>{ sketch.length=0; polyLive=null; arcStart=null; });
+addEventListener('keydown', e=>{ if(e.code==='Space'){ spacePan=true; dragging=true; } });
+addEventListener('keyup',   e=>{ if(e.code==='Space'){ spacePan=false; dragging=false; } });
 
-/* ========= 3D CLASSROOM ========= */
-function rot2(a,b,t){const c=Math.cos(t),s=Math.sin(t);return[a*c-b*s,a*s+b*c]}
-function proj3(p, persp){ const z=p.z+persp; return {x:p.x/persp*persp/z, y:p.y/persp*persp/z, z:p.z}; }
-let rot3={xy:0,xz:0,yz:0};
-ui.reset3d.addEventListener('click', ()=>{ ui.scale3d.value=1.1; ui.persp3d.value=3.0; ui.rXY3.value=0.2; ui.rXZ3.value=0.5; ui.rYZ3.value=0.0; rot3={xy:0,xz:0,yz:0}; });
-
-function shapeData3D(kind){
-  // returns {v:[{x,y,z}], e:[[i,j]], f:[[indices...]], net?:[edges to cut]}
-  const v=[],e=[],f=[];
-  if(kind==='cube'){
-    for(let x of[-1,1])for(let y of[-1,1])for(let z of[-1,1]) v.push({x,y,z});
-    for(let i=0;i<8;i++)for(let j=i+1;j<8;j++){const a=v[i],b=v[j]; if((a.x!==b.x)+(a.y!==b.y)+(a.z!==b.z)===1) e.push([i,j]);}
-    f.push([0,1,3,2],[4,5,7,6],[0,1,5,4],[2,3,7,6],[0,2,6,4],[1,3,7,5]);
-    return {v,e,f,net:[[0,1],[1,3],[1,5],[5,7],[2,3],[2,6],[4,6]]};
-  }
-  if(kind==='tetra'){
-    v.push({x:1,y:1/Math.sqrt(2),z:-1/3},{x:-1,y:1/Math.sqrt(2),z:-1/3},{x:0,y:-Math.sqrt(2),z:-1/3},{x:0,y:0,z:1});
-    [[0,1],[1,2],[2,0],[0,3],[1,3],[2,3]].forEach(p=>e.push(p));
-    f.push([0,1,3],[1,2,3],[2,0,3],[0,2,1]); return {v,e,f};
-  }
-  if(kind==='octa'){
-    [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]].forEach(a=>v.push({x:a[0],y:a[1],z:a[2]}));
-    const pairs=[[0,2],[0,3],[0,4],[0,5],[1,2],[1,3],[1,4],[1,5],[2,4],[2,5],[3,4],[3,5]]; pairs.forEach(p=>e.push(p));
-    f.push([0,2,4],[0,4,3],[0,3,5],[0,5,2],[1,2,4],[1,4,3],[1,3,5],[1,5,2]); return {v,e,f};
-  }
-  if(kind==='dodeca' || kind==='icosa'){
-    const phi=(1+Math.sqrt(5))/2;
-    if(kind==='icosa'){
-      const pts=[[0,-1,phi],[0,1,phi],[0,-1,-phi],[0,1,-phi],[1,phi,0],[-1,phi,0],[1,-phi,0],[-1,-phi,0],[phi,0,1],[phi,0,-1],[-phi,0,1],[-phi,0,-1]];
-      pts.forEach(p=>v.push({x:p[0],y:p[1],z:p[2]}));
-      const edges=[[0,1],[0,8],[0,10],[1,4],[1,5],[2,3],[2,6],[2,7],[3,9],[3,11],[4,5],[4,8],[4,9],[5,10],[5,11],[6,7],[6,8],[6,9],[7,10],[7,11],[8,9],[10,11]];
-      edges.forEach(p=>e.push(p)); // faces omitted for brevity
-      return {v,e,f:[]};
-    } else {
-      const a=1/phi, b=1;
-      const pts=[];
-      for(let s of[-1,1]) for(let t of[-1,1]){
-        pts.push([0,s*a,t*b]); pts.push([s*a,t*b,0]); pts.push([s*b,0,t*a]);
-      }
-      pts.forEach(p=>v.push({x:p[0],y:p[1],z:p[2]}));
-      // approximate edges by unit threshold
-      for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++){
-        const d2=(v[i].x-v[j].x)**2+(v[i].y-v[j].y)**2+(v[i].z-v[j].z)**2;
-        if(d2<1.6) e.push([i,j]);
-      }
-      return {v,e,f:[]};
+function drawBackground(){
+  if(!bg.img) return;
+  const w=canvas.width/DPR,h=canvas.height/DPR;
+  ctx.save(); ctx.globalAlpha=bg.alpha; ctx.translate(w/2 + bg.offX, h/2 + bg.offY); ctx.rotate(bg.rot); ctx.scale(bg.scale, bg.scale);
+  ctx.drawImage(bg.img, -bg.img.width/2, -bg.img.height/2); ctx.restore();
+}
+function drawArchitect(){
+  drawBackground();
+  // grid
+  const {R,stepX,stepY}=gridParams();
+  const w=canvas.width/DPR,h=canvas.height/DPR;
+  ctx.save(); ctx.translate((w/2 + ORIGIN.x) % stepX, (h/2 + ORIGIN.y) % stepY);
+  ctx.lineWidth=0.9; ctx.strokeStyle='#00000018';
+  const cols=Math.ceil(w/stepX)+4, rows=Math.ceil(h/stepY)+4;
+  for(let r=-2;r<rows;r++){
+    for(let c=-2;c<cols;c++){
+      const x=c*stepX+(r%2? stepX/2:0), y=r*stepY;
+      ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2); ctx.stroke();
     }
   }
-  if(kind==='prism6'){
-    const R=1; for(let z of[-1,1]) for(let k=0;k<6;k++){ const a=k*Math.PI/3; v.push({x:R*Math.cos(a),y:R*Math.sin(a),z}); }
-    for(let k=0;k<6;k++){ e.push([k,(k+1)%6]); e.push([k+6,6+((k+1)%6)]); e.push([k,k+6]); }
-    return {v,e,f:[]};
-  }
-  if(kind==='pyramid5'){
-    const s=1; v.push({x:-s,y:-s,z:-1},{x:s,y:-s,z:-1},{x:s,y:s,z:-1},{x:-s,y:s,z:-1},{x:0,y:0,z:1});
-    [[0,1],[1,2],[2,3],[3,0],[0,4],[1,4],[2,4],[3,4]].forEach(p=>e.push(p)); return {v,e,f:[]};
-  }
-  if(kind==='cylinder'|| kind==='cone'){
-    const n=24,R=1,H=2; const topZ=H/2, botZ=-H/2;
-    for(let k=0;k<n;k++){ const a=2*Math.PI*k/n; v.push({x:R*Math.cos(a),y:R*Math.sin(a),z:botZ}); }
-    if(kind==='cylinder'){ for(let k=0;k<n;k++){ const a=2*Math.PI*k/n; v.push({x:R*Math.cos(a),y:R*Math.sin(a),z:topZ}); } }
-    else { v.push({x:0,y:0,z:topZ}); }
-    if(kind==='cylinder'){
-      for(let k=0;k<n;k++){ e.push([k,(k+1)%n]); e.push([k,n+k]); e.push([n+k,n+((k+1)%n)]); }
-    } else { const apex=v.length-1; for(let k=0;k<n;k++){ e.push([k,(k+1)%n]); e.push([k,apex]); } }
-    return {v,e,f:[]};
-  }
-  return shapeData3D('cube');
-}
-function draw3D(){
-  const s=+ui.scale3d.value*160, p=+ui.persp3d.value;
-  const ax=+ui.rXY3.value+rot3.xy, ay=+ui.rXZ3.value+rot3.xz, az=+ui.rYZ3.value+rot3.yz;
-  const S=shapeData3D(ui.shape3d.value);
-  const pts=S.v.map(P=>{
-    let x=P.x,y=P.y,z=P.z; [x,y]=rot2(x,y,ax); [y,z]=rot2(y,z,ay); [x,z]=rot2(x,z,az);
-    const q=proj3({x,y,z},p); return {x:canvas.width/DPR/2+q.x*s, y:canvas.height/DPR/2+q.y*s, z:q.z};
+  ctx.restore();
+
+  // drawings
+  ctx.lineWidth=+ui.stroke2d.value; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
+  sketch.forEach(d=>{
+    if(d.type==='seg'){
+      ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke();
+      if(d.wall>0){
+        const nx = d.b.y-d.a.y, ny = -(d.b.x-d.a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L, t=d.wall/2;
+        ctx.beginPath(); ctx.moveTo(d.a.x+ux*t,d.a.y+uy*t); ctx.lineTo(d.b.x+ux*t,d.b.y+uy*t); ctx.lineTo(d.b.x-ux*t,d.b.y-uy*t); ctx.lineTo(d.a.x-ux*t,d.a.y-uy*t); ctx.closePath(); ctx.stroke();
+      }
+    }
+    if(d.type==='arc'){ ctx.beginPath(); ctx.arc(d.c.x,d.c.y,d.r,d.a1,d.a2,d.ccw||false); ctx.stroke(); }
+    if(d.type==='circ'){ ctx.beginPath(); ctx.arc(d.c.x,d.c.y,d.r,0,Math.PI*2); ctx.stroke(); }
+    if(d.type==='dim'){
+      ctx.beginPath(); ctx.moveTo(d.ta.x,d.ta.y); ctx.lineTo(d.tb.x,d.tb.y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(d.h1.x,d.h1.y); ctx.lineTo(d.a.x,d.a.y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(d.h2.x,d.h2.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke();
+      ctx.fillText(d.text, d.label.x, d.label.y);
+    }
+    if(d.type==='door'){
+      ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke();
+      ctx.beginPath(); ctx.arc(d.a.x,d.a.y,d.r,Math.atan2(d.b.y-d.a.y,d.b.x-d.a.x), Math.atan2(d.arc.y-d.a.y,d.arc.x-d.a.x)); ctx.stroke();
+    }
+    if(d.type==='window'){ ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke(); }
+    if(d.type==='label'){ ctx.fillText(d.text, d.p.x, d.p.y); }
   });
-  ctx.lineWidth=1.2; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
-  if(ui.stage3d.value==='v'){ pts.forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,2.2,0,Math.PI*2); ctx.fill(); }); }
-  else if(ui.stage3d.value==='e'){ S.e.forEach(([i,j])=>{ const a=pts[i],b=pts[j]; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }); }
-  else if(ui.stage3d.value==='f'){ // simple face fill/wire
-    ctx.globalAlpha=0.12;
-    S.f.forEach(face=>{
-      ctx.beginPath(); ctx.moveTo(pts[face[0]].x,pts[face[0]].y);
-      for(let k=1;k<face.length;k++) ctx.lineTo(pts[face[k]].x,pts[face[k]].y);
-      ctx.closePath(); ctx.fill();
-    });
-    ctx.globalAlpha=1;
-    S.e.forEach(([i,j])=>{ const a=pts[i],b=pts[j]; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); });
-  } else { // net: super-simple orth projection of edges
-    const offx=canvas.width/DPR/2-200, offy=canvas.height/DPR/2-120;
-    ctx.strokeStyle='#333'; ctx.setLineDash([6,6]);
-    S.e.forEach(([i,j])=>{ const a=S.v[i],b=S.v[j]; ctx.beginPath(); ctx.moveTo(offx+80*a.x, offy+80*a.y); ctx.lineTo(offx+80*b.x, offy+80*b.y); ctx.stroke(); });
-    ctx.setLineDash([]);
-  }
-  ctx.fillStyle='#222'; ctx.font='12px system-ui'; ctx.fillText('3D Classroom: Vertices→Edges→Faces→Net • Drag=rotate • Wheel=zoom',16,canvas.height/DPR-18);
-}
-
-/* ========= 4D BUILDER ========= */
-function proj4to3(x,y,z,w,p4=2.4){ const wf=p4/(p4-w); return {x:x*wf,y:y*wf,z:z*wf}; }
-function make4D(kind){
-  if(kind==='5cell'){
-    const v=[[1,1,1,-1/Math.sqrt(5)],[1,-1,-1,-1/Math.sqrt(5)],[-1,1,-1,-1/Math.sqrt(5)],[-1,-1,1,-1/Math.sqrt(5)],[0,0,0,4/Math.sqrt(5)]].map(a=>({x:a[0],y:a[1],z:a[2],w:a[3]}));
-    const e=[]; for(let i=0;i<5;i++)for(let j=i+1;j<5;j++) e.push([i,j]);
-    const cells=[[0,1,2,4],[0,1,3,4],[0,2,3,4],[1,2,3,4],[0,1,2,3]];
-    return {v,e,cells};
-  }
-  if(kind==='8cell'){
-    const v=[]; for(let x of[-1,1])for(let y of[-1,1])for(let z of[-1,1])for(let w of[-1,1]) v.push({x,y,z,w});
-    const e=[]; for(let i=0;i<16;i++)for(let j=i+1;j<16;j++){const a=v[i],b=v[j]; const d=(a.x!==b.x)+(a.y!==b.y)+(a.z!==b.z)+(a.w!==b.w); if(d===1)e.push([i,j]);}
-    // 8 cubic cells can be specified by w=±1 subsets; skip full listing for brevity
-    return {v,e,cells:[]};
-  }
-  if(kind==='16cell'){
-    const v=[]; [[1,0,0,0],[-1,0,0,0],[0,1,0,0],[0,-1,0,0],[0,0,1,0],[0,0,-1,0],[0,0,0,1],[0,0,0,-1]].forEach(p=>v.push({x:p[0],y:p[1],z:p[2],w:p[3]}));
-    const e=[]; for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++){ const a=v[i],b=v[j]; const opp=(a.x===-b.x&&a.y===-b.y&&a.z===-b.z&&a.w===-b.w); if(!opp) e.push([i,j]); }
-    return {v,e,cells:[]};
-  }
-  if(kind==='24cell'){
-    const v=[];
-    [[1,0,0,0],[-1,0,0,0],[0,1,0,0],[0,-1,0,0],[0,0,1,0],[0,0,-1,0],[0,0,0,1],[0,0,0,-1]].forEach(p=>v.push({x:p[0],y:p[1],z:p[2],w:p[3]}));
-    for(let s of [-0.5,0.5]) for(let a of [-0.5,0.5]) for(let b of [-0.5,0.5]) for(let c of [-0.5,0.5]) v.push({x:s,y:a,z:b,w:c});
-    const e=[]; for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++){ const a=v[i],b=v[j]; const d2=(a.x-b.x)**2+(a.y-b.y)**2+(a.z-b.z)**2+(a.w-b.w)**2; if(Math.abs(d2-1)<1e-6) e.push([i,j]); }
-    return {v,e,cells:[]};
-  }
-  return make4D('8cell');
-}
-let poly4=make4D(ui.shape4dSel.value);
-ui.shape4dSel.addEventListener('change', ()=>{ poly4=make4D(ui.shape4dSel.value); });
-
-let rot4={xy:0,xz:0,yz:0,xw:0,yw:0,zw:0};
-ui.reset4d.addEventListener('click', ()=>{ ui.scale4d.value=1.1; ui.persp4d.value=3.0; ui.sliceW.value=0; ui.sliceT.value=0.25; ui.step4d.value=1; rot4={xy:0,xz:0,yz:0,xw:0,yw:0,zw:0}; });
-
-let showHints=false; ui.toggleHints.addEventListener('click',()=>{ showHints=!showHints; });
-
-function draw4D(){
-  const s=+ui.scale4d.value*160, p3=+ui.persp4d.value, p4=2.4;
-  const aXY=+ui.rXY4.value+rot4.xy, aXZ=+ui.rXZ4.value+rot4.xz, aYZ=+ui.rYZ4.value+rot4.yz;
-  const aXW=+ui.rXW4.value+rot4.xw, aYW=+ui.rYW4.value+rot4.yw, aZW=+ui.rZW4.value+rot4.zw;
-  const w0=+ui.sliceW.value, thick=+ui.sliceT.value, step=+ui.step4d.value;
-
-  // rotate → slice → project
-  const pts2=poly4.v.map(p=>{
-    let x=p.x,y=p.y,z=p.z,w=p.w;
-    [x,y]=rot2(x,y,aXY); [x,z]=rot2(x,z,aXZ); [y,z]=rot2(y,z,aYZ);
-    [x,w]=rot2(x,w,aXW); [y,w]=rot2(y,w,aYW); [z,w]=rot2(z,w,aZW);
-    const ok = Math.abs(w-w0)<=thick;
-    const q3 = proj4to3(x,y,z,w,p4);
-    const q2 = proj3({x:q3.x,y:q3.y,z:q3.z}, p3);
-    return {ok, x:canvas.width/DPR/2+q2.x*s, y:canvas.height/DPR/2+q2.y*s, z:q3.z};
-  });
-
-  ctx.lineWidth=1.2; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
-  const stage=ui.stage4d.value;
-
-  if(stage==='plan'){ // Schlegel diagram (simple variant): draw edges with no slice, mild radial scale
-    ctx.globalAlpha=1;
-    poly4.e.forEach(([i,j])=>{ const a=pts2[i],b=pts2[j]; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); });
-  } else if(stage==='v'){
-    // progressive reveal by step
-    const n=Math.floor(pts2.length*step);
-    for(let i=0;i<n;i++){ const p=pts2[i]; if(p.ok){ ctx.beginPath(); ctx.arc(p.x,p.y,2.2,0,Math.PI*2); ctx.fill(); } }
-  } else if(stage==='e'){
-    const m=Math.floor(poly4.e.length*step);
-    for(let k=0;k<m;k++){ const [i,j]=poly4.e[k]; const a=pts2[i],b=pts2[j]; if(a.ok && b.ok){ const alpha=0.45+0.45*((a.z+b.z)/2+3.5)/7; ctx.globalAlpha=alpha; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); } }
-    ctx.globalAlpha=1;
-  } else if(stage==='c'){
-    // very simple "cells by slice": draw thicker edges for edges whose endpoints are within slice (hints of 3D cells)
-    ctx.lineWidth=2.0;
-    poly4.e.forEach(([i,j])=>{ const a=pts2[i],b=pts2[j]; if(a.ok && b.ok){ ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); } });
-    ctx.lineWidth=1.2;
-  }
-
-  if(showHints){
-    ctx.fillStyle='#222'; ctx.font='12px system-ui';
-    const lines=[
-      'Hints:',
-      '• Vertices are 4D points; we rotate in XY/XZ/YZ and XW/YW/ZW planes.',
-      '• Slice W keeps only points with |w − W0| ≤ thickness.',
-      '• Schlegel plan is a “shadow” that shows connectivity like a blueprint.',
-      '• Drag to rotate; use Step slider to build the shape gradually.'
-    ];
-    let y=20; lines.forEach(t=>{ ctx.fillText(t,16,y); y+=16; });
-  }
 
   ctx.fillStyle='#222'; ctx.font='12px system-ui';
-  ctx.fillText('4D Builder: Stage + Step + Slice • Plan=Schlegel • Drag=rotate • Wheel=zoom', 16, canvas.height/DPR-18);
+  ctx.fillText('2D Architect: Walls • Arcs • Dimensions • Doors/Windows • Labels • SVG export', 16, canvas.height/DPR-18);
 }
 
-/* ========= Space Lab ========= */
-let rotSpace={xy:0,xz:0}; let scaleSpace=1.0, perspSpace=3.0;
-ui.resetSpace.addEventListener('click', ()=>{ rotSpace={xy:0,xz:0}; scaleSpace=1.0; perspSpace=3.0; });
+/* ===== Sim Lab: scenarios ===== */
+let scale3d=1.1, persp3d=3.0, rot={xy:0,xz:0,yz:0};
+ui.resetSim.addEventListener('click', ()=>{ scale3d=1.1; persp3d=3.0; rot={xy:0,xz:0,yz:0}; });
 
-function drawSpace(){
-  const mode=ui.spaceMode.value;
-  if(mode==='bubble'){
-    // 3D bubble grid: render layers of sphere outlines
-    const s=180*scaleSpace, p=perspSpace;
-    const layers=8;
-    for(let k=0;k<layers;k++){
-      const z = -1.5 + 3*k/(layers-1);
-      // circle projected
-      const pts=[]; const n=64;
-      for(let i=0;i<=n;i++){
-        const a=i*2*Math.PI/n, x=Math.cos(a), y=Math.sin(a);
-        let X=x, Y=y, Z=z; [X,Y]=rot2(X,Y,rotSpace.xy+0.2); [Y,Z]=rot2(Y,Z,rotSpace.xz+0.5);
-        const q=proj3({x:X,y:Y,z:Z},p);
-        pts.push({x:canvas.width/DPR/2+q.x*s, y:canvas.height/DPR/2+q.y*s});
-      }
-      ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.beginPath(); pts.forEach((pt,i)=>{ if(i===0) ctx.moveTo(pt.x,pt.y); else ctx.lineTo(pt.x,pt.y); }); ctx.stroke();
+function rot2(a,b,t){const c=Math.cos(t),s=Math.sin(t);return[a*c-b*s,a*s+b*c];}
+function proj3(p, pz){ const z=p.z+pz; return {x:p.x/pz*pz/z, y:p.y/pz*pz/z, z:p.z}; }
+
+const scenarios={
+  projectile:{
+    name:'Projectile Motion',
+    controls:`<div class="row"><label>Speed (m/s)</label><input id="sp" type="number" step="0.1" value="20"></div>
+              <div class="row"><label>Angle (deg)</label><input id="ang" type="number" step="0.1" value="45"></div>
+              <div class="row"><label>Gravity (m/s²)</label><input id="g" type="number" step="0.1" value="9.81"></div>
+              <div class="row"><button id="runSim" class="primary">Run</button></div>`,
+    steps:(p)=>[
+      'We launch with initial speed v at angle θ above horizontal.',
+      'Horizontal velocity: vx = v·cosθ; Vertical: vy = v·sinθ.',
+      'Time of flight (level ground): T = 2·vy/g.',
+      'Range: R = vx·T. Peak height: H = vy²/(2g).',
+      `Compute with your inputs: T≈${p.T.toFixed(2)} s, R≈${p.R.toFixed(2)} m, H≈${p.H.toFixed(2)} m.`
+    ],
+    compute:(inp)=>{
+      const v=+inp.sp, th=+inp.ang*Math.PI/180, g=Math.max(0.1,+inp.g);
+      const vx=v*Math.cos(th), vy=v*Math.sin(th);
+      const T= 2*vy/g, R=vx*T, H=vy*vy/(2*g);
+      return {v,th,g,vx,vy,T,R,H};
+    },
+    draw:(vars)=>{
+      // 2D trajectory in X-Y, then show as a thin 3D ribbon for rotation
+      const s=12*scale3d, p=persp3d;
+      // base axes
+      const origin = {x:canvas.width/DPR/6, y:canvas.height/DPR*0.75};
+      ctx.strokeStyle='#00000033'; ctx.beginPath(); ctx.moveTo(origin.x,origin.y); ctx.lineTo(origin.x+500,origin.y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(origin.x,origin.y); ctx.lineTo(origin.x,origin.y-300); ctx.stroke();
+
+      // path
+      ctx.strokeStyle='#111'; ctx.lineWidth=1.6; ctx.beginPath();
+      const N=120; for(let i=0;i<=N;i++){
+        const t=vars.T*i/N, x=vars.vx*t, y=vars.vy*t - 0.5*vars.g*t*t;
+        const px=origin.x + x*s, py=origin.y - y*s;
+        if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+      } ctx.stroke();
+
+      // annotations
+      ctx.fillStyle='#222'; ctx.font='12px system-ui';
+      ctx.fillText(`T≈${vars.T.toFixed(2)} s`, origin.x+5, origin.y-120);
+      ctx.fillText(`R≈${vars.R.toFixed(2)} m`, origin.x+vars.R*s-40, origin.y-6);
+      ctx.fillText(`H≈${vars.H.toFixed(2)} m`, origin.x+30, origin.y-vars.H*s-6);
     }
-    ctx.fillStyle='#222'; ctx.font='12px system-ui'; ctx.fillText('3D Bubble Grid: drag to rotate • wheel to zoom',16,canvas.height/DPR-18);
-  } else {
-    // Mini solar system: scaled Earth–Moon with Sun as big disc; compute time to Moon
-    const AU=149_597_870; // km (not to scale here)
-    const earthMoon=384_400; // km
-    const s=1.0; // logical scale
-    const centerX=canvas.width/DPR/2, centerY=canvas.height/DPR/2;
-    // Sun (disc)
-    ctx.fillStyle='rgba(255,180,60,0.25)'; ctx.beginPath(); ctx.arc(centerX-220, centerY, 90, 0, Math.PI*2); ctx.fill();
-    // Earth orbit small ring
-    ctx.strokeStyle='rgba(0,0,0,.2)'; ctx.beginPath(); ctx.arc(centerX, centerY, 120, 0, Math.PI*2); ctx.stroke();
-    // Earth
-    ctx.fillStyle='#2c6cff'; ctx.beginPath(); ctx.arc(centerX+120, centerY, 8, 0, Math.PI*2); ctx.fill();
-    // Moon orbit
-    ctx.strokeStyle='rgba(0,0,0,.2)'; ctx.beginPath(); ctx.arc(centerX+120, centerY, 28, 0, Math.PI*2); ctx.stroke();
-    // Moon (positioned)
-    ctx.fillStyle='#bbb'; ctx.beginPath(); ctx.arc(centerX+120+28, centerY, 3.5, 0, Math.PI*2); ctx.fill();
+  },
+  incline:{
+    name:'Inclined Plane',
+    controls:`<div class="row"><label>Mass (kg)</label><input id="m" type="number" step="0.1" value="5"></div>
+              <div class="row"><label>Angle (deg)</label><input id="theta" type="number" step="0.1" value="20"></div>
+              <div class="row"><label>μ (friction)</label><input id="mu" type="number" step="0.01" value="0.20"></div>
+              <div class="row"><label>g (m/s²)</label><input id="g2" type="number" step="0.1" value="9.81"></div>
+              <div class="row"><button id="runSim" class="primary">Run</button></div>`,
+    steps:(p)=>[
+      'Resolve weight mg into components parallel and perpendicular to plane.',
+      'Down-slope: mg·sinθ; Normal: mg·cosθ.',
+      'Friction (max) = μ·N = μ·mg·cosθ (opposes motion).',
+      `Net along slope: a = g(sinθ − μ cosθ) ⇒ a≈${p.a.toFixed(3)} m/s².`,
+      p.a>0 ? 'Block accelerates down the plane.' : (p.a<0 ? 'It accelerates up (requires external pull).' : 'It’s at threshold of motion.')
+    ],
+    compute:(inp)=>{
+      const m=+inp.m, th=+inp.theta*Math.PI/180, mu=Math.max(0,+inp.mu), g=Math.max(0.1,+inp.g2);
+      const a = g*(Math.sin(th) - mu*Math.cos(th));
+      return {m,th,mu,g,a};
+    },
+    draw:(vars)=>{
+      // simple 2D diagram
+      const cx=canvas.width/DPR*0.65, cy=canvas.height/DPR*0.75;
+      const L=240, ang=-vars.th; // plane angle
+      // plane
+      ctx.strokeStyle='#111'; ctx.lineWidth=1.6; ctx.beginPath(); ctx.moveTo(cx-L*Math.cos(ang), cy-L*Math.sin(ang)); ctx.lineTo(cx+L*Math.cos(ang), cy+L*Math.sin(ang)); ctx.stroke();
+      // block
+      const bx=cx-30*Math.cos(ang), by=cy-30*Math.sin(ang);
+      ctx.save(); ctx.translate(bx,by); ctx.rotate(ang); ctx.strokeRect(-20,-14,40,28); ctx.restore();
+      // forces
+      // weight
+      ctx.strokeStyle='#c00'; ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(bx,by+80); ctx.stroke();
+      // normal
+      const nAng=ang+Math.PI/2; ctx.strokeStyle='#06c'; ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(bx+60*Math.cos(nAng), by+60*Math.sin(nAng)); ctx.stroke();
+      // down-slope component arrow
+      ctx.strokeStyle='#0a0'; ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(bx+80*Math.cos(ang), by+80*Math.sin(ang)); ctx.stroke();
 
-    // Time to Moon calc (straight-line ideal)
-    const speed = Math.max(0.1, +ui.shipSpeed.value||10); // km/s
-    const hours = (earthMoon / speed) / 3600;
-    const h = Math.floor(hours), m=Math.floor((hours-h)*60), sec=Math.round(((hours-h)*60 - m)*60);
-    ui.moonTime.textContent = `${h}h ${m}m ${sec}s @ ${speed} km/s`;
+      ctx.fillStyle='#222'; ctx.font='12px system-ui';
+      ctx.fillText(`a≈${vars.a.toFixed(3)} m/s²`, bx+10, by-10);
+    }
+  },
+  circular:{
+    name:'Circular Motion',
+    controls:`<div class="row"><label>Radius (m)</label><input id="r" type="number" step="0.1" value="5"></div>
+              <div class="row"><label>Speed (m/s)</label><input id="v" type="number" step="0.1" value="6"></div>
+              <div class="row"><label>g (m/s²)</label><input id="g3" type="number" step="0.1" value="9.81"></div>
+              <div class="row"><button id="runSim" class="primary">Run</button></div>`,
+    steps:(p)=>[
+      'Uniform circular motion: centripetal acceleration ac = v²/r toward center.',
+      `ac≈${p.ac.toFixed(3)} m/s². Centripetal force Fc = m·ac (if a mass is attached).`,
+      `Period T = 2πr/v ≈ ${p.T.toFixed(2)} s. Frequency f = 1/T.`,
+      'Vector diagram shows velocity tangent and acceleration radial.'
+    ],
+    compute:(inp)=>{
+      const r=Math.max(0.01,+inp.r), v=Math.max(0,+inp.v);
+      const ac=v*v/r, T = (2*Math.PI*r)/v;
+      return {r,v,ac,T};
+    },
+    draw:(vars)=>{
+      const cx=canvas.width/DPR*0.5, cy=canvas.height/DPR*0.55, s=18*scale3d;
+      // circle
+      ctx.strokeStyle='#111'; ctx.lineWidth=1.6; ctx.beginPath(); ctx.arc(cx,cy,vars.r*s,0,2*Math.PI); ctx.stroke();
+      // marker
+      const a=0.6; const px=cx+vars.r*s*Math.cos(a), py=cy+vars.r*s*Math.sin(a);
+      // velocity (tangent)
+      ctx.strokeStyle='#06c'; ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px-80*Math.sin(a), py+80*Math.cos(a)); ctx.stroke();
+      // acceleration (inward)
+      ctx.strokeStyle='#c00'; ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(cx,cy); ctx.stroke();
+      ctx.fillStyle='#222'; ctx.font='12px system-ui'; ctx.fillText(`ac≈${vars.ac.toFixed(2)} m/s², T≈${vars.T.toFixed(2)} s`, cx-80, cy+vars.r*s+20);
+    }
+  },
+  vectors:{
+    name:'Vector Addition',
+    controls:`<div class="row"><label>v1 (mag,deg)</label><input id="v1m" type="number" step="0.1" value="5"><input id="v1a" type="number" step="0.1" value="30"></div>
+              <div class="row"><label>v2 (mag,deg)</label><input id="v2m" type="number" step="0.1" value="4"><input id="v2a" type="number" step="0.1" value="120"></div>
+              <div class="row"><button id="runSim" class="primary">Run</button></div>`,
+    steps:(p)=>[
+      'Break each vector into x/y components.',
+      `v1x=${p.v1x.toFixed(2)}, v1y=${p.v1y.toFixed(2)}; v2x=${p.v2x.toFixed(2)}, v2y=${p.v2y.toFixed(2)}.`,
+      `Sum: Rx=${p.Rx.toFixed(2)}, Ry=${p.Ry.toFixed(2)}.`,
+      `Resultant magnitude R≈${p.R.toFixed(2)} at angle ≈${(p.Ra*180/Math.PI).toFixed(1)}°.`
+    ],
+    compute:(inp)=>{
+      const v1m=+inp.v1m, v1a=+inp.v1a*Math.PI/180, v2m=+inp.v2m, v2a=+inp.v2a*Math.PI/180;
+      const v1x=v1m*Math.cos(v1a), v1y=v1m*Math.sin(v1a);
+      const v2x=v2m*Math.cos(v2a), v2y=v2m*Math.sin(v2a);
+      const Rx=v1x+v2x, Ry=v1y+v2y, R=Math.hypot(Rx,Ry), Ra=Math.atan2(Ry,Rx);
+      return {v1x,v1y,v2x,v2y,Rx,Ry,R,Ra};
+    },
+    draw:(vars)=>{
+      const O={x:canvas.width/DPR*0.25,y:canvas.height/DPR*0.7}, s=25*scale3d;
+      function end(p){ return {x:O.x+p.mag*s*Math.cos(p.ang), y:O.y-p.mag*s*Math.sin(p.ang)}; }
+      // v1, v2, resultant
+      // draw axes
+      ctx.strokeStyle='#00000022'; ctx.beginPath(); ctx.moveTo(O.x-40,O.y); ctx.lineTo(O.x+400,O.y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(O.x,O.y+120); ctx.lineTo(O.x,O.y-220); ctx.stroke();
 
-    ctx.fillStyle='#222'; ctx.font='12px system-ui';
-    ctx.fillText('Mini Solar System (not to scale): Sun–Earth–Moon • Enter ship speed for time-to-Moon',16,canvas.height/DPR-18);
+      // v1
+      let e1=end({mag:Math.hypot(vars.v1x,vars.v1y), ang:Math.atan2(vars.v1y,vars.v1x)});
+      ctx.strokeStyle='#06c'; ctx.beginPath(); ctx.moveTo(O.x,O.y); ctx.lineTo(e1.x,e1.y); ctx.stroke();
+      // v2 (head-to-tail)
+      let e2h=e1, e2={x:e2h.x+vars.v2x*s, y:e2h.y-vars.v2y*s};
+      ctx.strokeStyle='#0a0'; ctx.beginPath(); ctx.moveTo(e2h.x,e2h.y); ctx.lineTo(e2.x,e2.y); ctx.stroke();
+      // resultant
+      let R={x:O.x+vars.Rx*s,y:O.y-vars.Ry*s};
+      ctx.strokeStyle='#c00'; ctx.beginPath(); ctx.moveTo(O.x,O.y); ctx.lineTo(R.x,R.y); ctx.stroke();
+
+      ctx.fillStyle='#222'; ctx.font='12px system-ui';
+      ctx.fillText(`R≈${vars.R.toFixed(2)} @ ${(vars.Ra*180/Math.PI).toFixed(1)}°`, R.x+6, R.y-6);
+    }
+  },
+  quadratic:{
+    name:'Quadratic Grapher',
+    controls:`<div class="row"><label>y = ax² + bx + c</label><input id="qa" type="number" step="0.1" value="1"><input id="qb" type="number" step="0.1" value="0"><input id="qc" type="number" step="0.1" value="0"></div>
+              <div class="row"><button id="runSim" class="primary">Graph</button></div>`,
+    steps:(p)=>[
+      'A quadratic y=ax²+bx+c is a parabola.',
+      `Vertex: x_v = −b/(2a), y_v = f(x_v).`,
+      `Discriminant Δ = b²−4ac → roots when Δ ≥ 0.`,
+      `With your a,b,c → vertex ≈ (${p.xv.toFixed(2)}, ${p.yv.toFixed(2)}), Δ ≈ ${p.D.toFixed(2)}.`,
+      p.D>=0 ? `Roots: x≈${p.r1.toFixed(2)}, ${p.r2.toFixed(2)}` : 'No real roots (parabola doesn’t cross x-axis).'
+    ],
+    compute:(inp)=>{
+      const a=+inp.qa, b=+inp.qb, c=+inp.qc;
+      const xv = -b/(2*a||1e-9), yv = a*xv*xv + b*xv + c;
+      const D = b*b - 4*a*c;
+      let r1=NaN, r2=NaN; if(D>=0){ r1=(-b-Math.sqrt(D))/(2*a||1e-9); r2=(-b+Math.sqrt(D))/(2*a||1e-9); }
+      return {a,b,c,xv,yv,D,r1,r2};
+    },
+    draw:(vars)=>{
+      // plot with simple axes
+      const w=canvas.width/DPR,h=canvas.height/DPR;
+      const cx=w*0.65, cy=h*0.6, s=40*scale3d;
+      ctx.strokeStyle='#00000022'; ctx.beginPath(); ctx.moveTo(cx-300,cy); ctx.lineTo(cx+300,cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx,cy+200); ctx.lineTo(cx,cy-200); ctx.stroke();
+
+      ctx.strokeStyle='#111'; ctx.beginPath();
+      for(let i=-300;i<=300;i++){
+        const x=i/ s, y=vars.a*x*x + vars.b*x + vars.c;
+        const px=cx+i, py=cy - y*s;
+        if(i===-300) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+      } ctx.stroke();
+
+      ctx.fillStyle='#222'; ctx.font='12px system-ui';
+      ctx.fillText(`vertex ≈ (${vars.xv.toFixed(2)}, ${vars.yv.toFixed(2)})`, cx-120, cy-170);
+      if(!isNaN(vars.r1)){ ctx.fillText(`roots ≈ ${vars.r1.toFixed(2)}, ${vars.r2.toFixed(2)}`, cx-120, cy-150); }
+    }
   }
+};
+
+function mountScenarioUI(){
+  const sc = scenarios[ui.scenario.value];
+  ui.controls.innerHTML = sc.controls;
+  const runBtn = document.getElementById('runSim');
+  if(runBtn) runBtn.onclick = ()=>{ stepIndex=0; runScenario(); };
+  runScenario(true);
 }
-ui.shipSpeed.addEventListener('input', ()=>{} );
+ui.scenario.addEventListener('change', ()=>{ stepIndex=0; mountScenarioUI(); });
+ui.simMode.addEventListener('change', ()=>{ stepIndex=0; runScenario(); });
+mountScenarioUI();
 
-/* ========= Shared interactions for 3D/4D/Space ========= */
-addEventListener('mousedown', e=>{
-  if(ui.mode.value==='draft2d') return;
-  drag=true; lastXY=[e.clientX,e.clientY];
-});
+let stepIndex=0, activeVars=null;
+function runScenario(skipCompute){
+  const sc = scenarios[ui.scenario.value];
+  // collect inputs from controls div by IDs used in sc.controls
+  const inputs={}; ui.controls.querySelectorAll('input').forEach(el=>inputs[el.id]=+el.value);
+  activeVars = sc.compute(inputs);
+  const mode = ui.simMode.value;
+  const steps = sc.steps(activeVars);
+  if(mode==='answer') stepIndex = steps.length-1;
+  coach.innerHTML = renderCoach(steps, stepIndex, sc.name, mode);
+}
+function renderCoach(steps, i, title, mode){
+  return `
+    <div><b>${title} — ${mode==='learn'?'Learn':'Answer'}</b></div>
+    <div style="margin:6px 0 10px;color:#333">${steps[i]||'Set inputs and press Run'}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button ${i<=0?'disabled':''} onclick="window.__prevStep()">Prev</button>
+      <button ${i>=steps.length-1?'disabled':''} onclick="window.__nextStep()">Next</button>
+      <button onclick="window.__showAnswer()">Show Answer</button>
+    </div>
+  `;
+}
+window.__prevStep = ()=>{ if(stepIndex>0){ stepIndex--; const sc=scenarios[ui.scenario.value]; coach.innerHTML=renderCoach(sc.steps(activeVars),stepIndex,sc.name,ui.simMode.value); } };
+window.__nextStep = ()=>{ const sc=scenarios[ui.scenario.value]; const steps=sc.steps(activeVars); if(stepIndex<steps.length-1){ stepIndex++; coach.innerHTML=renderCoach(steps,stepIndex,sc.name,ui.simMode.value); } };
+window.__showAnswer = ()=>{ const sc=scenarios[ui.scenario.value]; const steps=sc.steps(activeVars); stepIndex=steps.length-1; coach.innerHTML=renderCoach(steps,stepIndex,sc.name,ui.simMode.value); };
+
+/* ===== Shared render loop ===== */
+let draggingSim=false, lastX=0,lastY=0;
+addEventListener('mousedown', e=>{ if(ui.mode.value==='simlab'){ draggingSim=true; lastX=e.clientX; lastY=e.clientY; } });
 addEventListener('mousemove', e=>{
-  if(!drag || ui.mode.value==='draft2d') return;
-  const dx=e.clientX-lastXY[0], dy=e.clientY-lastXY[1]; lastXY=[e.clientX,e.clientY];
-  if(ui.mode.value==='shapes3d'){ rot3.xy += dx*0.005; rot3.xz += dy*0.005; }
-  else if(ui.mode.value==='builder4d'){ rot4.xy += dx*0.005; rot4.xz += dy*0.005; }
-  else if(ui.mode.value==='spacelab'){ rotSpace.xy += dx*0.005; rotSpace.xz += dy*0.005; }
+  if(ui.mode.value==='simlab' && draggingSim){ rot.xy += (e.clientX-lastX)*0.005; rot.xz += (e.clientY-lastY)*0.005; lastX=e.clientX; lastY=e.clientY; }
 });
-addEventListener('mouseup', ()=>{ drag=false; });
+addEventListener('mouseup', ()=>{ draggingSim=false; });
 
-/* ========= Main render loop ========= */
+function drawSim(){
+  const sc = scenarios[ui.scenario.value];
+  sc.draw(activeVars);
+  ctx.fillStyle='#222'; ctx.font='12px system-ui';
+  ctx.fillText('Sim Lab: Learn → step through; Answer → quick results. Adjust inputs, then Run.', 16, canvas.height/DPR-18);
+}
+
 let last=0;
-function frame(t){
-  if(t-last<14){ requestAnimationFrame(frame); return; }
+function render(t, force=false){
+  if(!force && t-last<14){ requestAnimationFrame(render); return; }
   last=t;
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round';
-  if(ui.mode.value==='draft2d'){ draw2D(); drawGuides(null); } 
-  else if(ui.mode.value==='shapes3d'){ draw3D(); }
-  else if(ui.mode.value==='builder4d'){ draw4D(); }
-  else { drawSpace(); }
+  if(ui.mode.value==='architect2d'){ drawArchitect(); }
+  else { drawSim(); }
   ctx.restore();
-  requestAnimationFrame(frame);
+  requestAnimationFrame(render);
 }
-requestAnimationFrame(frame);
-} // startApp
+requestAnimationFrame(render);
+
+// initial coach text
+coach.innerHTML = `<b>Welcome</b><br>Architect: draft plans with walls, dimensions, doors/windows.<br>Sim Lab: pick a scenario, choose <i>Learn</i> or <i>Answer</i>, then <b>Run</b>.`;
+} // end startApp
 </script>
 </body>
 </html>
