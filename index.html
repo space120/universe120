@@ -153,21 +153,6 @@ button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
 </footer>
 
 <script>
-/* ===== CONFIG ===== */
-const ACCESS_KEY = ''; setTimeout(()=>openSite(),0);
-/* ================== */
-document.getElementById('year').textContent = new Date().getFullYear();
-
-/* Gate */
-const gate = document.getElementById('gate');
-const gateBtn = document.getElementById('gateBtn');
-const gateKey = document.getElementById('gateKey');
-function openSite(){ gate.remove(); document.getElementById('ui').hidden=false; document.getElementById('canvas').hidden=false; document.getElementById('coach').hidden=false; startApp(); }
-function tryGate(){ if(ACCESS_KEY==='' || gateKey.value===ACCESS_KEY) openSite(); else alert('Incorrect key'); }
-gateBtn.addEventListener('click', tryGate);
-gateKey.addEventListener('keydown', e=>{ if(e.key==='Enter') tryGate(); });
-if(ACCESS_KEY==='') openSite();
-
 /* ===== APP ===== */
 function startApp(){
 const canvas = document.getElementById('canvas');
