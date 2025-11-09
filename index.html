@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Universe120 — 2D Architect + 4D Bubble Lab</title>
+<title>Universe120 — 2D Architect + 4D Bubble Lab (Orthographic)</title>
 <style>
 :root{--bg:#f7f7fb;--card:#ffffffcc;--ink:#111;--muted:#666;--border:#e7e7ee;--brand:#3538ff}
 *{box-sizing:border-box}
@@ -111,7 +111,7 @@ button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
 
   <!-- 4D Bubble Lab -->
   <fieldset id="lab4dBlock" style="display:none">
-    <legend>4D Bubble Lab</legend>
+    <legend>4D Bubble Lab (Orthographic)</legend>
 
     <div class="row"><label>Tool</label>
       <select id="tool4d">
@@ -126,18 +126,20 @@ button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
       <button id="regen4">Rebuild</button>
     </div>
 
-    <div class="row"><label>Rotate (xw)</label><input id="ax_xw" type="range" min="-180" max="180" step="1" value="-20"></div>
-    <div class="row"><label>Rotate (yw)</label><input id="ax_yw" type="range" min="-180" max="180" step="1" value="20"></div>
-    <div class="row"><label>Rotate (zw)</label><input id="ax_zw" type="range" min="-180" max="180" step="1" value="-10"></div>
+    <div class="row"><label>Rotate xw/yw/zw</label></div>
+    <div class="row"><label>xw</label><input id="ax_xw" type="range" min="-180" max="180" step="1" value="-20"></div>
+    <div class="row"><label>yw</label><input id="ax_yw" type="range" min="-180" max="180" step="1" value="20"></div>
+    <div class="row"><label>zw</label><input id="ax_zw" type="range" min="-180" max="180" step="1" value="-10"></div>
 
-    <div class="row"><label>Slice |W| ≤</label><input id="sliceW" type="range" min="0" max="1" step="0.01" value="0.65"></div>
-    <div class="row"><label>Scale</label><input id="scale4" type="range" min="0.4" max="2" step="0.01" value="1.15"></div>
+    <div class="row"><label>Slice |W| ≤</label><input id="sliceW" type="range" min="0" max="1" step="0.01" value="1.00"></div>
+    <div class="row"><label>Scale</label><input id="scale4" type="range" min="0.4" max="2" step="0.01" value="1.10"></div>
     <div class="row"><label>Stroke</label><input id="stroke4" type="range" min="0.6" max="3" step="0.1" value="1.4"></div>
+    <div class="row"><label>Node Radius</label><input id="nodeR" type="range" min="2" max="10" step="0.1" value="4.5"></div>
 
     <div class="row"><button id="undo4">Undo</button><button id="clear4">Clear</button>
       <button id="export4json" class="primary">Export JSON</button>
     </div>
-    <p style="font-size:11px;color:#666">Snap: nearest projected 4-D node • Drag = rotate view • Wheel = zoom</p>
+    <p style="font-size:11px;color:#666">Orthographic 4-D→2-D projection • Equal spacing • Uniform circles • Drag = rotate (XY/XZ) • Sliders rotate xw/yw/zw</p>
   </fieldset>
 </aside>
 
@@ -172,7 +174,7 @@ const ui={
   // 4D
   lab4dBlock:$('lab4dBlock'), tool4d:$('tool4d'), N4:$('N4'), regen4:$('regen4'),
   ax_xw:$('ax_xw'), ax_yw:$('ax_yw'), ax_zw:$('ax_zw'),
-  sliceW:$('sliceW'), scale4:$('scale4'), stroke4:$('stroke4'),
+  sliceW:$('sliceW'), scale4:$('scale4'), stroke4:$('stroke4'), nodeR:$('nodeR'),
   undo4:$('undo4'), clear4:$('clear4'), export4json:$('export4json')
 };
 
@@ -187,13 +189,12 @@ function resetZoom(){ zoom=1; }
 ui.recenter2d.addEventListener('click', recenter);
 ui.zoomReset2d.addEventListener('click', resetZoom);
 
-/* ===================== 2D ARCHITECT ===================== */
-const ORIGIN={x:0,y:0}; // anchored grid
+/* ===================== 2D ARCHITECT (unchanged core) ===================== */
+const ORIGIN={x:0,y:0};
 const Rbase=26;
 function gridParams(){ const R=Rbase*zoom, stepX=R, stepY=R*Math.sqrt(3)/2; return {R,stepX,stepY}; }
 
-const sketch=[]; // {type:'seg'|'arc'|'circ'|'door'|'window'|'dim'|'label'}
-let polyLive=null, arcStart=null, hoverPoint=null;
+const sketch=[]; let polyLive=null, arcStart=null, hoverPoint=null;
 
 function centersNear(x,y,range=3){
   const {stepX,stepY}=gridParams();
@@ -238,7 +239,6 @@ function applyAngleLock(a0,a1,mode){
   const len=Math.hypot(dx,dy);
   return {x:a0.x+Math.cos(best)*len,y:a0.y+Math.sin(best)*len};
 }
-
 function drawGrid2D(){
   const {R,stepX,stepY}=gridParams();
   const w=canvas.width/DPR,h=canvas.height/DPR;
@@ -254,22 +254,14 @@ function drawGrid2D(){
   }
   ctx.restore();
 }
-
-/* Background image (photo align) */
+/* Background & draw tools (same as previous) */
 const bg={img:null, alpha:0.5, scale:1, rot:0, offX:0, offY:0, calib:[]};
-ui.bgUpload.addEventListener('change', (e)=>{
-  const file=e.target.files[0]; if(!file) return;
-  const fr=new FileReader(); fr.onload=()=>{ const im=new Image(); im.onload=()=>{ bg.img=im; }; im.src=fr.result; }; fr.readAsDataURL(file);
+['bgAlpha','bgScale','bgRot','bgOffX','bgOffY'].forEach(id=>$(id).addEventListener('input',()=>{}));
+ui.bgUpload.addEventListener('change', e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const fr=new FileReader(); fr.onload=()=>{ const im=new Image(); im.onload=()=>{ bg.img=im; }; im.src=fr.result; }; fr.readAsDataURL(f);
 });
-ui.bgAlpha.addEventListener('input', ()=>{ bg.alpha=+ui.bgAlpha.value; });
-ui.bgScale.addEventListener('input', ()=>{ bg.scale=+ui.bgScale.value; });
-ui.bgRot.addEventListener('input',  ()=>{ bg.rot=+ui.bgRot.value*Math.PI/180; });
-ui.bgOffX.addEventListener('input', ()=>{ bg.offX=+ui.bgOffX.value; });
-ui.bgOffY.addEventListener('input', ()=>{ bg.offY=+ui.bgOffY.value; });
-ui.calibStart.addEventListener('click', ()=>{
-  bg.calib=[]; alert('Calibration: click two points on the photo that should be N grid steps apart (set N).');
-  calibMode=true;
-});
+ui.calibStart.addEventListener('click', ()=>{ bg.calib=[]; alert('Calibration: click two points on the photo that should be N grid steps apart (set N).'); calibMode=true; });
 let calibMode=false;
 canvas.addEventListener('click', e=>{
   if(ui.mode.value!=='architect2d' || !calibMode || !bg.img) return;
@@ -278,62 +270,40 @@ canvas.addEventListener('click', e=>{
     const N= Math.max(1, +ui.calibSteps.value||4);
     const dx=bg.calib[1].x - bg.calib[0].x, dy=bg.calib[1].y - bg.calib[0].y;
     const dist=Math.hypot(dx,dy);
-    const {stepX}=gridParams();
-    const target = N*stepX;
-    const s = target / dist;
-    bg.scale *= s;
-    bg.rot = Math.atan2(dy,dx);
+    const {stepX}=gridParams(); const target = N*stepX; const s = target / dist;
+    bg.scale *= s; bg.rot = Math.atan2(dy,dx);
     const snapped = snap2D(bg.calib[0].x, bg.calib[0].y, true);
-    bg.offX += snapped.x - bg.calib[0].x;
-    bg.offY += snapped.y - bg.calib[0].y;
-    ui.bgScale.value = bg.scale.toFixed(2);
-    ui.bgRot.value   = Math.round(bg.rot*180/Math.PI);
-    ui.bgOffX.value  = Math.round(bg.offX);
-    ui.bgOffY.value  = Math.round(bg.offY);
+    bg.offX += snapped.x - bg.calib[0].x; bg.offY += snapped.y - bg.calib[0].y;
     calibMode=false; bg.calib=[];
     alert('Calibrated. Adjust fine controls if needed.');
   }
 });
-
-/* Drawing + blocks + dims */
 function addSeg(A,B,wall){ sketch.push({type:'seg', a:A, b:B, wall:wall||0}); }
 function addDoor(center,dirLen=40, swing=1){ sketch.push({type:'door',c:center,len:dirLen,swing}); }
 function addWindow(A,B){ sketch.push({type:'window',a:A,b:B}); }
 function addDim(A,B,label){ sketch.push({type:'dim',a:A,b:B,text:label||''}); }
 function addLabel(P,text){ sketch.push({type:'label',p:P,text:text||'Room'}); }
-
 ui.undo2d.addEventListener('click', ()=>{ sketch.pop(); });
 ui.clear2d.addEventListener('click', ()=>{ sketch.length=0; });
 ui.offsetBtn.addEventListener('click', ()=>{
   const off=+ui.wallOffset.value||0;
-  const last=[...sketch].reverse().find(d=>d.type==='seg');
-  if(!last){ alert('Draw a wall segment first.'); return; }
+  const last=[...sketch].reverse().find(d=>d.type==='seg'); if(!last){ alert('Draw a wall segment first.'); return; }
   const nx = last.b.y-last.a.y, ny=-(last.b.x-last.a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L;
-  const A={x:last.a.x+ux*off, y:last.a.y+uy*off}, B={x:last.b.x+ux*off, y:last.b.y+uy*off};
-  addSeg(A,B,last.wall);
+  const A={x:last.a.x+ux*off, y:last.a.y+uy*off}, B={x:last.b.x+ux*off, y:last.b.y+uy*off}; addSeg(A,B,last.wall);
 });
 ui.exportSvg.addEventListener('click', ()=>{
   const w=canvas.width/DPR,h=canvas.height/DPR, sw=+ui.stroke2d.value;
   const out=[];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none">`);
-  out.push(`<g id="walls" stroke="#111" stroke-width="${sw}">`);
-  sketch.forEach(d=>{ if(d.type==='seg'){ out.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`); }});
-  out.push(`</g><g id="arcs" stroke="#111" stroke-width="${sw}">`);
-  sketch.forEach(d=>{ if(d.type==='arc'){ const x1=d.c.x+d.r*Math.cos(d.a1), y1=d.c.y+d.r*Math.sin(d.a1); const x2=d.c.x+d.r*Math.cos(d.a2), y2=d.c.y+d.r*Math.sin(d.a2); out.push(`<path d="M ${x1} ${y1} A ${d.r} ${d.r} 0 0 ${d.ccw?1:0} ${x2} ${y2}"/>`); }});
-  out.push(`</g><g id="doors" stroke="#0077ff" stroke-width="${sw}">`);
-  sketch.forEach(d=>{ if(d.type==='door'){ out.push(`<circle cx="${d.c.x}" cy="${d.c.y}" r="2"/>`); }});
-  out.push(`</g><g id="windows" stroke="#00aa66" stroke-width="${sw}">`);
-  sketch.forEach(d=>{ if(d.type==='window'){ out.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`); }});
-  out.push(`</g><g id="dims" stroke="#cc0000" stroke-width="${Math.max(1,sw-0.4)}" fill="#cc0000">`);
-  sketch.forEach(d=>{ if(d.type==='dim'){ const mx=(d.a.x+d.b.x)/2, my=(d.a.y+d.b.y)/2; out.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`); out.push(`<text x="${mx+4}" y="${my-4}" font-size="12">${d.text||''}</text>`); }});
-  out.push(`</g><g id="labels" fill="#333">`);
-  sketch.forEach(d=>{ if(d.type==='label'){ out.push(`<text x="${d.p.x}" y="${d.p.y}" font-size="14">${(d.text||'Room')}</text>`); }});
-  out.push(`</g></svg>`);
-  const blob = new Blob([out.join('\n')],{type:'image/svg+xml'}); const url=URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download='universe120-plan.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
+  out.push(`<g id="walls" stroke="#111" stroke-width="${sw}">`); sketch.forEach(d=>{ if(d.type==='seg'){ out.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`); }}); out.push(`</g>`);
+  out.push(`<g id="arcs" stroke="#111" stroke-width="${sw}">`); sketch.forEach(d=>{ if(d.type==='arc'){ const x1=d.c.x+d.r*Math.cos(d.a1), y1=d.c.y+d.r*Math.sin(d.a1); const x2=d.c.x+d.r*Math.cos(d.a2), y2=d.c.y+d.r*Math.sin(d.a2); out.push(`<path d="M ${x1} ${y1} A ${d.r} ${d.r} 0 0 ${d.ccw?1:0} ${x2} ${y2}"/>`); }}); out.push(`</g>`);
+  out.push(`<g id="doors" stroke="#0077ff" stroke-width="${sw}">`); sketch.forEach(d=>{ if(d.type==='door'){ out.push(`<circle cx="${d.c.x}" cy="${d.c.y}" r="2"/>`); }}); out.push(`</g>`);
+  out.push(`<g id="windows" stroke="#00aa66" stroke-width="${sw}">`); sketch.forEach(d=>{ if(d.type==='window'){ out.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`); }}); out.push(`</g>`);
+  out.push(`<g id="dims" stroke="#cc0000" stroke-width="${Math.max(1,sw-0.4)}" fill="#cc0000">`); sketch.forEach(d=>{ if(d.type==='dim'){ const mx=(d.a.x+d.b.x)/2, my=(d.a.y+d.b.y)/2; out.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`); out.push(`<text x="${mx+4}" y="${my-4}" font-size="12">${d.text||''}</text>`); }}); out.push(`</g>`);
+  out.push(`<g id="labels" fill="#333">`); sketch.forEach(d=>{ if(d.type==='label'){ out.push(`<text x="${d.p.x}" y="${d.p.y}" font-size="14">${(d.text||'Room')}</text>`); }}); out.push(`</g></svg>`);
+  const blob = new Blob([out.join('\n')],{type:'image/svg+xml'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='universe120-plan.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
 });
-
-/* Input handling (2D) */
+/* Drawing input */
 let dragging=false, spacePan=false;
 canvas.addEventListener('mousedown', e=>{
   if(ui.mode.value!=='architect2d'){ dragging=true; return; }
@@ -342,39 +312,19 @@ canvas.addEventListener('mousedown', e=>{
   const tool=ui.tool2d.value;
   if(tool==='segment'){
     if(!polyLive) polyLive={points:[P]};
-    else{
-      let A=polyLive.points[polyLive.points.length-1], B=P;
-      B = applyAngleLock(A,B,ui.lockAngle.value);
-      addSeg(A,B,+ui.wallThick.value||0); polyLive=null;
-    }
+    else{ let A=polyLive.points[polyLive.points.length-1], B=P; B = applyAngleLock(A,B,ui.lockAngle.value); addSeg(A,B,+ui.wallThick.value||0); polyLive=null; }
   } else if(tool==='poly'){
     if(!polyLive) polyLive={points:[P]};
-    else{
-      let A=polyLive.points[polyLive.points.length-1], B=P;
-      B = applyAngleLock(A,B,ui.lockAngle.value);
-      polyLive.points.push(B); addSeg(A,B,+ui.wallThick.value||0);
-    }
+    else{ let A=polyLive.points[polyLive.points.length-1], B=P; B = applyAngleLock(A,B,ui.lockAngle.value); polyLive.points.push(B); addSeg(A,B,+ui.wallThick.value||0); }
   } else if(tool==='arc'){
     if(!arcStart) arcStart=P;
-    else{
-      const mx=(arcStart.x+P.x)/2, my=(arcStart.y+P.y)/2, r=Math.hypot(P.x-arcStart.x,P.y-arcStart.y)/2;
-      const a1=Math.atan2(arcStart.y-my,arcStart.x-mx), a2=Math.atan2(P.y-my,P.x-mx);
-      sketch.push({type:'arc', c:{x:mx,y:my}, r, a1, a2, ccw:false}); arcStart=null;
-    }
-  } else if(tool==='circle'){
-    const {R}=gridParams(); sketch.push({type:'circ', c:{x:P.x,y:P.y}, r:R});
-  } else if(tool==='door'){
-    addDoor(P, 40, 1);
-  } else if(tool==='window'){
-    if(!polyLive) polyLive={points:[P]}; else { addWindow(polyLive.points[0], P); polyLive=null; }
-  } else if(tool==='dim'){
-    if(!polyLive) polyLive={points:[P]}; else {
-      const A=polyLive.points[0], B=P; const len = Math.hypot(B.x-A.x, B.y-A.y).toFixed(1);
-      addDim(A,B, `${len}px`); polyLive=null;
-    }
-  } else if(tool==='label'){
-    const text=prompt('Room name (e.g., Kitchen):','Room')||'Room'; addLabel(P,text);
-  } else if(tool==='erase'){
+    else{ const mx=(arcStart.x+P.x)/2, my=(arcStart.y+P.y)/2, r=Math.hypot(P.x-arcStart.x,P.y-arcStart.y)/2; const a1=Math.atan2(arcStart.y-my,arcStart.x-mx), a2=Math.atan2(P.y-my,P.x-mx); sketch.push({type:'arc', c:{x:mx,y:my}, r, a1, a2, ccw:false}); arcStart=null; }
+  } else if(tool==='circle'){ const {R}=gridParams(); sketch.push({type:'circ', c:{x:P.x,y:P.y}, r:R}); }
+  else if(tool==='door'){ addDoor(P, 40, 1); }
+  else if(tool==='window'){ if(!polyLive) polyLive={points:[P]}; else { addWindow(polyLive.points[0], P); polyLive=null; } }
+  else if(tool==='dim'){ if(!polyLive) polyLive={points:[P]}; else { const A=polyLive.points[0], B=P; const len = Math.hypot(B.x-A.x, B.y-A.y).toFixed(1); addDim(A,B, `${len}px`); polyLive=null; } }
+  else if(tool==='label'){ const text=prompt('Room name (e.g., Kitchen):','Room')||'Room'; addLabel(P,text); }
+  else if(tool==='erase'){
     let bi=-1, bd=1e9;
     sketch.forEach((d,i)=>{
       let cx=0,cy=0;
@@ -396,7 +346,6 @@ addEventListener('mousemove', e=>{
     hoverPoint = snap2D(e.clientX,e.clientY,false);
     if(!ui.lockView.checked && (spacePan || dragging)){ pan.x += (e.movementX||0); pan.y += (e.movementY||0); }
   } else if(ui.mode.value==='bubble4d' && dragging){
-    // rotate in 4D with mouse drag (XY as camera)
     rot4.xy += (e.movementX||0)*0.003;
     rot4.xz += (e.movementY||0)*0.003;
   }
@@ -414,38 +363,38 @@ canvas.addEventListener('wheel', e=>{
       pan.y = cy - (cy - pan.y) * (zoom/before);
     }
   } else {
-    scale3d = Math.max(0.5, Math.min(2.2, scale3d * f));
+    scale4 = Math.max(0.5, Math.min(2.2, scale4 * f));
   }
 },{passive:false});
 addEventListener('keydown', e=>{ if(e.code==='Space'){ spacePan=true; dragging=true; } });
 addEventListener('keyup',   e=>{ if(e.code==='Space'){ spacePan=false; dragging=false; } });
 
-/* ===================== 4D BUBBLE LAB ===================== */
-// 4D state
-let scale3d=1.15, persp3d=3.0; // used for 3D-ish projection step
-let rot4={xy:0.0,xz:0.0,yz:0.0,xw:-0.35,yw:0.35,zw:-0.2}; // include xw/yw/zw rotations
-const lab={ nodes:[], edges:[] }; // edges: [{A:nodeIndex,B:nodeIndex}]
+/* ===================== 4D BUBBLE LAB (ORTHOGRAPHIC) ===================== */
+let scale4=1.10;
+let rot4={xy:0.0,xz:0.0,yz:0.0}; // camera-like
+const lab={ nodes:[], edges:[] };
 let hyperLive=null;
+
+// Build a regular 4-D hypercubic lattice in [-1,1]^4 (equal spacing)
 function rebuild4D(){
   const N = Math.max(2, Math.min(9, +ui.N4.value||5));
-  lab.nodes.length=0; lab.edges.length=0; // reset
-  // Build a simple 4D hypercubic lattice of hypersphere centers in [-1,1]^4
+  lab.nodes.length=0; lab.edges.length=0;
   for(let i=0;i<N;i++){
-    const t = N<=1?0:(i/(N-1))*2 - 1;
+    const x = (N===1?0 : i/(N-1))*2 - 1;
     for(let j=0;j<N;j++){
-      const u = N<=1?0:(j/(N-1))*2 - 1;
+      const y = (N===1?0 : j/(N-1))*2 - 1;
       for(let k=0;k<N;k++){
-        const v = N<=1?0:(k/(N-1))*2 - 1;
+        const z = (N===1?0 : k/(N-1))*2 - 1;
         for(let l=0;l<N;l++){
-          const w = N<=1?0:(l/(N-1))*2 - 1;
-          lab.nodes.push({x:t,y:u,z:v,w:w});
+          const w = (N===1?0 : l/(N-1))*2 - 1;
+          lab.nodes.push({x,y,z,w});
         }
       }
     }
   }
 }
 ui.regen4.addEventListener('click', rebuild4D);
-['ax_xw','ax_yw','ax_zw','sliceW','scale4','stroke4'].forEach(id=>$(id).addEventListener('input',()=>{}));
+['ax_xw','ax_yw','ax_zw','sliceW','scale4','stroke4','nodeR'].forEach(id=>$(id).addEventListener('input',()=>{}));
 ui.undo4.addEventListener('click', ()=>{ lab.edges.pop(); });
 ui.clear4.addEventListener('click', ()=>{ lab.edges.length=0; });
 ui.export4json.addEventListener('click', ()=>{
@@ -456,41 +405,38 @@ ui.export4json.addEventListener('click', ()=>{
   setTimeout(()=>URL.revokeObjectURL(url),1500);
 });
 
-// 4D rotations (applied in sequence)
+// Rotate in specific planes (orthonormal)
 function rotPlane(a,b,theta){ const c=Math.cos(theta), s=Math.sin(theta); return [a*c - b*s, a*s + b*c]; }
+
+// *** Core: Orthographic 4-D → 2-D projection with uniform scale ***
 function project4Dto2D(P){
-  // Apply axis-angle from sliders
-  const axw = (+ui.ax_xw.value||0) * Math.PI/180;
-  const ayw = (+ui.ax_yw.value||0) * Math.PI/180;
-  const azw = (+ui.ax_zw.value||0) * Math.PI/180;
+  const axw=(+ui.ax_xw.value||0)*Math.PI/180;
+  const ayw=(+ui.ax_yw.value||0)*Math.PI/180;
+  const azw=(+ui.ax_zw.value||0)*Math.PI/180;
   let {x,y,z,w}=P;
-  // rotate in xw, yw, zw planes (user controls)
+
+  // rotate in 4D (user sliders)
   [x,w]=rotPlane(x,w,axw);
   [y,w]=rotPlane(y,w,ayw);
   [z,w]=rotPlane(z,w,azw);
-  // also allow little camera-ish rotations (mouse drag) in xy/xz
+
+  // camera-ish rotations in 3D subspace for view control
   [x,y]=rotPlane(x,y,rot4.xy);
   [x,z]=rotPlane(x,z,rot4.xz);
 
-  // Slice by |w|
-  const slice = +ui.sliceW.value;
-  if(Math.abs(w) > slice) return null;
+  // slice by |w| (hides nodes but DOES NOT scale them)
+  const slice=+ui.sliceW.value;
+  if(Math.abs(w)>slice) return null;
 
-  // 4D->3D weak perspective using w as "depth"
-  const k = 1/(1 + 0.8*(Math.abs(w))); // nearer w => larger
-  const X3 = x*k, Y3 = y*k, Z3 = z*k;
+  // pure linear (orthographic) 4D→2D mapping; tuned so axes don't collapse
+  // Take X,Y directly, and blend a little Z,W to spread nicely.
+  const sx = x + 0.5*z + 0.35*w;
+  const sy = y + 0.5*z - 0.35*w;
 
-  // 3D->2D perspective
-  const p = persp3d;
-  const zcam = Z3 + p;
-  const sx = (X3*p)/zcam;
-  const sy = (Y3*p)/zcam;
-  const r2 = k * 8/(1+NORM); // bubble radius hint
-  return {sx,sy,k,w,r:r2};
+  return {sx, sy};
 }
-const NORM = 1; // radius scaler baseline
 
-function screenXY(pt){ // map to canvas
+function screenXY(pt){
   const s = 180*(+ui.scale4.value||1);
   const cx = canvas.width/DPR/2, cy=canvas.height/DPR/2;
   return {x: cx + pt.sx*s, y: cy + pt.sy*s};
@@ -502,9 +448,9 @@ function nearestProjectedNode(mx,my){
     const P=project4Dto2D(lab.nodes[i]); if(!P) continue;
     const S=screenXY(P);
     const d2=(S.x-mx)*(S.x-mx)+(S.y-my)*(S.y-my);
-    if(d2<bd){ bd=d2; best=i; bestPt={proj:P,screen:S}; }
+    if(d2<bd){ bd=d2; best=i; bestPt={screen:S}; }
   }
-  return (best>=0)? {index:best, proj:bestPt.proj, screen:bestPt.screen} : null;
+  return (best>=0)? {index:best, screen:bestPt.screen} : null;
 }
 
 canvas.addEventListener('mousedown', e=>{
@@ -514,17 +460,10 @@ canvas.addEventListener('mousedown', e=>{
   const tool=ui.tool4d.value;
   if(tool==='hseg'){
     if(!hyperLive) hyperLive={start:pick.index};
-    else{
-      lab.edges.push({A:hyperLive.start, B:pick.index});
-      hyperLive=null;
-    }
+    else{ lab.edges.push({A:hyperLive.start, B:pick.index}); hyperLive=null; }
   } else if(tool==='hpoly'){
     if(!hyperLive) hyperLive={points:[pick.index]};
-    else{
-      const last = hyperLive.points[hyperLive.points.length-1];
-      lab.edges.push({A:last, B:pick.index});
-      hyperLive.points.push(pick.index);
-    }
+    else{ const last = hyperLive.points[hyperLive.points.length-1]; lab.edges.push({A:last, B:pick.index}); hyperLive.points.push(pick.index); }
   } else if(tool==='erase4'){
     // remove closest edge by midpoint distance
     let bi=-1, bd=1e9;
@@ -543,18 +482,16 @@ canvas.addEventListener('mousedown', e=>{
 });
 
 /* ===================== SHARED RENDER LOOP ===================== */
-let last=0;
 function drawBackground(){
   if(!bg.img || ui.mode.value!=='architect2d') return;
   const w=canvas.width/DPR,h=canvas.height/DPR;
-  ctx.save();
-  ctx.globalAlpha=bg.alpha;
-  ctx.translate(w/2 + bg.offX, h/2 + bg.offY);
-  ctx.rotate(bg.rot);
-  ctx.scale(bg.scale, bg.scale);
+  ctx.save(); ctx.globalAlpha=bg.alpha;
+  ctx.translate(w/2 + bg.offX, h/2 + bg.offY); ctx.rotate(bg.rot); ctx.scale(bg.scale, bg.scale);
   ctx.drawImage(bg.img, -bg.img.width/2, -bg.img.height/2);
   ctx.restore();
 }
+
+let last=0;
 function render(t){
   if(t-last<14){ requestAnimationFrame(render); return; }
   last=t;
@@ -566,10 +503,8 @@ function render(t){
     drawGrid2D();
     ctx.lineWidth=+ui.stroke2d.value; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
     sketch.forEach(d=>{
-      if(d.type==='seg'){
-        ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke();
-        if(d.wall>0){
-          const nx = d.b.y-d.a.y, ny=-(d.b.x-d.a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L, tt=d.wall/2;
+      if(d.type==='seg'){ ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke();
+        if(d.wall>0){ const nx = d.b.y-d.a.y, ny=-(d.b.x-d.a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L, tt=d.wall/2;
           ctx.beginPath(); ctx.moveTo(d.a.x+ux*tt,d.a.y+uy*tt); ctx.lineTo(d.b.x+ux*tt,d.b.y+uy*tt); ctx.lineTo(d.b.x-ux*tt,d.b.y-uy*tt); ctx.lineTo(d.a.x-ux*tt,d.a.y-uy*tt); ctx.closePath(); ctx.stroke();
         }
       }
@@ -585,25 +520,19 @@ function render(t){
     ctx.fillStyle='#222'; ctx.font='12px system-ui';
     ctx.fillText('2D Architect: Walls/Doors/Windows/Dimensions • SVG export • Photo calibration • View locked', 16, canvas.height/DPR-18);
   } else {
-    // 4D Bubble Lab
+    // 4D Bubble Lab (orthographic)
     const stroke = +ui.stroke4.value||1.4;
+    const rNode = +ui.nodeR.value||4.5;
     ctx.lineWidth=stroke; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
 
-    // draw projected hypersphere “bubbles”
-    const nVisible=[];
+    // nodes (no depth scaling; pure uniform circles)
     for(let i=0;i<lab.nodes.length;i++){
       const P=project4Dto2D(lab.nodes[i]); if(!P) continue;
       const S=screenXY(P);
-      const rr = Math.max(1.2, 6*P.k); // bubble radius scales with W-depth
-      nVisible.push({i,screen:S,r:rr,depth:Math.abs(P.w)});
+      ctx.beginPath(); ctx.arc(S.x, S.y, rNode, 0, Math.PI*2); ctx.stroke();
     }
-    // back-to-front: farther (bigger |w|) first
-    nVisible.sort((a,b)=>b.depth-a.depth);
-    nVisible.forEach(n=>{
-      ctx.beginPath(); ctx.arc(n.screen.x, n.screen.y, n.r, 0, Math.PI*2); ctx.stroke();
-    });
 
-    // draw edges
+    // edges
     lab.edges.forEach(eij=>{
       const Pa=project4Dto2D(lab.nodes[eij.A]); const Pb=project4Dto2D(lab.nodes[eij.B]);
       if(!Pa||!Pb) return;
@@ -613,7 +542,7 @@ function render(t){
 
     // HUD
     ctx.fillStyle='#222'; ctx.font='12px system-ui';
-    ctx.fillText('4D Bubble Lab: Drag=rotate (XY/XZ) • Sliders rotate xw/yw/zw • Slice |W| • Snap to 4-D nodes • Export JSON', 16, canvas.height/DPR-18);
+    ctx.fillText('4D Bubble Lab (Orthographic): Equal spacing • Uniform nodes • Drag=rotate XY/XZ • Sliders rotate xw/yw/zw • Slice hides only', 16, canvas.height/DPR-18);
   }
 
   ctx.restore();
@@ -621,10 +550,9 @@ function render(t){
 }
 requestAnimationFrame(render);
 
-// initial states
+// init
 rebuild4D();
-coach.innerHTML = `<b>Welcome</b><br>
-Pick <i>2D Architect</i> to draft plans on the bubble grid (SVG export), or <i>4D Bubble Lab</i> to rotate a 4-D bubble lattice and draw hyper-segments.`;
+coach.innerHTML = `<b>Welcome</b><br>2D: trace & draft plans. 4D: perfectly regular orthographic lattice; draw hyper-segments with uniform bubbles.`;
 }
 startApp();
 </script>
