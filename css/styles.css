@@ -1,85 +1,101 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2761
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-
-\f0\fs24 \cf0 :root\{\
-  --bg:#f7f7fb;\
-  --card:#ffffffcc;\
-  --ink:#111;\
-  --muted:#666;\
-  --border:#e7e7ee;\
-  --brand:#3538ff;\
-\}\
-html.contrast, :root.contrast\{\
-  --bg:#ffffff;\
-  --card:#ffffff;\
-  --ink:#000;\
-  --muted:#222;\
-  --border:#000;\
-  --brand:#000;\
-\}\
-\
-*\{box-sizing:border-box\}\
-html,body\{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial\}\
-\
-.site-header,.site-footer\{\
-  position:fixed;left:0;right:0;display:flex;align-items:center;gap:16px;\
-  background:#fff8; backdrop-filter:saturate(1.8) blur(8px); border-bottom:1px solid var(--border);\
-\}\
-.site-header\{top:0;padding:10px 16px\}\
-.site-footer\{bottom:0;justify-content:center;border-top:1px solid var(--border);border-bottom:none;padding:10px 16px\}\
-\
-.brand\{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:700\}\
-.logo\{display:block\}\
-\
-.site-nav\{margin-left:auto;display:flex;gap:14px\}\
-.site-nav a\{color:#222;text-decoration:none;padding:6px 10px;border-radius:8px\}\
-.site-nav a:hover\{background:#fff\}\
-.site-nav a.active\{background:#eef2ff;color:#2730a3\}\
-\
-.main\{height:100vh;display:grid\}\
-.panel\{\
-  position:fixed;left:16px;top:64px;z-index:10;background:var(--card);\
-  border:1px solid var(--border);border-radius:12px;padding:12px 14px;max-width:320px;\
-  box-shadow:0 6px 22px rgba(0,0,0,.07)\
-\}\
-.panel h1\{margin:.25rem 0 .5rem;font-size:18px\}\
-.row\{display:flex;gap:8px;align-items:center;margin:.35rem 0\}\
-label\{font-size:12px;color:#444;min-width:94px\}\
-input[type=range]\{flex:1\}\
-select,input[type=checkbox]\{font-size:13px\}\
-.tip\{font-size:11px;color:var(--muted)\}\
-.small\{font-size:11px\}\
-.pill\{display:inline-block;background:#eef2ff;color:#3730a3;font-weight:600;border-radius:999px;padding:2px 8px;font-size:11px\}\
-\
-.toolbox\{border:1px dashed var(--border); border-radius:10px; padding:8px 10px; margin:.5rem 0 0\}\
-.toolbox legend\{font-size:12px; color:#333; padding:0 6px\}\
-\
-button\{appearance:none;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 10px;font-size:13px;cursor:pointer\}\
-button:hover\{background:#f6f6ff\}\
-button.primary\{background:#3538ff;color:#fff;border-color:#3538ff\}\
-button.primary:hover\{filter:brightness(1.05)\}\
-\
-#canvas\{display:block;width:100vw;height:100vh\}\
-\
-.page\{padding:96px 20px 68px\}\
-.page.narrow\{max-width:860px;margin:0 auto\}\
-.page .lead\{font-size:1.15rem;color:#333\}\
-.page h1\{font-size:2rem;margin:.5rem 0 1rem\}\
-.page h2\{margin:1.25rem 0 .5rem\}\
-.page p, .page li\{line-height:1.65\}\
+:root{
+  --bg:#f7f7fb;
+  --card:#ffffffcc;
+  --ink:#111;
+  --muted:#666;
+  --border:#e7e7ee;
+  --brand:#3538ff;
 }
+html.contrast, :root.contrast{
+  --bg:#ffffff;
+  --card:#ffffff;
+  --ink:#000;
+  --muted:#222;
+  --border:#000;
+  --brand:#000;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+
+.site-header,.site-footer{
+  position:fixed;left:0;right:0;display:flex;align-items:center;gap:16px;
+  background:#fff8; backdrop-filter:saturate(1.8) blur(8px); border-bottom:1px solid var(--border);
+}
+.site-header{top:0;padding:10px 16px}
+.site-footer{bottom:0;justify-content:center;border-top:1px solid var(--border);border-bottom:none;padding:10px 16px}
+
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:700}
+.logo{display:block}
+
+.site-nav{margin-left:auto;display:flex;gap:14px}
+.site-nav a{color:#222;text-decoration:none;padding:6px 10px;border-radius:8px}
+.site-nav a:hover{background:#fff}
+.site-nav a.active{background:#eef2ff;color:#2730a3}
+
+.main{height:100vh;display:grid}
+.panel{
+  position:fixed;left:16px;top:64px;z-index:10;background:var(--card);
+  border:1px solid var(--border);border-radius:12px;padding:12px 14px;max-width:320px;
+  box-shadow:0 6px 22px rgba(0,0,0,.07)
+}
+.panel h1{margin:.25rem 0 .5rem;font-size:18px}
+.row{display:flex;gap:8px;align-items:center;margin:.35rem 0}
+label{font-size:12px;color:#444;min-width:94px}
+input[type=range]{flex:1}
+select,input[type=checkbox]{font-size:13px}
+.tip{font-size:11px;color:var(--muted)}
+.small{font-size:11px}
+.pill{display:inline-block;background:#eef2ff;color:#3730a3;font-weight:600;border-radius:999px;padding:2px 8px;font-size:11px}
+
+.toolbox{border:1px dashed var(--border); border-radius:10px; padding:8px 10px; margin:.5rem 0 0}
+.toolbox legend{font-size:12px; color:#333; padding:0 6px}
+
+/* Buttons (single definition) */
+button{
+  appearance:none;border:1px solid var(--border);background:#fff;border-radius:10px;
+  padding:8px 12px;font-size:13px;cursor:pointer
+}
+button:hover{background:#f6f6ff}
+button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
+button.secondary{background:#f2f2f8}
+
+#canvas{display:block;width:100vw;height:100vh}
+
+.page{padding:96px 20px 68px}
+.page.narrow{max-width:860px;margin:0 auto}
+.page .lead{font-size:1.15rem;color:#333}
+.page h1{font-size:2rem;margin:.5rem 0 1rem}
+.page h2{margin:1.25rem 0 .5rem}
+.page p, .page li{line-height:1.65}
+
 /* Larger hit targets on small screens */
 @media (max-width: 600px){
   .panel { max-width: 92vw; left: 4vw; }
   .row button, .row select, .row input[type=range] { min-height: 40px; }
 }
 
-/* Button tweaks */
-button{appearance:none;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer}
-button:hover{background:#f6f6ff}
-button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
-button.secondary{background:#f2f2f8}
+/* --- Toolbar with icons + labels --- */
+.toolbar{
+  position:fixed;left:12px;top:66px;z-index:18;
+  display:flex;flex-direction:column;gap:10px
+}
+.tool{
+  width:140px;height:44px;display:flex;align-items:center;gap:10px;
+  border:1px solid var(--border);border-radius:10px;background:#fff;
+  padding:6px 10px;cursor:pointer;text-align:left
+}
+.tool:hover{background:#f5f6ff}
+.tool.active{outline:2px solid var(--brand)}
+.tool .icon{
+  width:24px;flex:0 0 24px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;line-height:1
+}
+.tool .label{font-size:13px;color:#111;line-height:1}
+
+/* Optional: little legend card */
+#legend{
+  position:fixed;left:166px;top:66px;z-index:18;background:#ffffffcc;
+  border:1px solid var(--border);border-radius:12px;padding:8px 10px;font-size:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.08)
+}
