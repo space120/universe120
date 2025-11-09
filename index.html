@@ -3,558 +3,634 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Universe120 — 2D Architect + 4D Bubble Lab (Orthographic)</title>
+<title>Universe120 — Bubble Graph Builder</title>
 <style>
-:root{--bg:#f7f7fb;--card:#ffffffcc;--ink:#111;--muted:#666;--border:#e7e7ee;--brand:#3538ff}
-*{box-sizing:border-box}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-.site-header,.site-footer{position:fixed;left:0;right:0;display:flex;align-items:center;gap:16px;background:#fff8;backdrop-filter:saturate(1.8) blur(8px);border-bottom:1px solid var(--border);z-index:20}
-.site-header{top:0;padding:10px 16px}
-.site-footer{bottom:0;justify-content:center;border-top:1px solid var(--border);border-bottom:none;padding:8px 16px}
-.brand{font-weight:800}
-#ui.panel{position:fixed;left:16px;top:64px;z-index:15;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;max-width:480px;box-shadow:0 6px 22px rgba(0,0,0,.07)}
-#ui h1{margin:.25rem 0 .5rem;font-size:18px}
-.row{display:flex;gap:8px;align-items:center;margin:.35rem 0}
-label{font-size:12px;color:#444;min-width:120px}
-input[type=range]{flex:1}
-select,input[type=checkbox],input[type=number],input[type=text]{font-size:13px}
-fieldset{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:.5rem 0 0}
-fieldset legend{font-size:12px;color:#333;padding:0 6px}
-button{appearance:none;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer}
-button:hover{background:#f6f6ff}
-button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
-.kbd{background:#eee;border:1px solid #ccc;border-bottom-color:#bbb;border-radius:4px;padding:0 4px;font-family:ui-monospace,Menlo,Consolas,monospace}
-#canvas{display:block;width:100vw;height:100vh}
-.overlay{position:fixed;right:16px;top:64px;z-index:16;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 12px;max-width:520px;box-shadow:0 6px 22px rgba(0,0,0,.07);font-size:13px}
-@media (max-width: 700px){
-  #ui.panel { max-width: 92vw; left: 4vw; }
-  .row button, .row select, .row input[type=range], .row input[type=number], .row input[type=text] { min-height: 40px; }
+:root{
+  --bg:#f7f7fb; --ink:#111; --muted:#666; --card:#ffffffcc; --border:#e7e7ee; --brand:#3538ff;
 }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+
+/* Top bar */
+.topbar{position:fixed;left:0;right:0;top:0;height:54px;display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff;box-shadow:0 1px 0 var(--border);z-index:20}
+.brand{font-weight:800;margin-right:8px}
+.topbar .group{display:flex;gap:6px;align-items:center;border:1px solid var(--border);border-radius:10px;background:#fafafe;padding:4px 6px}
+button, .btn{appearance:none;border:1px solid var(--border);background:#fff;border-radius:8px;padding:7px 10px;font-size:13px;cursor:pointer}
+button:hover{background:#f5f6ff}
+button.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+label.small{font-size:12px;color:#333;margin-right:4px}
+input[type=range]{width:120px}
+
+/* Left toolbar */
+.toolbar{position:fixed;left:12px;top:66px;z-index:18;display:flex;flex-direction:column;gap:8px}
+.tool{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-size:12px}
+.tool.active{outline:2px solid var(--brand)}
+.tool span{user-select:none}
+
+/* Right panel */
+.panel{position:fixed;right:12px;top:66px;z-index:18;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.08);padding:10px 12px;min-width:260px}
+.panel h3{margin:.3rem 0 .2rem;font-size:14px}
+.panel .row{display:flex;align-items:center;gap:8px;margin:.35rem 0}
+.panel input[type="number"], .panel select, .panel input[type="text"]{font-size:13px;padding:4px 6px}
+
+/* Canvas */
+#canvas{position:fixed;inset:54px 0 28px 0;display:block;width:100%;height:calc(100% - 82px);}
+
+/* Status bar */
+.status{position:fixed;left:0;right:0;bottom:0;height:28px;display:flex;align-items:center;gap:16px;padding:0 10px;background:#fff;border-top:1px solid var(--border);font-size:12px;color:#333;z-index:20}
+
+/* Help overlay */
+#help{position:fixed;inset:0;background:rgba(10,12,22,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50}
+#help .card{background:#10121b;border:1px solid #2a2e3d;color:#e9ebff;border-radius:12px;padding:18px;max-width:720px}
+kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;border-radius:5px;padding:1px 5px;font-family:ui-monospace,Menlo,Consolas,monospace}
+
+/* Tiny badges */
 .badge{font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:999px;background:#fff}
 </style>
 </head>
 <body>
-<header class="site-header">
-  <div class="brand">Universe120 <span class="badge">2D Architect + 4D Bubble Lab</span></div>
-</header>
-
-<aside id="ui" class="panel">
-  <h1>Toolkit</h1>
-
-  <div class="row">
-    <label for="mode">Mode</label>
-    <select id="mode">
-      <option value="architect2d" selected>2D Architect</option>
-      <option value="bubble4d">4D Bubble Lab</option>
-    </select>
-  </div>
-
-  <!-- 2D Architect -->
-  <fieldset id="arch2dBlock">
-    <legend>2D Architect</legend>
-    <div class="row"><label>Tool</label>
-      <select id="tool2d">
-        <option value="segment" selected>Segment</option>
-        <option value="poly">Polyline</option>
-        <option value="arc">Arc (two clicks)</option>
-        <option value="circle">Circle (grid radius)</option>
-        <option value="door">Door block</option>
-        <option value="window">Window block</option>
-        <option value="dim">Dimension</option>
-        <option value="label">Room label</option>
-        <option value="erase">Erase</option>
-      </select>
+  <div class="topbar">
+    <div class="brand">Universe120 <span class="badge">Bubble Builder v0.5</span></div>
+    <div class="group">
+      <button id="newDoc">New</button>
+      <button id="clearAll">Clear</button>
+      <button id="undoBtn">Undo</button>
+      <button id="redoBtn">Redo</button>
     </div>
-    <div class="row"><label>Snap</label>
-      <select id="snap2d">
+    <div class="group">
+      <button id="zoomIn">+</button>
+      <button id="zoomOut">−</button>
+      <button id="zoomFit">Fit</button>
+      <button id="zoomReset">100%</button>
+    </div>
+    <div class="group">
+      <label class="small">Grid</label><input id="gridScale" type="range" min="0.6" max="1.8" step="0.01" value="1.0">
+      <label class="small">Dots</label><input id="dotSize" type="range" min="0.5" max="1.8" step="0.05" value="1.0">
+    </div>
+    <div class="group">
+      <label class="small">Snap</label>
+      <select id="snapMode">
         <option value="intersections" selected>Intersections</option>
-        <option value="centers">Circle Centers</option>
+        <option value="centers">Centers</option>
         <option value="midpoints">Midpoints</option>
         <option value="free">Free</option>
       </select>
-    </div>
-    <div class="row"><label>Angle Lock</label>
-      <select id="lockAngle">
-        <option value="off" selected>Off</option>
+      <label class="small">Angle</label>
+      <select id="angleLock">
+        <option value="off">Off</option>
         <option value="ortho">0/90°</option>
-        <option value="thirty">30/60/90°</option>
+        <option value="thirty" selected>30/60/90°</option>
         <option value="fortyfive">45/90°</option>
       </select>
     </div>
-    <div class="row"><label>Wall (px)</label><input id="wallThick" type="number" min="0" max="60" step="1" value="10"></div>
-    <div class="row"><label>Parallel Offset</label><input id="wallOffset" type="number" min="0" max="80" step="1" value="36"> <button id="offsetBtn">Offset</button></div>
-    <div class="row"><label>Stroke</label><input id="stroke2d" type="range" min="0.6" max="3" step="0.1" value="1.4"></div>
-
-    <div class="row"><label>View</label>
-      <span><input type="checkbox" id="lockView" checked> Lock View</span>
-      <button id="recenter2d" type="button">Recenter</button>
-      <button id="zoomReset2d" type="button">Reset Zoom</button>
+    <div class="group">
+      <button id="exportSVG">Export SVG</button>
+      <button id="exportPNG">Export PNG</button>
     </div>
-
-    <div class="row"><button id="undo2d">Undo</button><button id="clear2d">Clear</button><button id="exportSvg" class="primary">Export SVG</button></div>
-
-    <div class="row"><label>Background</label>
-      <input id="bgUpload" type="file" accept="image/*">
+    <div class="group">
+      <button id="helpBtn">?</button>
     </div>
-    <div class="row"><label>BG Opacity</label><input id="bgAlpha" type="range" min="0" max="1" step="0.01" value="0.5"></div>
-    <div class="row"><label>BG Scale</label><input id="bgScale" type="range" min="0.1" max="4" step="0.01" value="1"></div>
-    <div class="row"><label>BG Rotate</label><input id="bgRot" type="range" min="-180" max="180" step="1" value="0"></div>
-    <div class="row"><label>BG Offset</label><input id="bgOffX" type="number" value="0" style="width:80px"> <input id="bgOffY" type="number" value="0" style="width:80px"></div>
+  </div>
 
-    <div class="row"><label>Calibrate</label>
-      <button id="calibStart">Pick 2 pts</button>
-      <input id="calibSteps" type="number" min="1" max="50" step="1" value="4" title="Grid steps between picks" style="width:80px">
+  <!-- Left toolbar -->
+  <div class="toolbar">
+    <div class="tool active" data-tool="select" title="Select (V)"><span>V</span></div>
+    <div class="tool" data-tool="pen" title="Pen / Polyline (P)"><span>P</span></div>
+    <div class="tool" data-tool="line" title="Line (L)"><span>L</span></div>
+    <div class="tool" data-tool="arc" title="Arc (A)"><span>A</span></div>
+    <div class="tool" data-tool="rect" title="Rectangle (R)"><span>R</span></div>
+    <div class="tool" data-tool="circ" title="Circle (O)"><span>O</span></div>
+    <div class="tool" data-tool="text" title="Text (T)"><span>T</span></div>
+    <div class="tool" data-tool="dim"  title="Dimension (D)"><span>D</span></div>
+    <div class="tool" data-tool="erase" title="Erase (E)"><span>E</span></div>
+  </div>
+
+  <!-- Right properties -->
+  <div class="panel" id="props">
+    <h3>Properties</h3>
+    <div class="row"><label class="small">Stroke</label><input id="strokeW" type="range" min="0.8" max="4" step="0.1" value="1.6"></div>
+    <div class="row"><label class="small">Wall (px)</label><input id="wallThick" type="number" value="0" min="0" max="60" step="1"></div>
+    <div class="row"><label class="small">Label</label><input id="labelText" type="text" placeholder="Room / Note"></div>
+    <div class="row"><label class="small">BG Image</label><input id="bgUpload" type="file" accept="image/*"></div>
+    <div class="row"><label class="small">BG Opacity</label><input id="bgAlpha" type="range" min="0" max="1" step="0.01" value="0.55"></div>
+    <div class="row"><label class="small">Calibrate</label><button id="calib">Pick 2 pts</button><input id="calibSteps" type="number" value="4" min="1" max="50" step="1" style="width:64px"></div>
+  </div>
+
+  <canvas id="canvas"></canvas>
+
+  <div class="status">
+    <div id="stTool">Tool: Select</div>
+    <div id="stSnap">Snap: Intersections</div>
+    <div id="stZoom">Zoom: 100%</div>
+    <div id="stPos">x:– y:–</div>
+  </div>
+
+  <!-- Help -->
+  <div id="help">
+    <div class="card">
+      <h3>Quick help</h3>
+      <ul>
+        <li><b>Pan</b>: hold <kbd>Space</kbd> and drag</li>
+        <li><b>Zoom</b>: mouse wheel (zooms to cursor)</li>
+        <li><b>Zoom Fit</b>: <kbd>Shift</kbd>+<kbd>1</kbd> • <b>Reset 100%</b>: <kbd>1</kbd></li>
+        <li><b>Undo/Redo</b>: <kbd>Ctrl/Cmd</kbd>+<kbd>Z</kbd> / <kbd>Ctrl/Cmd</kbd>+<kbd>Y</kbd></li>
+        <li><b>End polyline</b>: <kbd>Enter</kbd> • <b>Cancel</b>: <kbd>Esc</kbd> • <b>Back one segment</b>: <kbd>Backspace</kbd></li>
+        <li><b>Snaps</b>: Intersections / Centers / Midpoints • <b>Angle Lock</b>: 0/90, 30/60/90, 45/90</li>
+        <li><b>Export</b>: SVG (vector) or PNG (screenshot)</li>
+      </ul>
+      <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
+        <button id="closeHelp" class="primary">Got it</button>
+      </div>
     </div>
-
-    <p style="font-size:11px;color:#666">Tips: <span class="kbd">Shift</span> strong snap • Double-click ends polyline • View is locked so you don’t lose your place</p>
-  </fieldset>
-
-  <!-- 4D Bubble Lab -->
-  <fieldset id="lab4dBlock" style="display:none">
-    <legend>4D Bubble Lab (Orthographic)</legend>
-
-    <div class="row"><label>Tool</label>
-      <select id="tool4d">
-        <option value="hseg" selected>Hyper-Segment</option>
-        <option value="hpoly">Hyper-Polyline</option>
-        <option value="erase4">Erase</option>
-      </select>
-    </div>
-
-    <div class="row"><label>Lattice Size</label>
-      <input id="N4" type="number" min="2" max="9" step="1" value="5" style="width:80px">
-      <button id="regen4">Rebuild</button>
-    </div>
-
-    <div class="row"><label>Rotate xw/yw/zw</label></div>
-    <div class="row"><label>xw</label><input id="ax_xw" type="range" min="-180" max="180" step="1" value="-20"></div>
-    <div class="row"><label>yw</label><input id="ax_yw" type="range" min="-180" max="180" step="1" value="20"></div>
-    <div class="row"><label>zw</label><input id="ax_zw" type="range" min="-180" max="180" step="1" value="-10"></div>
-
-    <div class="row"><label>Slice |W| ≤</label><input id="sliceW" type="range" min="0" max="1" step="0.01" value="1.00"></div>
-    <div class="row"><label>Scale</label><input id="scale4" type="range" min="0.4" max="2" step="0.01" value="1.10"></div>
-    <div class="row"><label>Stroke</label><input id="stroke4" type="range" min="0.6" max="3" step="0.1" value="1.4"></div>
-    <div class="row"><label>Node Radius</label><input id="nodeR" type="range" min="2" max="10" step="0.1" value="4.5"></div>
-
-    <div class="row"><button id="undo4">Undo</button><button id="clear4">Clear</button>
-      <button id="export4json" class="primary">Export JSON</button>
-    </div>
-    <p style="font-size:11px;color:#666">Orthographic 4-D→2-D projection • Equal spacing • Uniform circles • Drag = rotate (XY/XZ) • Sliders rotate xw/yw/zw</p>
-  </fieldset>
-</aside>
-
-<div id="coach" class="overlay"></div>
-<canvas id="canvas"></canvas>
-
-<footer class="site-footer">
-  <small>© <span id="year"></span> Universe120 • Learn by building</small>
-</footer>
+  </div>
 
 <script>
-document.getElementById('year').textContent = new Date().getFullYear();
-
-function startApp(){
+/* ======= Setup ======= */
 const canvas = document.getElementById('canvas');
-const coach  = document.getElementById('coach');
 const ctx = canvas.getContext('2d',{alpha:true});
 let DPR = Math.min(devicePixelRatio||1,2);
-function resize(){ const w=innerWidth,h=innerHeight; canvas.style.width=w+'px'; canvas.style.height=h+'px'; canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR); ctx.setTransform(DPR,0,0,DPR,0,0); }
-addEventListener('resize',resize); resize();
+function resize(){ const w=innerWidth, h=innerHeight-54-28; canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR); canvas.style.width=w+'px'; canvas.style.height=h+'px'; ctx.setTransform(DPR,0,0,DPR,0,0); }
+addEventListener('resize', resize); resize();
 
-const $=id=>document.getElementById(id);
-const ui={
-  mode:$('mode'),
-  // 2D
-  arch2dBlock:$('arch2dBlock'), tool2d:$('tool2d'), snap2d:$('snap2d'), lockAngle:$('lockAngle'),
-  wallThick:$('wallThick'), wallOffset:$('wallOffset'), offsetBtn:$('offsetBtn'),
-  stroke2d:$('stroke2d'), lockView:$('lockView'), recenter2d:$('recenter2d'), zoomReset2d:$('zoomReset2d'),
-  undo2d:$('undo2d'), clear2d:$('clear2d'), exportSvg:$('exportSvg'),
-  bgUpload:$('bgUpload'), bgAlpha:$('bgAlpha'), bgScale:$('bgScale'), bgRot:$('bgRot'), bgOffX:$('bgOffX'), bgOffY:$('bgOffY'),
-  calibStart:$('calibStart'), calibSteps:$('calibSteps'),
-  // 4D
-  lab4dBlock:$('lab4dBlock'), tool4d:$('tool4d'), N4:$('N4'), regen4:$('regen4'),
-  ax_xw:$('ax_xw'), ax_yw:$('ax_yw'), ax_zw:$('ax_zw'),
-  sliceW:$('sliceW'), scale4:$('scale4'), stroke4:$('stroke4'), nodeR:$('nodeR'),
-  undo4:$('undo4'), clear4:$('clear4'), export4json:$('export4json')
+const state = {
+  tool:'select',
+  zoom:1, pan:{x:0,y:0},
+  gridScale:1.0, dotScale:1.0,
+  strokeW:1.6, wallThick:0,
+  snap:'intersections', angleLock:'thirty',
+  drawing:null, hover:null, dragging:false, panning:false,
+  shapes:[], // {type, ...}
+  selection:new Set(),
+  undo:[], redo:[],
+  bg:{img:null, alpha:0.55, offX:0, offY:0, scale:1, rot:0, calib:[]},
 };
+const Rbase=26; function grid() { const R=Rbase*state.gridScale; return {R,stepX:R, stepY:R*Math.sqrt(3)/2}; }
 
-ui.mode.addEventListener('change', ()=>{
-  ui.arch2dBlock.style.display = ui.mode.value==='architect2d' ? '' : 'none';
-  ui.lab4dBlock.style.display  = ui.mode.value==='bubble4d'   ? '' : 'none';
+/* ======= UI wiring ======= */
+function $(q){ return document.querySelector(q); }
+function all(q){ return [...document.querySelectorAll(q)]; }
+const stTool=$('#stTool'), stSnap=$('#stSnap'), stZoom=$('#stZoom'), stPos=$('#stPos');
+
+all('.tool').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    all('.tool').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    state.tool = t.dataset.tool;
+    stTool.textContent = 'Tool: ' + t.title.split('(')[0].trim();
+  });
 });
+$('#gridScale').addEventListener('input', e=>{ state.gridScale=+e.target.value; });
+$('#dotSize').addEventListener('input', e=>{ state.dotScale=+e.target.value; });
+$('#snapMode').addEventListener('change', e=>{ state.snap=e.target.value; stSnap.textContent='Snap: '+e.target.selectedOptions[0].textContent; });
+$('#angleLock').addEventListener('change', e=>{ state.angleLock=e.target.value; });
+$('#strokeW').addEventListener('input', e=>{ state.strokeW=+e.target.value; });
+$('#wallThick').addEventListener('input', e=>{ state.wallThick=+e.target.value; });
+$('#labelText').addEventListener('input', e=>{ state.labelDraft=e.target.value; });
 
-let pan={x:0,y:0}, zoom=1;
-function recenter(){ pan.x=0; pan.y=0; }
-function resetZoom(){ zoom=1; }
-ui.recenter2d.addEventListener('click', recenter);
-ui.zoomReset2d.addEventListener('click', resetZoom);
+$('#zoomIn').onclick=()=>zoomAt(1.1, lastMouse);
+$('#zoomOut').onclick=()=>zoomAt(1/1.1, lastMouse);
+$('#zoomReset').onclick=()=>{ state.zoom=1; state.pan={x:0,y:0}; };
+$('#zoomFit').onclick=()=>zoomToFit();
 
-/* ===================== 2D ARCHITECT (unchanged core) ===================== */
-const ORIGIN={x:0,y:0};
-const Rbase=26;
-function gridParams(){ const R=Rbase*zoom, stepX=R, stepY=R*Math.sqrt(3)/2; return {R,stepX,stepY}; }
+$('#newDoc').onclick=()=>{ pushUndo(); state.shapes.length=0; state.selection.clear(); };
+$('#clearAll').onclick=()=>{ pushUndo(); state.shapes.length=0; state.selection.clear(); };
+$('#undoBtn').onclick=undo; $('#redoBtn').onclick=redo;
 
-const sketch=[]; let polyLive=null, arcStart=null, hoverPoint=null;
+$('#exportSVG').onclick=exportSVG;
+$('#exportPNG').onclick=exportPNG;
 
-function centersNear(x,y,range=3){
-  const {stepX,stepY}=gridParams();
+$('#helpBtn').onclick=()=>{ $('#help').style.display='flex'; };
+$('#closeHelp').onclick=()=>{ $('#help').style.display='none'; };
+
+$('#bgUpload').addEventListener('change', (e)=>{
+  const f=e.target.files[0]; if(!f) return;
+  const fr=new FileReader(); fr.onload=()=>{ const im=new Image(); im.onload=()=>{ state.bg.img=im; }; im.src=fr.result; }; fr.readAsDataURL(f);
+});
+$('#bgAlpha').addEventListener('input', e=>{ state.bg.alpha=+e.target.value; });
+$('#calib').addEventListener('click', ()=>{ alert('Calibration: click two points on photo that are N grid steps apart (set N).'); state.bg.calib=[]; calibMode=true; });
+let calibMode=false;
+
+/* ======= Coordinate helpers ======= */
+function toWorld(sx,sy){
+  return { x:(sx - canvas.width/DPR/2 - state.pan.x)/state.zoom,
+           y:(sy - canvas.height/DPR/2 - state.pan.y)/state.zoom };
+}
+function toScreen(x,y){
+  return { x: canvas.width/DPR/2 + state.pan.x + x*state.zoom,
+           y: canvas.height/DPR/2 + state.pan.y + y*state.zoom };
+}
+let lastMouse={x:canvas.width/DPR/2, y:canvas.height/DPR/2};
+
+/* ======= Grid & snapping ======= */
+function gridCentersNear(x,y,range=3){
+  const {stepX,stepY}=grid();
   const rr=Math.round(y/stepY), cc=Math.round((x-(rr%2? stepX/2:0))/stepX);
   const pts=[];
-  for(let dr=-range;dr<=range;dr++)
-    for(let dc=-range;dc<=range;dc++){
-      const r=rr+dr,c=cc+dc,gx=c*stepX+(r%2? stepX/2:0), gy=r*stepY;
+  for(let dr=-range; dr<=range; dr++){
+    for(let dc=-range; dc<=range; dc++){
+      const r=rr+dr, c=cc+dc, gx=c*stepX+(r%2? stepX/2:0), gy=r*stepY;
       pts.push({x:gx,y:gy,kind:'center'});
     }
+  }
   const mids=[];
   for(let i=0;i<pts.length;i++){
-    const a=pts[i];
     for(let j=i+1;j<pts.length;j++){
-      const b=pts[j]; if(Math.hypot(a.x-b.x,a.y-b.y) < stepX*1.02){ mids.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,kind:'mid'}); }
+      const a=pts[i], b=pts[j];
+      if(Math.hypot(a.x-b.x,a.y-b.y) < stepX*1.02) mids.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,kind:'mid'});
     }
   }
   return pts.concat(mids);
 }
-function snap2D(clientX,clientY,strong){
-  const {stepX,stepY}=gridParams();
-  if(ui.snap2d.value==='free') return {x:clientX,y:clientY};
-  const x = clientX - (pan.x % stepX);
-  const y = clientY - (pan.y % stepY);
-  const cand = centersNear(x,y,strong?4:3);
-  let best=null,bd=1e9;
+function snapPoint(worldX,worldY, strong=false){
+  if(state.snap==='free') return {x:worldX, y:worldY, kind:'free'};
+  const {stepX,stepY}=grid();
+  const cand = gridCentersNear(worldX,worldY,strong?4:3);
+  let best=null, bd=1e9;
   cand.forEach(p=>{
-    const sx=p.x + (pan.x % stepX), sy=p.y + (pan.y % stepY);
-    const d2=(sx-clientX)*(sx-clientX)+(sy-clientY)*(sy-clientY);
-    if(d2<bd){bd=d2; best={x:sx,y:sy,kind:p.kind};}
+    const dx=p.x-worldX, dy=p.y-worldY, d2=dx*dx+dy*dy;
+    if(d2<bd){ bd=d2; best=p; }
   });
-  return best || {x:clientX,y:clientY,kind:'free'};
+  return best||{x:worldX,y:worldY,kind:'free'};
 }
-function applyAngleLock(a0,a1,mode){
+function applyAngleLock(a0,a1){
+  const mode = state.angleLock;
   if(mode==='off') return a1;
   const dx=a1.x-a0.x, dy=a1.y-a0.y, ang=Math.atan2(dy,dx);
   let snaps=[];
   if(mode==='ortho') snaps=[0,Math.PI/2,Math.PI,3*Math.PI/2];
   else if(mode==='thirty') snaps=[0,Math.PI/6,Math.PI/3,Math.PI/2,2*Math.PI/3,5*Math.PI/6,Math.PI,7*Math.PI/6,4*Math.PI/3,3*Math.PI/2,5*Math.PI/3,11*Math.PI/6];
   else if(mode==='fortyfive') snaps=[0,Math.PI/4,Math.PI/2,3*Math.PI/4,Math.PI,5*Math.PI/4,3*Math.PI/2,7*Math.PI/4];
-  let best=ang,bd=1e9; snaps.forEach(s=>{const d=Math.abs(((ang-s+Math.PI)%(2*Math.PI))-Math.PI); if(d<bd){bd=d;best=s;}});
+  let best=ang, bd=1e9; snaps.forEach(s=>{const d=Math.abs(((ang-s+Math.PI)%(2*Math.PI))-Math.PI); if(d<bd){bd=d;best=s;}});
   const len=Math.hypot(dx,dy);
-  return {x:a0.x+Math.cos(best)*len,y:a0.y+Math.sin(best)*len};
+  return {x:a0.x+Math.cos(best)*len, y:a0.y+Math.sin(best)*len};
 }
-function drawGrid2D(){
-  const {R,stepX,stepY}=gridParams();
-  const w=canvas.width/DPR,h=canvas.height/DPR;
+
+/* ======= Interaction ======= */
+let isSpace=false, mouseDown=false;
+canvas.addEventListener('mousemove', (e)=>{
+  lastMouse={x:e.clientX,y:e.clientY};
+  const w = toWorld(e.clientX,e.clientY);
+  const snapped = snapPoint(w.x,w.y,false);
+  state.hover = {...snapped, screen: toScreen(snapped.x,snapped.y) };
+  stPos.textContent = `x:${snapped.x.toFixed(1)} y:${snapped.y.toFixed(1)}`;
+});
+canvas.addEventListener('mousedown', (e)=>{
+  if(e.button===1) return; // ignore wheel button
+  if(isSpace || e.button===2){ state.panning=true; mouseDown=true; return; }
+  mouseDown=true; pushUndo();
+
+  // calibration click
+  if(calibMode && state.bg.img){
+    const p={x:e.clientX, y:e.clientY}; state.bg.calib.push(p);
+    if(state.bg.calib.length===2){
+      const N=Math.max(1, +$('#calibSteps').value||4);
+      const dx=state.bg.calib[1].x-state.bg.calib[0].x;
+      const dy=state.bg.calib[1].y-state.bg.calib[0].y;
+      const dist=Math.hypot(dx,dy); const target=N*grid().stepX*state.zoom;
+      const s = target/dist;
+      state.bg.scale *= s;
+      calibMode=false; state.bg.calib=[];
+      alert('Calibrated. Use Zoom/Space-pan to align visually if needed.');
+    }
+    return;
+  }
+
+  const w = toWorld(e.clientX,e.clientY);
+  const P = snapPoint(w.x,w.y,e.shiftKey);
+
+  const t=state.tool;
+  if(t==='select'){ /* (room for selection/marquee) */ }
+  else if(t==='line'){
+    state.drawing = state.drawing ? (finishLine(P)) : {type:'tempLine', A:P};
+  }
+  else if(t==='pen'){
+    if(!state.drawing) state.drawing={type:'tempPoly', points:[P]};
+    else {
+      const pts=state.drawing.points;
+      const A=pts[pts.length-1], B=P;
+      const L=applyAngleLock(A,B);
+      pts.push(L);
+    }
+  }
+  else if(t==='arc'){
+    state.drawing = state.drawing ? (finishArc(P)) : {type:'tempArc', A:P};
+  }
+  else if(t==='rect'){
+    state.drawing = state.drawing ? (finishRect(P)) : {type:'tempRect', A:P};
+  }
+  else if(t==='circ'){
+    state.drawing = state.drawing ? (finishCirc(P)) : {type:'tempCirc', A:P};
+  }
+  else if(t==='text'){
+    const txt = (state.labelDraft || prompt('Text:','Room') || 'Note');
+    state.shapes.push({type:'label', p:P, text:txt});
+  }
+  else if(t==='dim'){
+    state.drawing = state.drawing ? (finishDim(P)) : {type:'tempDim', A:P};
+  }
+  else if(t==='erase'){
+    eraseNearest(P);
+  }
+});
+addEventListener('mouseup', ()=>{ mouseDown=false; state.panning=false; });
+addEventListener('mousemove', e=>{
+  if(state.panning && mouseDown){
+    state.pan.x += e.movementX;
+    state.pan.y += e.movementY;
+  }
+});
+canvas.addEventListener('wheel', e=>{
+  e.preventDefault();
+  const factor = Math.exp(-e.deltaY*0.0018);
+  zoomAt(factor, {x:e.clientX,y:e.clientY});
+},{passive:false});
+addEventListener('contextmenu', e=>e.preventDefault());
+
+addEventListener('keydown', e=>{
+  if(e.code==='Space'){ isSpace=true; }
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){ e.preventDefault(); undo(); }
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){ e.preventDefault(); redo(); }
+  if(e.key==='1' && e.shiftKey){ zoomToFit(); }
+  else if(e.key==='1'){ state.zoom=1; state.pan={x:0,y:0}; }
+  if(e.key==='Escape'){ state.drawing=null; }
+  if(e.key==='Enter' && state.drawing?.type==='tempPoly'){ finalizePolyline(); }
+  if(e.key==='Backspace' && state.drawing?.type==='tempPoly'){ state.drawing.points.pop(); if(state.drawing.points.length<2) state.drawing=null; }
+  // tool shortcuts
+  const map={v:'select', p:'pen', l:'line', a:'arc', r:'rect', o:'circ', t:'text', d:'dim', e:'erase'};
+  const k=e.key.toLowerCase();
+  if(map[k]){ selectTool(map[k]); }
+});
+addEventListener('keyup', e=>{ if(e.code==='Space'){ isSpace=false; } });
+
+function selectTool(name){
+  state.tool=name;
+  all('.tool').forEach(x=>x.classList.toggle('active', x.dataset.tool===name));
+  const titles={select:'Select',pen:'Pen / Polyline',line:'Line',arc:'Arc',rect:'Rectangle',circ:'Circle',text:'Text',dim:'Dimension',erase:'Erase'};
+  stTool.textContent='Tool: '+(titles[name]||name);
+}
+
+/* ======= Shape creators ======= */
+function finishLine(B){
+  const A=state.drawing.A;
+  const L=applyAngleLock(A,B);
+  state.shapes.push({type:'seg', a:A, b:L, wall:state.wallThick||0});
+  state.drawing=null;
+}
+function finishArc(B){
+  const A=state.drawing.A;
+  const C={x:(A.x+B.x)/2, y:(A.y+B.y)/2};
+  const r=Math.hypot(B.x-A.x,B.y-A.y)/2;
+  const a1=Math.atan2(A.y-C.y,A.x-C.x), a2=Math.atan2(B.y-C.y,B.x-C.x);
+  state.shapes.push({type:'arc', c:C, r, a1, a2});
+  state.drawing=null;
+}
+function finishRect(B){
+  const A=state.drawing.A;
+  state.shapes.push({type:'rect', a:{x:Math.min(A.x,B.x), y:Math.min(A.y,B.y)}, b:{x:Math.max(A.x,B.x), y:Math.max(A.y,B.y)}, wall:state.wallThick||0});
+  state.drawing=null;
+}
+function finishCirc(B){
+  const A=state.drawing.A; const r=Math.hypot(B.x-A.x,B.y-A.y);
+  state.shapes.push({type:'circ', c:A, r});
+  state.drawing=null;
+}
+function finishDim(B){
+  const A=state.drawing.A;
+  const len=Math.hypot(B.x-A.x,B.y-A.y);
+  state.shapes.push({type:'dim', a:A, b:B, text:`${len.toFixed(1)}`});
+  state.drawing=null;
+}
+function finalizePolyline(){
+  const pts=state.drawing.points;
+  if(pts.length>=2){
+    for(let i=0;i<pts.length-1;i++){
+      state.shapes.push({type:'seg', a:pts[i], b:pts[i+1], wall:state.wallThick||0});
+    }
+  }
+  state.drawing=null;
+}
+function eraseNearest(P){
+  let bi=-1, bd=1e9;
+  state.shapes.forEach((d,i)=>{
+    let cx=0,cy=0;
+    if(d.type==='seg'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
+    else if(d.type==='rect'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
+    else if(d.type==='arc'){ cx=d.c.x; cy=d.c.y; }
+    else if(d.type==='circ'){ cx=d.c.x; cy=d.c.y; }
+    else if(d.type==='label'){ cx=d.p.x; cy=d.p.y; }
+    else if(d.type==='dim'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
+    const dx=P.x-cx, dy=P.y-cy, d2=dx*dx+dy*dy;
+    if(d2<bd){ bd=d2; bi=i; }
+  });
+  if(bi>=0) state.shapes.splice(bi,1);
+}
+
+/* ======= Undo/Redo ======= */
+function pushUndo(){ state.undo.push(JSON.stringify({shapes:state.shapes})); state.redo.length=0; }
+function undo(){ if(!state.undo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const prev=state.undo.pop(); state.redo.push(cur); const snap=JSON.parse(prev); state.shapes = snap.shapes; }
+function redo(){ if(!state.redo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const next=state.redo.pop(); state.undo.push(cur); const snap=JSON.parse(next); state.shapes = snap.shapes; }
+
+/* ======= Zoom helpers ======= */
+function zoomAt(factor, screenPoint){
+  const before=state.zoom; const after=Math.max(0.25, Math.min(6, before*factor));
+  if(after===before) return;
+  const wx = (screenPoint.x - canvas.width/DPR/2 - state.pan.x)/before;
+  const wy = (screenPoint.y - canvas.height/DPR/2 - state.pan.y)/before;
+  state.zoom = after;
+  state.pan.x = screenPoint.x - canvas.width/DPR/2 - wx*after;
+  state.pan.y = screenPoint.y - canvas.height/DPR/2 - wy*after;
+  stZoom.textContent = `Zoom: ${(state.zoom*100).toFixed(0)}%`;
+}
+function zoomToFit(){
+  if(!state.shapes.length){ state.zoom=1; state.pan={x:0,y:0}; return; }
+  let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
+  function include(x,y){ if(x<minX)minX=x; if(y<minY)minY=y; if(x>maxX)maxX=x; if(y>maxY)maxY=y; }
+  state.shapes.forEach(s=>{
+    if(s.type==='seg'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
+    if(s.type==='rect'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
+    if(s.type==='arc'){ include(s.c.x-s.r,s.c.y-s.r); include(s.c.x+s.r,s.c.y+s.r); }
+    if(s.type==='circ'){ include(s.c.x-s.r,s.c.y-s.r); include(s.c.x+s.r,s.c.y+s.r); }
+    if(s.type==='label'){ include(s.p.x,s.p.y); }
+    if(s.type==='dim'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
+  });
+  const pad=40, w=canvas.width/DPR, h=canvas.height/DPR;
+  const zw=(w-pad*2)/(maxX-minX || 1), zh=(h-pad*2)/(maxY-minY || 1);
+  state.zoom = Math.max(0.25, Math.min(6, Math.min(zw,zh)));
+  state.pan.x = -((minX+maxX)/2)*state.zoom;
+  state.pan.y = -((minY+maxY)/2)*state.zoom;
+  stZoom.textContent = `Zoom: ${(state.zoom*100).toFixed(0)}%`;
+}
+
+/* ======= Export ======= */
+function exportSVG(){
+  const w=canvas.width/DPR, h=canvas.height/DPR, sw=state.strokeW;
+  const out=[];
+  out.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none" stroke="#111" stroke-width="${sw}">`);
+  // grid (optional: comment out if you want clean)
+  const G=grid(); const R=G.R, stepX=G.stepX, stepY=G.stepY;
+  out.push(`<g id="grid" stroke="#00000018" stroke-width="0.9">`);
+  for(let r=-30;r<60;r++){
+    for(let c=-30;c<60;c++){
+      const x=c*stepX+(r%2? stepX/2:0), y=r*stepY;
+      const p=toScreen(x,y);
+      out.push(`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${(R*state.dotScale*state.zoom).toFixed(2)}"/>`);
+    }
+  }
+  out.push(`</g><g id="draw">`);
+  state.shapes.forEach(d=>{
+    if(d.type==='seg'){
+      const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y);
+      out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"/>`);
+      if(d.wall>0){
+        // outline for wall not exported (kept simple)
+      }
+    }
+    if(d.type==='rect'){
+      const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y);
+      out.push(`<rect x="${Math.min(a.x,b.x)}" y="${Math.min(a.y,b.y)}" width="${Math.abs(b.x-a.x)}" height="${Math.abs(b.y-a.y)}"/>`);
+    }
+    if(d.type==='arc'){
+      const c=toScreen(d.c.x,d.c.y);
+      const x1=c.x+d.r*state.zoom*Math.cos(d.a1), y1=c.y+d.r*state.zoom*Math.sin(d.a1);
+      const x2=c.x+d.r*state.zoom*Math.cos(d.a2), y2=c.y+d.r*state.zoom*Math.sin(d.a2);
+      out.push(`<path d="M ${x1} ${y1} A ${d.r*state.zoom} ${d.r*state.zoom} 0 0 1 ${x2} ${y2}"/>`);
+    }
+    if(d.type==='circ'){
+      const c=toScreen(d.c.x,d.c.y); out.push(`<circle cx="${c.x}" cy="${c.y}" r="${d.r*state.zoom}"/>`);
+    }
+    if(d.type==='label'){
+      const p=toScreen(d.p.x,d.p.y); out.push(`<text x="${p.x}" y="${p.y}" font-size="14" fill="#111" stroke="none">${(d.text||'Label')}</text>`);
+    }
+    if(d.type==='dim'){
+      const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y);
+      out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#cc0000"/>`);
+      const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+      out.push(`<text x="${mx+4}" y="${my-4}" font-size="12" fill="#cc0000" stroke="none">${d.text||''}</text>`);
+    }
+  });
+  out.push(`</g></svg>`);
+  const blob = new Blob([out.join('\n')],{type:'image/svg+xml'});
+  const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='universe120.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function exportPNG(){
+  const link=document.createElement('a');
+  link.download='universe120.png';
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+}
+
+/* ======= Render ======= */
+function drawGrid(){
+  const G=grid(); const R=G.R*state.dotScale; const stepX=G.stepX, stepY=G.stepY;
+  const w=canvas.width/DPR, h=canvas.height/DPR;
+  // background image
+  if(state.bg.img){
+    ctx.save(); ctx.globalAlpha=state.bg.alpha;
+    const s=state.bg.scale||1, cx=w/2+state.bg.offX, cy=h/2+state.bg.offY;
+    ctx.translate(cx,cy); ctx.scale(s,s);
+    ctx.drawImage(state.bg.img, -state.bg.img.width/2, -state.bg.img.height/2);
+    ctx.restore();
+  }
+  // grid of circles (fixed to world)
   ctx.save();
-  ctx.translate((w/2 + ORIGIN.x) % stepX, (h/2 + ORIGIN.y) % stepY);
-  ctx.lineWidth=0.9; ctx.strokeStyle='#00000018';
-  const cols=Math.ceil(w/stepX)+4, rows=Math.ceil(h/stepY)+4;
-  for(let r=-2;r<rows;r++){
-    for(let c=-2;c<cols;c++){
+  ctx.translate(w/2 + state.pan.x, h/2 + state.pan.y);
+  ctx.scale(state.zoom, state.zoom);
+  ctx.lineWidth=0.9/state.zoom; ctx.strokeStyle='#00000018';
+  const cols=Math.ceil(w/(stepX*state.zoom))+4, rows=Math.ceil(h/(stepY*state.zoom))+4;
+  const x0 = -((w/2 + state.pan.x)/state.zoom);
+  const y0 = -((h/2 + state.pan.y)/state.zoom);
+  const cStart = Math.floor((x0 - 2*stepX)/stepX), rStart = Math.floor((y0 - 2*stepY)/stepY);
+  for(let r=rStart;r<rStart+rows;r++){
+    for(let c=cStart;c<cStart+cols;c++){
       const x=c*stepX+(r%2? stepX/2:0), y=r*stepY;
       ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2); ctx.stroke();
     }
   }
   ctx.restore();
 }
-/* Background & draw tools (same as previous) */
-const bg={img:null, alpha:0.5, scale:1, rot:0, offX:0, offY:0, calib:[]};
-['bgAlpha','bgScale','bgRot','bgOffX','bgOffY'].forEach(id=>$(id).addEventListener('input',()=>{}));
-ui.bgUpload.addEventListener('change', e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const fr=new FileReader(); fr.onload=()=>{ const im=new Image(); im.onload=()=>{ bg.img=im; }; im.src=fr.result; }; fr.readAsDataURL(f);
-});
-ui.calibStart.addEventListener('click', ()=>{ bg.calib=[]; alert('Calibration: click two points on the photo that should be N grid steps apart (set N).'); calibMode=true; });
-let calibMode=false;
-canvas.addEventListener('click', e=>{
-  if(ui.mode.value!=='architect2d' || !calibMode || !bg.img) return;
-  const p={x:e.clientX, y:e.clientY}; bg.calib.push(p);
-  if(bg.calib.length===2){
-    const N= Math.max(1, +ui.calibSteps.value||4);
-    const dx=bg.calib[1].x - bg.calib[0].x, dy=bg.calib[1].y - bg.calib[0].y;
-    const dist=Math.hypot(dx,dy);
-    const {stepX}=gridParams(); const target = N*stepX; const s = target / dist;
-    bg.scale *= s; bg.rot = Math.atan2(dy,dx);
-    const snapped = snap2D(bg.calib[0].x, bg.calib[0].y, true);
-    bg.offX += snapped.x - bg.calib[0].x; bg.offY += snapped.y - bg.calib[0].y;
-    calibMode=false; bg.calib=[];
-    alert('Calibrated. Adjust fine controls if needed.');
-  }
-});
-function addSeg(A,B,wall){ sketch.push({type:'seg', a:A, b:B, wall:wall||0}); }
-function addDoor(center,dirLen=40, swing=1){ sketch.push({type:'door',c:center,len:dirLen,swing}); }
-function addWindow(A,B){ sketch.push({type:'window',a:A,b:B}); }
-function addDim(A,B,label){ sketch.push({type:'dim',a:A,b:B,text:label||''}); }
-function addLabel(P,text){ sketch.push({type:'label',p:P,text:text||'Room'}); }
-ui.undo2d.addEventListener('click', ()=>{ sketch.pop(); });
-ui.clear2d.addEventListener('click', ()=>{ sketch.length=0; });
-ui.offsetBtn.addEventListener('click', ()=>{
-  const off=+ui.wallOffset.value||0;
-  const last=[...sketch].reverse().find(d=>d.type==='seg'); if(!last){ alert('Draw a wall segment first.'); return; }
-  const nx = last.b.y-last.a.y, ny=-(last.b.x-last.a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L;
-  const A={x:last.a.x+ux*off, y:last.a.y+uy*off}, B={x:last.b.x+ux*off, y:last.b.y+uy*off}; addSeg(A,B,last.wall);
-});
-ui.exportSvg.addEventListener('click', ()=>{
-  const w=canvas.width/DPR,h=canvas.height/DPR, sw=+ui.stroke2d.value;
-  const out=[];
-  out.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none">`);
-  out.push(`<g id="walls" stroke="#111" stroke-width="${sw}">`); sketch.forEach(d=>{ if(d.type==='seg'){ out.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`); }}); out.push(`</g>`);
-  out.push(`<g id="arcs" stroke="#111" stroke-width="${sw}">`); sketch.forEach(d=>{ if(d.type==='arc'){ const x1=d.c.x+d.r*Math.cos(d.a1), y1=d.c.y+d.r*Math.sin(d.a1); const x2=d.c.x+d.r*Math.cos(d.a2), y2=d.c.y+d.r*Math.sin(d.a2); out.push(`<path d="M ${x1} ${y1} A ${d.r} ${d.r} 0 0 ${d.ccw?1:0} ${x2} ${y2}"/>`); }}); out.push(`</g>`);
-  out.push(`<g id="doors" stroke="#0077ff" stroke-width="${sw}">`); sketch.forEach(d=>{ if(d.type==='door'){ out.push(`<circle cx="${d.c.x}" cy="${d.c.y}" r="2"/>`); }}); out.push(`</g>`);
-  out.push(`<g id="windows" stroke="#00aa66" stroke-width="${sw}">`); sketch.forEach(d=>{ if(d.type==='window'){ out.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`); }}); out.push(`</g>`);
-  out.push(`<g id="dims" stroke="#cc0000" stroke-width="${Math.max(1,sw-0.4)}" fill="#cc0000">`); sketch.forEach(d=>{ if(d.type==='dim'){ const mx=(d.a.x+d.b.x)/2, my=(d.a.y+d.b.y)/2; out.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`); out.push(`<text x="${mx+4}" y="${my-4}" font-size="12">${d.text||''}</text>`); }}); out.push(`</g>`);
-  out.push(`<g id="labels" fill="#333">`); sketch.forEach(d=>{ if(d.type==='label'){ out.push(`<text x="${d.p.x}" y="${d.p.y}" font-size="14">${(d.text||'Room')}</text>`); }}); out.push(`</g></svg>`);
-  const blob = new Blob([out.join('\n')],{type:'image/svg+xml'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='universe120-plan.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
-});
-/* Drawing input */
-let dragging=false, spacePan=false;
-canvas.addEventListener('mousedown', e=>{
-  if(ui.mode.value!=='architect2d'){ dragging=true; return; }
-  if(e.button!==0) return;
-  const strong=e.shiftKey; let P = snap2D(e.clientX,e.clientY,strong);
-  const tool=ui.tool2d.value;
-  if(tool==='segment'){
-    if(!polyLive) polyLive={points:[P]};
-    else{ let A=polyLive.points[polyLive.points.length-1], B=P; B = applyAngleLock(A,B,ui.lockAngle.value); addSeg(A,B,+ui.wallThick.value||0); polyLive=null; }
-  } else if(tool==='poly'){
-    if(!polyLive) polyLive={points:[P]};
-    else{ let A=polyLive.points[polyLive.points.length-1], B=P; B = applyAngleLock(A,B,ui.lockAngle.value); polyLive.points.push(B); addSeg(A,B,+ui.wallThick.value||0); }
-  } else if(tool==='arc'){
-    if(!arcStart) arcStart=P;
-    else{ const mx=(arcStart.x+P.x)/2, my=(arcStart.y+P.y)/2, r=Math.hypot(P.x-arcStart.x,P.y-arcStart.y)/2; const a1=Math.atan2(arcStart.y-my,arcStart.x-mx), a2=Math.atan2(P.y-my,P.x-mx); sketch.push({type:'arc', c:{x:mx,y:my}, r, a1, a2, ccw:false}); arcStart=null; }
-  } else if(tool==='circle'){ const {R}=gridParams(); sketch.push({type:'circ', c:{x:P.x,y:P.y}, r:R}); }
-  else if(tool==='door'){ addDoor(P, 40, 1); }
-  else if(tool==='window'){ if(!polyLive) polyLive={points:[P]}; else { addWindow(polyLive.points[0], P); polyLive=null; } }
-  else if(tool==='dim'){ if(!polyLive) polyLive={points:[P]}; else { const A=polyLive.points[0], B=P; const len = Math.hypot(B.x-A.x, B.y-A.y).toFixed(1); addDim(A,B, `${len}px`); polyLive=null; } }
-  else if(tool==='label'){ const text=prompt('Room name (e.g., Kitchen):','Room')||'Room'; addLabel(P,text); }
-  else if(tool==='erase'){
-    let bi=-1, bd=1e9;
-    sketch.forEach((d,i)=>{
-      let cx=0,cy=0;
-      if(d.type==='seg'){cx=(d.a.x+d.b.x)/2;cy=(d.a.y+d.b.y)/2;}
-      else if(d.type==='arc'){cx=d.c.x;cy=d.c.y;}
-      else if(d.type==='circ'){cx=d.c.x;cy=d.c.y;}
-      else if(d.type==='door'){cx=d.c.x;cy=d.c.y;}
-      else if(d.type==='window'){cx=(d.a.x+d.b.x)/2;cy=(d.a.y+d.b.y)/2;}
-      else if(d.type==='dim'){cx=(d.a.x+d.b.x)/2;cy=(d.a.y+d.b.y)/2;}
-      else if(d.type==='label'){cx=d.p.x;cy=d.p.y;}
-      const dd=(cx-P.x)*(cx-P.x)+(cy-P.y)*(cy-P.y); if(dd<bd){bd=dd; bi=i;}
-    });
-    if(bi>=0) sketch.splice(bi,1);
-  }
-});
-addEventListener('dblclick', e=>{ if(ui.mode.value==='architect2d' && polyLive) polyLive=null; });
-addEventListener('mousemove', e=>{
-  if(ui.mode.value==='architect2d'){
-    hoverPoint = snap2D(e.clientX,e.clientY,false);
-    if(!ui.lockView.checked && (spacePan || dragging)){ pan.x += (e.movementX||0); pan.y += (e.movementY||0); }
-  } else if(ui.mode.value==='bubble4d' && dragging){
-    rot4.xy += (e.movementX||0)*0.003;
-    rot4.xz += (e.movementY||0)*0.003;
-  }
-});
-addEventListener('mouseup', ()=>{ dragging=false; });
-canvas.addEventListener('wheel', e=>{
-  e.preventDefault();
-  const f=Math.exp(-e.deltaY*0.001);
-  if(ui.mode.value==='architect2d'){
-    const before=zoom; zoom = Math.max(0.25, Math.min(5, zoom*f));
-    if(ui.lockView.checked){ recenter(); }
-    else{
-      const w=canvas.width/DPR, h=canvas.height/DPR; const cx=w/2, cy=h/2;
-      pan.x = cx - (cx - pan.x) * (zoom/before);
-      pan.y = cy - (cy - pan.y) * (zoom/before);
-    }
-  } else {
-    scale4 = Math.max(0.5, Math.min(2.2, scale4 * f));
-  }
-},{passive:false});
-addEventListener('keydown', e=>{ if(e.code==='Space'){ spacePan=true; dragging=true; } });
-addEventListener('keyup',   e=>{ if(e.code==='Space'){ spacePan=false; dragging=false; } });
-
-/* ===================== 4D BUBBLE LAB (ORTHOGRAPHIC) ===================== */
-let scale4=1.10;
-let rot4={xy:0.0,xz:0.0,yz:0.0}; // camera-like
-const lab={ nodes:[], edges:[] };
-let hyperLive=null;
-
-// Build a regular 4-D hypercubic lattice in [-1,1]^4 (equal spacing)
-function rebuild4D(){
-  const N = Math.max(2, Math.min(9, +ui.N4.value||5));
-  lab.nodes.length=0; lab.edges.length=0;
-  for(let i=0;i<N;i++){
-    const x = (N===1?0 : i/(N-1))*2 - 1;
-    for(let j=0;j<N;j++){
-      const y = (N===1?0 : j/(N-1))*2 - 1;
-      for(let k=0;k<N;k++){
-        const z = (N===1?0 : k/(N-1))*2 - 1;
-        for(let l=0;l<N;l++){
-          const w = (N===1?0 : l/(N-1))*2 - 1;
-          lab.nodes.push({x,y,z,w});
-        }
+function drawShapes(){
+  ctx.save();
+  // draw all shapes in screen space (apply world->screen)
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.lineWidth=state.strokeW; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
+  state.shapes.forEach(s=>{
+    if(s.type==='seg'){
+      const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y);
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+      if(s.wall>0){
+        const nx=b.y-a.y, ny=-(b.x-a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L, t=s.wall/2;
+        ctx.beginPath(); ctx.moveTo(a.x+ux*t,a.y+uy*t); ctx.lineTo(b.x+ux*t,b.y+uy*t); ctx.lineTo(b.x-ux*t,b.y-uy*t); ctx.lineTo(a.x-ux*t,a.y-uy*t); ctx.closePath(); ctx.stroke();
       }
     }
-  }
-}
-ui.regen4.addEventListener('click', rebuild4D);
-['ax_xw','ax_yw','ax_zw','sliceW','scale4','stroke4','nodeR'].forEach(id=>$(id).addEventListener('input',()=>{}));
-ui.undo4.addEventListener('click', ()=>{ lab.edges.pop(); });
-ui.clear4.addEventListener('click', ()=>{ lab.edges.length=0; });
-ui.export4json.addEventListener('click', ()=>{
-  const data={nodes:lab.nodes, edges:lab.edges};
-  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download='universe120-4d.json'; a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),1500);
-});
-
-// Rotate in specific planes (orthonormal)
-function rotPlane(a,b,theta){ const c=Math.cos(theta), s=Math.sin(theta); return [a*c - b*s, a*s + b*c]; }
-
-// *** Core: Orthographic 4-D → 2-D projection with uniform scale ***
-function project4Dto2D(P){
-  const axw=(+ui.ax_xw.value||0)*Math.PI/180;
-  const ayw=(+ui.ax_yw.value||0)*Math.PI/180;
-  const azw=(+ui.ax_zw.value||0)*Math.PI/180;
-  let {x,y,z,w}=P;
-
-  // rotate in 4D (user sliders)
-  [x,w]=rotPlane(x,w,axw);
-  [y,w]=rotPlane(y,w,ayw);
-  [z,w]=rotPlane(z,w,azw);
-
-  // camera-ish rotations in 3D subspace for view control
-  [x,y]=rotPlane(x,y,rot4.xy);
-  [x,z]=rotPlane(x,z,rot4.xz);
-
-  // slice by |w| (hides nodes but DOES NOT scale them)
-  const slice=+ui.sliceW.value;
-  if(Math.abs(w)>slice) return null;
-
-  // pure linear (orthographic) 4D→2D mapping; tuned so axes don't collapse
-  // Take X,Y directly, and blend a little Z,W to spread nicely.
-  const sx = x + 0.5*z + 0.35*w;
-  const sy = y + 0.5*z - 0.35*w;
-
-  return {sx, sy};
-}
-
-function screenXY(pt){
-  const s = 180*(+ui.scale4.value||1);
-  const cx = canvas.width/DPR/2, cy=canvas.height/DPR/2;
-  return {x: cx + pt.sx*s, y: cy + pt.sy*s};
-}
-
-function nearestProjectedNode(mx,my){
-  let best=-1, bd=1e9, bestPt=null;
-  for(let i=0;i<lab.nodes.length;i++){
-    const P=project4Dto2D(lab.nodes[i]); if(!P) continue;
-    const S=screenXY(P);
-    const d2=(S.x-mx)*(S.x-mx)+(S.y-my)*(S.y-my);
-    if(d2<bd){ bd=d2; best=i; bestPt={screen:S}; }
-  }
-  return (best>=0)? {index:best, screen:bestPt.screen} : null;
-}
-
-canvas.addEventListener('mousedown', e=>{
-  if(ui.mode.value!=='bubble4d' || e.button!==0) return;
-  const pick = nearestProjectedNode(e.clientX,e.clientY);
-  if(!pick) return;
-  const tool=ui.tool4d.value;
-  if(tool==='hseg'){
-    if(!hyperLive) hyperLive={start:pick.index};
-    else{ lab.edges.push({A:hyperLive.start, B:pick.index}); hyperLive=null; }
-  } else if(tool==='hpoly'){
-    if(!hyperLive) hyperLive={points:[pick.index]};
-    else{ const last = hyperLive.points[hyperLive.points.length-1]; lab.edges.push({A:last, B:pick.index}); hyperLive.points.push(pick.index); }
-  } else if(tool==='erase4'){
-    // remove closest edge by midpoint distance
-    let bi=-1, bd=1e9;
-    for(let i=0;i<lab.edges.length;i++){
-      const eij=lab.edges[i];
-      const Pa=project4Dto2D(lab.nodes[eij.A]);
-      const Pb=project4Dto2D(lab.nodes[eij.B]);
-      if(!Pa||!Pb) continue;
-      const Sa=screenXY(Pa), Sb=screenXY(Pb);
-      const mxp=(Sa.x+Sb.x)/2, myp=(Sa.y+Sb.y)/2;
-      const d2=(mxp-e.clientX)*(mxp-e.clientX)+(myp-e.clientY)*(myp-e.clientY);
-      if(d2<bd){ bd=d2; bi=i; }
+    if(s.type==='rect'){
+      const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y);
+      ctx.strokeRect(Math.min(a.x,b.x), Math.min(a.y,b.y), Math.abs(b.x-a.x), Math.abs(b.y-a.y));
     }
-    if(bi>=0) lab.edges.splice(bi,1);
+    if(s.type==='arc'){
+      const c=toScreen(s.c.x,s.c.y); ctx.beginPath();
+      ctx.arc(c.x,c.y, s.r*state.zoom, s.a1, s.a2); ctx.stroke();
+    }
+    if(s.type==='circ'){
+      const c=toScreen(s.c.x,s.c.y); ctx.beginPath(); ctx.arc(c.x,c.y, s.r*state.zoom, 0, Math.PI*2); ctx.stroke();
+    }
+    if(s.type==='label'){
+      const p=toScreen(s.p.x,s.p.y); ctx.font='14px system-ui'; ctx.fillText(s.text||'Label', p.x, p.y);
+    }
+    if(s.type==='dim'){
+      const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.strokeStyle='#cc0000';
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+      ctx.fillStyle='#cc0000'; ctx.font='12px system-ui';
+      ctx.fillText(s.text||'', (a.x+b.x)/2+4, (a.y+b.y)/2-4);
+      ctx.strokeStyle='#111'; ctx.fillStyle='#111';
+    }
+  });
+  // live shape preview
+  if(state.drawing){
+    ctx.setLineDash([6,6]);
+    ctx.strokeStyle='#555';
+    const h=state.hover?.screen;
+    if(state.drawing.type==='tempLine' && h){
+      const A=toScreen(state.drawing.A.x,state.drawing.A.y);
+      ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(h.x,h.y); ctx.stroke();
+    }
+    if(state.drawing.type==='tempRect' && h){
+      const A=toScreen(state.drawing.A.x,state.drawing.A.y);
+      ctx.strokeRect(Math.min(A.x,h.x), Math.min(A.y,h.y), Math.abs(h.x-A.x), Math.abs(h.y-A.y));
+    }
+    if(state.drawing.type==='tempCirc' && h){
+      const A=toScreen(state.drawing.A.x,state.drawing.A.y); const r=Math.hypot(h.x-A.x,h.y-A.y);
+      ctx.beginPath(); ctx.arc(A.x,A.y,r,0,Math.PI*2); ctx.stroke();
+    }
+    if(state.drawing.type==='tempArc' && h){
+      const A=toScreen(state.drawing.A.x,state.drawing.A.y);
+      const C={x:(A.x+h.x)/2, y:(A.y+h.y)/2}, r=Math.hypot(h.x-A.x,h.y-A.y)/2;
+      const a1=Math.atan2(A.y-C.y, A.x-C.x), a2=Math.atan2(h.y-C.y, h.x-C.x);
+      ctx.beginPath(); ctx.arc(C.x,C.y,r,a1,a2); ctx.stroke();
+    }
+    if(state.drawing.type==='tempPoly' && h){
+      const pts=state.drawing.points; const A=pts[pts.length-1];
+      const L=applyAngleLock(A, state.hover);
+      const pA=toScreen(A.x,A.y), pL=toScreen(L.x,L.y);
+      ctx.beginPath(); ctx.moveTo(pA.x,pA.y); ctx.lineTo(pL.x,pL.y); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    ctx.strokeStyle='#111';
   }
-});
-
-/* ===================== SHARED RENDER LOOP ===================== */
-function drawBackground(){
-  if(!bg.img || ui.mode.value!=='architect2d') return;
-  const w=canvas.width/DPR,h=canvas.height/DPR;
-  ctx.save(); ctx.globalAlpha=bg.alpha;
-  ctx.translate(w/2 + bg.offX, h/2 + bg.offY); ctx.rotate(bg.rot); ctx.scale(bg.scale, bg.scale);
-  ctx.drawImage(bg.img, -bg.img.width/2, -bg.img.height/2);
+  // hover snap dot
+  if(state.hover?.screen){
+    ctx.fillStyle='#222'; ctx.beginPath(); ctx.arc(state.hover.screen.x, state.hover.screen.y, 3.2, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#111';
+  }
   ctx.restore();
 }
-
-let last=0;
-function render(t){
-  if(t-last<14){ requestAnimationFrame(render); return; }
-  last=t;
+function frame(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round';
-
-  if(ui.mode.value==='architect2d'){
-    drawBackground();
-    drawGrid2D();
-    ctx.lineWidth=+ui.stroke2d.value; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
-    sketch.forEach(d=>{
-      if(d.type==='seg'){ ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke();
-        if(d.wall>0){ const nx = d.b.y-d.a.y, ny=-(d.b.x-d.a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L, tt=d.wall/2;
-          ctx.beginPath(); ctx.moveTo(d.a.x+ux*tt,d.a.y+uy*tt); ctx.lineTo(d.b.x+ux*tt,d.b.y+uy*tt); ctx.lineTo(d.b.x-ux*tt,d.b.y-uy*tt); ctx.lineTo(d.a.x-ux*tt,d.a.y-uy*tt); ctx.closePath(); ctx.stroke();
-        }
-      }
-      if(d.type==='arc'){ ctx.beginPath(); ctx.arc(d.c.x,d.c.y,d.r,d.a1,d.a2,d.ccw||false); ctx.stroke(); }
-      if(d.type==='circ'){ ctx.beginPath(); ctx.arc(d.c.x,d.c.y,d.r,0,Math.PI*2); ctx.stroke(); }
-      if(d.type==='door'){ ctx.strokeStyle='#0077ff'; ctx.beginPath(); ctx.arc(d.c.x,d.c.y,18,0,Math.PI/2,false); ctx.stroke(); ctx.strokeStyle='#111'; }
-      if(d.type==='window'){ ctx.strokeStyle='#00aa66'; ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke(); ctx.strokeStyle='#111'; }
-      if(d.type==='dim'){ ctx.strokeStyle='#cc0000'; ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke();
-        const mx=(d.a.x+d.b.x)/2, my=(d.a.y+d.b.y)/2; ctx.fillStyle='#cc0000'; ctx.font='12px system-ui'; ctx.fillText(d.text||'', mx+4, my-4); ctx.strokeStyle='#111'; ctx.fillStyle='#111'; }
-      if(d.type==='label'){ ctx.fillStyle='#333'; ctx.font='14px system-ui'; ctx.fillText(d.text||'Room', d.p.x, d.p.y); ctx.fillStyle='#111'; }
-    });
-    if(hoverPoint){ ctx.fillStyle='#333'; ctx.beginPath(); ctx.arc(hoverPoint.x,hoverPoint.y,2,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#111'; }
-    ctx.fillStyle='#222'; ctx.font='12px system-ui';
-    ctx.fillText('2D Architect: Walls/Doors/Windows/Dimensions • SVG export • Photo calibration • View locked', 16, canvas.height/DPR-18);
-  } else {
-    // 4D Bubble Lab (orthographic)
-    const stroke = +ui.stroke4.value||1.4;
-    const rNode = +ui.nodeR.value||4.5;
-    ctx.lineWidth=stroke; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
-
-    // nodes (no depth scaling; pure uniform circles)
-    for(let i=0;i<lab.nodes.length;i++){
-      const P=project4Dto2D(lab.nodes[i]); if(!P) continue;
-      const S=screenXY(P);
-      ctx.beginPath(); ctx.arc(S.x, S.y, rNode, 0, Math.PI*2); ctx.stroke();
-    }
-
-    // edges
-    lab.edges.forEach(eij=>{
-      const Pa=project4Dto2D(lab.nodes[eij.A]); const Pb=project4Dto2D(lab.nodes[eij.B]);
-      if(!Pa||!Pb) return;
-      const Sa=screenXY(Pa), Sb=screenXY(Pb);
-      ctx.beginPath(); ctx.moveTo(Sa.x,Sa.y); ctx.lineTo(Sb.x,Sb.y); ctx.stroke();
-    });
-
-    // HUD
-    ctx.fillStyle='#222'; ctx.font='12px system-ui';
-    ctx.fillText('4D Bubble Lab (Orthographic): Equal spacing • Uniform nodes • Drag=rotate XY/XZ • Sliders rotate xw/yw/zw • Slice hides only', 16, canvas.height/DPR-18);
-  }
-
-  ctx.restore();
-  requestAnimationFrame(render);
+  drawGrid(); drawShapes();
+  requestAnimationFrame(frame);
 }
-requestAnimationFrame(render);
+requestAnimationFrame(frame);
 
-// init
-rebuild4D();
-coach.innerHTML = `<b>Welcome</b><br>2D: trace & draft plans. 4D: perfectly regular orthographic lattice; draw hyper-segments with uniform bubbles.`;
-}
-startApp();
+/* ======= Helpers done ======= */
 </script>
 </body>
 </html>
