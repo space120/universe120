@@ -189,14 +189,26 @@ function $(q){ return document.querySelector(q); }
 function all(q){ return [...document.querySelectorAll(q)]; }
 const stTool=$('#stTool'), stSnap=$('#stSnap'), stZoom=$('#stZoom'), stPos=$('#stPos');
 
-all('.tool').forEach(t=>{
-  t.addEventListener('click', ()=>{
-    all('.tool').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    state.tool = t.dataset.tool;
-    stTool.textContent = 'Tool: ' + t.title.split('(')[0].trim();
+// Robust toolbar handling (icons/labels inside button are fine)
+const toolbarEl = document.querySelector('.toolbar');
+
+function setTool(name){
+  state.tool = name;
+  state.drawing = null; // exit current drawing mode (Pen/Line/etc.)
+  document.querySelectorAll('.tool').forEach(el=>{
+    el.classList.toggle('active', el.dataset.tool === name);
   });
+  const titles = {select:'Select', pen:'Pen / Polyline', line:'Line', arc:'Arc', rect:'Rectangle', circ:'Circle', text:'Text', dim:'Dimension', erase:'Erase'};
+  stTool.textContent = 'Tool: ' + (titles[name] || name);
+}
+
+toolbarEl.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.tool');
+  if(!btn) return;
+  e.preventDefault();
+  setTool(btn.dataset.tool);
 });
+
 $('#gridScale').addEventListener('input', e=>{ state.gridScale=+e.target.value; });
 $('#dotSize').addEventListener('input', e=>{ state.dotScale=+e.target.value; });
 $('#snapMode').addEventListener('change', e=>{ state.snap=e.target.value; stSnap.textContent='Snap: '+e.target.selectedOptions[0].textContent; });
