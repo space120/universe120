@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Universe120 — 2D Architect + 3D Tutor</title>
+<title>Universe120 — 2D Architect + 4D Bubble Lab</title>
 <style>
 :root{--bg:#f7f7fb;--card:#ffffffcc;--ink:#111;--muted:#666;--border:#e7e7ee;--brand:#3538ff}
 *{box-sizing:border-box}
@@ -12,7 +12,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family
 .site-header{top:0;padding:10px 16px}
 .site-footer{bottom:0;justify-content:center;border-top:1px solid var(--border);border-bottom:none;padding:8px 16px}
 .brand{font-weight:800}
-#ui.panel{position:fixed;left:16px;top:64px;z-index:15;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;max-width:420px;box-shadow:0 6px 22px rgba(0,0,0,.07)}
+#ui.panel{position:fixed;left:16px;top:64px;z-index:15;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;max-width:480px;box-shadow:0 6px 22px rgba(0,0,0,.07)}
 #ui h1{margin:.25rem 0 .5rem;font-size:18px}
 .row{display:flex;gap:8px;align-items:center;margin:.35rem 0}
 label{font-size:12px;color:#444;min-width:120px}
@@ -25,59 +25,46 @@ button:hover{background:#f6f6ff}
 button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
 .kbd{background:#eee;border:1px solid #ccc;border-bottom-color:#bbb;border-radius:4px;padding:0 4px;font-family:ui-monospace,Menlo,Consolas,monospace}
 #canvas{display:block;width:100vw;height:100vh}
-.overlay{position:fixed;right:16px;top:64px;z-index:16;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 12px;max-width:420px;box-shadow:0 6px 22px rgba(0,0,0,.07);font-size:13px}
-@media (max-width: 640px){
+.overlay{position:fixed;right:16px;top:64px;z-index:16;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 12px;max-width:520px;box-shadow:0 6px 22px rgba(0,0,0,.07);font-size:13px}
+@media (max-width: 700px){
   #ui.panel { max-width: 92vw; left: 4vw; }
   .row button, .row select, .row input[type=range], .row input[type=number], .row input[type=text] { min-height: 40px; }
 }
-/* Password gate */
-#gate{position:fixed;inset:0;background:#0a0a0f;color:#eee;display:flex;align-items:center;justify-content:center;z-index:9999}
-#gate .box{width:min(90vw,440px);background:#14141b;border:1px solid #2a2a35;border-radius:14px;padding:22px;box-shadow:0 10px 40px rgba(0,0,0,.35);text-align:center}
-#gate input{width:100%;padding:12px;border-radius:10px;border:1px solid #39394a;background:#0e0e15;color:#eaeaf2}
-#gate button{width:100%;margin-top:10px;background:#3538ff;color:#fff;border:0;padding:12px;border-radius:10px;font-size:15px}
+.badge{font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:999px;background:#fff}
 </style>
 </head>
 <body>
-<!-- ====== PASSWORD GATE ====== -->
-<div id="gate" aria-modal="true">
-  <div class="box">
-    <h2>Universe120 — Private Build</h2>
-    <p>Enter access key to view.</p>
-    <input id="gateKey" type="password" placeholder="••••••">
-    <button id="gateBtn">Enter</button>
-    <small>Tip: set <b>ACCESS_KEY</b> in the code to change/disable.</small>
-  </div>
-</div>
-
 <header class="site-header">
-  <div class="brand">Universe120 <span style="font-size:12px;border:1px solid var(--border);border-radius:999px;padding:2px 8px;background:#fff">2D Architect + 3D Tutor</span></div>
+  <div class="brand">Universe120 <span class="badge">2D Architect + 4D Bubble Lab</span></div>
 </header>
 
-<aside id="ui" class="panel" hidden>
+<aside id="ui" class="panel">
   <h1>Toolkit</h1>
 
   <div class="row">
     <label for="mode">Mode</label>
     <select id="mode">
       <option value="architect2d" selected>2D Architect</option>
-      <option value="tutor3d">3D Tutor</option>
+      <option value="bubble4d">4D Bubble Lab</option>
     </select>
   </div>
 
   <!-- 2D Architect -->
   <fieldset id="arch2dBlock">
     <legend>2D Architect</legend>
-
     <div class="row"><label>Tool</label>
       <select id="tool2d">
         <option value="segment" selected>Segment</option>
         <option value="poly">Polyline</option>
         <option value="arc">Arc (two clicks)</option>
         <option value="circle">Circle (grid radius)</option>
+        <option value="door">Door block</option>
+        <option value="window">Window block</option>
+        <option value="dim">Dimension</option>
+        <option value="label">Room label</option>
         <option value="erase">Erase</option>
       </select>
     </div>
-
     <div class="row"><label>Snap</label>
       <select id="snap2d">
         <option value="intersections" selected>Intersections</option>
@@ -86,7 +73,6 @@ button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
         <option value="free">Free</option>
       </select>
     </div>
-
     <div class="row"><label>Angle Lock</label>
       <select id="lockAngle">
         <option value="off" selected>Off</option>
@@ -95,8 +81,8 @@ button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
         <option value="fortyfive">45/90°</option>
       </select>
     </div>
-
-    <div class="row"><label>Wall (px)</label><input id="wallThick" type="number" min="0" max="50" step="1" value="8"></div>
+    <div class="row"><label>Wall (px)</label><input id="wallThick" type="number" min="0" max="60" step="1" value="10"></div>
+    <div class="row"><label>Parallel Offset</label><input id="wallOffset" type="number" min="0" max="80" step="1" value="36"> <button id="offsetBtn">Offset</button></div>
     <div class="row"><label>Stroke</label><input id="stroke2d" type="range" min="0.6" max="3" step="0.1" value="1.4"></div>
 
     <div class="row"><label>View</label>
@@ -120,69 +106,54 @@ button.primary{background:#3538ff;color:#fff;border-color:#3538ff}
       <input id="calibSteps" type="number" min="1" max="50" step="1" value="4" title="Grid steps between picks" style="width:80px">
     </div>
 
-    <p style="font-size:11px;color:#666">Tips: <span class="kbd">Shift</span> = stronger snap • Double-click ends a polyline • View is locked so you won’t “lose” your plan while zooming</p>
+    <p style="font-size:11px;color:#666">Tips: <span class="kbd">Shift</span> strong snap • Double-click ends polyline • View is locked so you don’t lose your place</p>
   </fieldset>
 
-  <!-- 3D Tutor -->
-  <fieldset id="tutor3dBlock" style="display:none">
-    <legend>3D Tutor</legend>
+  <!-- 4D Bubble Lab -->
+  <fieldset id="lab4dBlock" style="display:none">
+    <legend>4D Bubble Lab</legend>
 
-    <div class="row"><label>Mode</label>
-      <select id="tutorMode">
-        <option value="learn" selected>Learn (guided)</option>
-        <option value="answer">Answer (quick)</option>
+    <div class="row"><label>Tool</label>
+      <select id="tool4d">
+        <option value="hseg" selected>Hyper-Segment</option>
+        <option value="hpoly">Hyper-Polyline</option>
+        <option value="erase4">Erase</option>
       </select>
     </div>
 
-    <div class="row"><label>Problem</label>
-      <select id="problem">
-        <option value="pythag">Pythagorean (hypotenuse)</option>
-        <!-- we’ll add more later -->
-      </select>
+    <div class="row"><label>Lattice Size</label>
+      <input id="N4" type="number" min="2" max="9" step="1" value="5" style="width:80px">
+      <button id="regen4">Rebuild</button>
     </div>
 
-    <div class="row" id="pyInputs">
-      <label>a, b</label>
-      <input id="legA" type="number" min="0" step="0.01" value="3" style="width:90px">
-      <input id="legB" type="number" min="0" step="0.01" value="4" style="width:90px">
-      <button id="runProblem" class="primary">Run</button>
-    </div>
+    <div class="row"><label>Rotate (xw)</label><input id="ax_xw" type="range" min="-180" max="180" step="1" value="-20"></div>
+    <div class="row"><label>Rotate (yw)</label><input id="ax_yw" type="range" min="-180" max="180" step="1" value="20"></div>
+    <div class="row"><label>Rotate (zw)</label><input id="ax_zw" type="range" min="-180" max="180" step="1" value="-10"></div>
 
-    <div class="row"><label>3D View</label>
-      <span><button id="reset3d">Reset</button></span>
+    <div class="row"><label>Slice |W| ≤</label><input id="sliceW" type="range" min="0" max="1" step="0.01" value="0.65"></div>
+    <div class="row"><label>Scale</label><input id="scale4" type="range" min="0.4" max="2" step="0.01" value="1.15"></div>
+    <div class="row"><label>Stroke</label><input id="stroke4" type="range" min="0.6" max="3" step="0.1" value="1.4"></div>
+
+    <div class="row"><button id="undo4">Undo</button><button id="clear4">Clear</button>
+      <button id="export4json" class="primary">Export JSON</button>
     </div>
-    <p style="font-size:11px;color:#666">Drag to rotate • Wheel to zoom. In “Learn” we reveal each step instead of dumping the answer.</p>
+    <p style="font-size:11px;color:#666">Snap: nearest projected 4-D node • Drag = rotate view • Wheel = zoom</p>
   </fieldset>
 </aside>
 
-<div id="coach" class="overlay" hidden></div>
-
-<canvas id="canvas" hidden></canvas>
+<div id="coach" class="overlay"></div>
+<canvas id="canvas"></canvas>
 
 <footer class="site-footer">
   <small>© <span id="year"></span> Universe120 • Learn by building</small>
 </footer>
 
 <script>
-/* ===== CONFIG ===== */
-const ACCESS_KEY = '120beta'; // set '' to disable the gate
-/* ================== */
 document.getElementById('year').textContent = new Date().getFullYear();
 
-/* Gate */
-const gate = document.getElementById('gate');
-const gateBtn = document.getElementById('gateBtn');
-const gateKey = document.getElementById('gateKey');
-function openSite(){ gate.remove(); document.getElementById('ui').hidden=false; document.getElementById('canvas').hidden=false; document.getElementById('coach').hidden=false; startApp(); }
-function tryGate(){ if(ACCESS_KEY==='' || gateKey.value===ACCESS_KEY) openSite(); else alert('Incorrect key'); }
-gateBtn.addEventListener('click', tryGate);
-gateKey.addEventListener('keydown', e=>{ if(e.key==='Enter') tryGate(); });
-if(ACCESS_KEY==='') openSite();
-
-/* ===== APP ===== */
 function startApp(){
 const canvas = document.getElementById('canvas');
-const coach = document.getElementById('coach');
+const coach  = document.getElementById('coach');
 const ctx = canvas.getContext('2d',{alpha:true});
 let DPR = Math.min(devicePixelRatio||1,2);
 function resize(){ const w=innerWidth,h=innerHeight; canvas.style.width=w+'px'; canvas.style.height=h+'px'; canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR); ctx.setTransform(DPR,0,0,DPR,0,0); }
@@ -193,37 +164,36 @@ const ui={
   mode:$('mode'),
   // 2D
   arch2dBlock:$('arch2dBlock'), tool2d:$('tool2d'), snap2d:$('snap2d'), lockAngle:$('lockAngle'),
-  wallThick:$('wallThick'), stroke2d:$('stroke2d'),
-  lockView:$('lockView'), recenter2d:$('recenter2d'), zoomReset2d:$('zoomReset2d'),
+  wallThick:$('wallThick'), wallOffset:$('wallOffset'), offsetBtn:$('offsetBtn'),
+  stroke2d:$('stroke2d'), lockView:$('lockView'), recenter2d:$('recenter2d'), zoomReset2d:$('zoomReset2d'),
   undo2d:$('undo2d'), clear2d:$('clear2d'), exportSvg:$('exportSvg'),
   bgUpload:$('bgUpload'), bgAlpha:$('bgAlpha'), bgScale:$('bgScale'), bgRot:$('bgRot'), bgOffX:$('bgOffX'), bgOffY:$('bgOffY'),
   calibStart:$('calibStart'), calibSteps:$('calibSteps'),
-  // 3D
-  tutor3dBlock:$('tutor3dBlock'), tutorMode:$('tutorMode'), problem:$('problem'),
-  legA:$('legA'), legB:$('legB'), runProblem:$('runProblem'), reset3d:$('reset3d')
+  // 4D
+  lab4dBlock:$('lab4dBlock'), tool4d:$('tool4d'), N4:$('N4'), regen4:$('regen4'),
+  ax_xw:$('ax_xw'), ax_yw:$('ax_yw'), ax_zw:$('ax_zw'),
+  sliceW:$('sliceW'), scale4:$('scale4'), stroke4:$('stroke4'),
+  undo4:$('undo4'), clear4:$('clear4'), export4json:$('export4json')
 };
 
 ui.mode.addEventListener('change', ()=>{
   ui.arch2dBlock.style.display = ui.mode.value==='architect2d' ? '' : 'none';
-  ui.tutor3dBlock.style.display = ui.mode.value==='tutor3d' ? '' : 'none';
-  if(ui.mode.value==='tutor3d') stepIndex=0;
-  render(0,true);
+  ui.lab4dBlock.style.display  = ui.mode.value==='bubble4d'   ? '' : 'none';
 });
 
-/* ===== 2D Architect (locked grid) ===== */
 let pan={x:0,y:0}, zoom=1;
-const ORIGIN={x:0,y:0}; // we keep grid anchored here
 function recenter(){ pan.x=0; pan.y=0; }
 function resetZoom(){ zoom=1; }
+ui.recenter2d.addEventListener('click', recenter);
+ui.zoomReset2d.addEventListener('click', resetZoom);
 
-ui.recenter2d.addEventListener('click', ()=>{ recenter(); });
-ui.zoomReset2d.addEventListener('click', ()=>{ resetZoom(); });
-
+/* ===================== 2D ARCHITECT ===================== */
+const ORIGIN={x:0,y:0}; // anchored grid
 const Rbase=26;
 function gridParams(){ const R=Rbase*zoom, stepX=R, stepY=R*Math.sqrt(3)/2; return {R,stepX,stepY}; }
 
-const sketch=[]; // {type:'seg'|'arc'|'circ'|'pt', ...}
-let polyLive=null, arcStart=null;
+const sketch=[]; // {type:'seg'|'arc'|'circ'|'door'|'window'|'dim'|'label'}
+let polyLive=null, arcStart=null, hoverPoint=null;
 
 function centersNear(x,y,range=3){
   const {stepX,stepY}=gridParams();
@@ -234,12 +204,11 @@ function centersNear(x,y,range=3){
       const r=rr+dr,c=cc+dc,gx=c*stepX+(r%2? stepX/2:0), gy=r*stepY;
       pts.push({x:gx,y:gy,kind:'center'});
     }
-  // midpoints (dense but useful)
   const mids=[];
   for(let i=0;i<pts.length;i++){
     const a=pts[i];
     for(let j=i+1;j<pts.length;j++){
-      const b=pts[j]; if(Math.hypot(a.x-b.x,a.y-b.y) < stepX*1.05){ mids.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,kind:'mid'}); }
+      const b=pts[j]; if(Math.hypot(a.x-b.x,a.y-b.y) < stepX*1.02){ mids.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,kind:'mid'}); }
     }
   }
   return pts.concat(mids);
@@ -254,9 +223,9 @@ function snap2D(clientX,clientY,strong){
   cand.forEach(p=>{
     const sx=p.x + (pan.x % stepX), sy=p.y + (pan.y % stepY);
     const d2=(sx-clientX)*(sx-clientX)+(sy-clientY)*(sy-clientY);
-    if(d2<bd){bd=d2; best={x:sx,y:sy};}
+    if(d2<bd){bd=d2; best={x:sx,y:sy,kind:p.kind};}
   });
-  return best || {x:clientX,y:clientY};
+  return best || {x:clientX,y:clientY,kind:'free'};
 }
 function applyAngleLock(a0,a1,mode){
   if(mode==='off') return a1;
@@ -270,10 +239,9 @@ function applyAngleLock(a0,a1,mode){
   return {x:a0.x+Math.cos(best)*len,y:a0.y+Math.sin(best)*len};
 }
 
-function drawGrid(){
+function drawGrid2D(){
   const {R,stepX,stepY}=gridParams();
   const w=canvas.width/DPR,h=canvas.height/DPR;
-  // anchor grid at ORIGIN and keep stable
   ctx.save();
   ctx.translate((w/2 + ORIGIN.x) % stepX, (h/2 + ORIGIN.y) % stepY);
   ctx.lineWidth=0.9; ctx.strokeStyle='#00000018';
@@ -291,14 +259,13 @@ function drawGrid(){
 const bg={img:null, alpha:0.5, scale:1, rot:0, offX:0, offY:0, calib:[]};
 ui.bgUpload.addEventListener('change', (e)=>{
   const file=e.target.files[0]; if(!file) return;
-  const fr=new FileReader(); fr.onload=()=>{ const im=new Image(); im.onload=()=>{ bg.img=im; render(0,true); }; im.src=fr.result; }; fr.readAsDataURL(file);
+  const fr=new FileReader(); fr.onload=()=>{ const im=new Image(); im.onload=()=>{ bg.img=im; }; im.src=fr.result; }; fr.readAsDataURL(file);
 });
 ui.bgAlpha.addEventListener('input', ()=>{ bg.alpha=+ui.bgAlpha.value; });
 ui.bgScale.addEventListener('input', ()=>{ bg.scale=+ui.bgScale.value; });
 ui.bgRot.addEventListener('input',  ()=>{ bg.rot=+ui.bgRot.value*Math.PI/180; });
 ui.bgOffX.addEventListener('input', ()=>{ bg.offX=+ui.bgOffX.value; });
 ui.bgOffY.addEventListener('input', ()=>{ bg.offY=+ui.bgOffY.value; });
-
 ui.calibStart.addEventListener('click', ()=>{
   bg.calib=[]; alert('Calibration: click two points on the photo that should be N grid steps apart (set N).');
   calibMode=true;
@@ -312,15 +279,13 @@ canvas.addEventListener('click', e=>{
     const dx=bg.calib[1].x - bg.calib[0].x, dy=bg.calib[1].y - bg.calib[0].y;
     const dist=Math.hypot(dx,dy);
     const {stepX}=gridParams();
-    const target = N*stepX; // we want those picks to match N steps
+    const target = N*stepX;
     const s = target / dist;
     bg.scale *= s;
-    bg.rot = Math.atan2(dy,dx); // align to grid x axis
-    // move first pick onto nearest grid center
+    bg.rot = Math.atan2(dy,dx);
     const snapped = snap2D(bg.calib[0].x, bg.calib[0].y, true);
     bg.offX += snapped.x - bg.calib[0].x;
     bg.offY += snapped.y - bg.calib[0].y;
-    // apply to controls
     ui.bgScale.value = bg.scale.toFixed(2);
     ui.bgRot.value   = Math.round(bg.rot*180/Math.PI);
     ui.bgOffX.value  = Math.round(bg.offX);
@@ -330,34 +295,48 @@ canvas.addEventListener('click', e=>{
   }
 });
 
-/* Drawing */
-ui.undo2d.addEventListener('click', ()=>{ sketch.pop(); render(0,true); });
-ui.clear2d.addEventListener('click', ()=>{ sketch.length=0; render(0,true); });
-ui.exportSvg.addEventListener('click', exportSVG);
+/* Drawing + blocks + dims */
+function addSeg(A,B,wall){ sketch.push({type:'seg', a:A, b:B, wall:wall||0}); }
+function addDoor(center,dirLen=40, swing=1){ sketch.push({type:'door',c:center,len:dirLen,swing}); }
+function addWindow(A,B){ sketch.push({type:'window',a:A,b:B}); }
+function addDim(A,B,label){ sketch.push({type:'dim',a:A,b:B,text:label||''}); }
+function addLabel(P,text){ sketch.push({type:'label',p:P,text:text||'Room'}); }
 
-function exportSVG(){
-  const w=canvas.width/DPR,h=canvas.height/DPR;
-  const p=[]; p.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none" stroke="#111" stroke-width="${+ui.stroke2d.value}">`);
-  sketch.forEach(d=>{
-    if(d.type==='seg') p.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`);
-    if(d.type==='circ') p.push(`<circle cx="${d.c.x}" cy="${d.c.y}" r="${d.r}"/>`);
-    if(d.type==='arc'){
-      const x1=d.c.x+d.r*Math.cos(d.a1), y1=d.c.y+d.r*Math.sin(d.a1);
-      const x2=d.c.x+d.r*Math.cos(d.a2), y2=d.c.y+d.r*Math.sin(d.a2);
-      p.push(`<path d="M ${x1} ${y1} A ${d.r} ${d.r} 0 0 ${d.ccw?1:0} ${x2} ${y2}"/>`);
-    }
-  });
-  p.push(`</svg>`);
-  const blob = new Blob([p.join('\n')], {type:'image/svg+xml'});
-  const url = URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download='universe120-architect.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
-}
+ui.undo2d.addEventListener('click', ()=>{ sketch.pop(); });
+ui.clear2d.addEventListener('click', ()=>{ sketch.length=0; });
+ui.offsetBtn.addEventListener('click', ()=>{
+  const off=+ui.wallOffset.value||0;
+  const last=[...sketch].reverse().find(d=>d.type==='seg');
+  if(!last){ alert('Draw a wall segment first.'); return; }
+  const nx = last.b.y-last.a.y, ny=-(last.b.x-last.a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L;
+  const A={x:last.a.x+ux*off, y:last.a.y+uy*off}, B={x:last.b.x+ux*off, y:last.b.y+uy*off};
+  addSeg(A,B,last.wall);
+});
+ui.exportSvg.addEventListener('click', ()=>{
+  const w=canvas.width/DPR,h=canvas.height/DPR, sw=+ui.stroke2d.value;
+  const out=[];
+  out.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none">`);
+  out.push(`<g id="walls" stroke="#111" stroke-width="${sw}">`);
+  sketch.forEach(d=>{ if(d.type==='seg'){ out.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`); }});
+  out.push(`</g><g id="arcs" stroke="#111" stroke-width="${sw}">`);
+  sketch.forEach(d=>{ if(d.type==='arc'){ const x1=d.c.x+d.r*Math.cos(d.a1), y1=d.c.y+d.r*Math.sin(d.a1); const x2=d.c.x+d.r*Math.cos(d.a2), y2=d.c.y+d.r*Math.sin(d.a2); out.push(`<path d="M ${x1} ${y1} A ${d.r} ${d.r} 0 0 ${d.ccw?1:0} ${x2} ${y2}"/>`); }});
+  out.push(`</g><g id="doors" stroke="#0077ff" stroke-width="${sw}">`);
+  sketch.forEach(d=>{ if(d.type==='door'){ out.push(`<circle cx="${d.c.x}" cy="${d.c.y}" r="2"/>`); }});
+  out.push(`</g><g id="windows" stroke="#00aa66" stroke-width="${sw}">`);
+  sketch.forEach(d=>{ if(d.type==='window'){ out.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`); }});
+  out.push(`</g><g id="dims" stroke="#cc0000" stroke-width="${Math.max(1,sw-0.4)}" fill="#cc0000">`);
+  sketch.forEach(d=>{ if(d.type==='dim'){ const mx=(d.a.x+d.b.x)/2, my=(d.a.y+d.b.y)/2; out.push(`<line x1="${d.a.x}" y1="${d.a.y}" x2="${d.b.x}" y2="${d.b.y}"/>`); out.push(`<text x="${mx+4}" y="${my-4}" font-size="12">${d.text||''}</text>`); }});
+  out.push(`</g><g id="labels" fill="#333">`);
+  sketch.forEach(d=>{ if(d.type==='label'){ out.push(`<text x="${d.p.x}" y="${d.p.y}" font-size="14">${(d.text||'Room')}</text>`); }});
+  out.push(`</g></svg>`);
+  const blob = new Blob([out.join('\n')],{type:'image/svg+xml'}); const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='universe120-plan.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
+});
 
 /* Input handling (2D) */
-let dragging=false, lastX=0,lastY=0, spacePan=false;
-function addSeg(A,B){ const wall=+ui.wallThick.value||0; sketch.push({type:'seg', a:A, b:B, wall}); }
+let dragging=false, spacePan=false;
 canvas.addEventListener('mousedown', e=>{
-  if(ui.mode.value!=='architect2d'){ dragging=true; lastX=e.clientX; lastY=e.clientY; return; }
+  if(ui.mode.value!=='architect2d'){ dragging=true; return; }
   if(e.button!==0) return;
   const strong=e.shiftKey; let P = snap2D(e.clientX,e.clientY,strong);
   const tool=ui.tool2d.value;
@@ -366,14 +345,14 @@ canvas.addEventListener('mousedown', e=>{
     else{
       let A=polyLive.points[polyLive.points.length-1], B=P;
       B = applyAngleLock(A,B,ui.lockAngle.value);
-      addSeg(A,B); polyLive=null;
+      addSeg(A,B,+ui.wallThick.value||0); polyLive=null;
     }
   } else if(tool==='poly'){
     if(!polyLive) polyLive={points:[P]};
     else{
       let A=polyLive.points[polyLive.points.length-1], B=P;
       B = applyAngleLock(A,B,ui.lockAngle.value);
-      polyLive.points.push(B); addSeg(A,B);
+      polyLive.points.push(B); addSeg(A,B,+ui.wallThick.value||0);
     }
   } else if(tool==='arc'){
     if(!arcStart) arcStart=P;
@@ -384,161 +363,257 @@ canvas.addEventListener('mousedown', e=>{
     }
   } else if(tool==='circle'){
     const {R}=gridParams(); sketch.push({type:'circ', c:{x:P.x,y:P.y}, r:R});
+  } else if(tool==='door'){
+    addDoor(P, 40, 1);
+  } else if(tool==='window'){
+    if(!polyLive) polyLive={points:[P]}; else { addWindow(polyLive.points[0], P); polyLive=null; }
+  } else if(tool==='dim'){
+    if(!polyLive) polyLive={points:[P]}; else {
+      const A=polyLive.points[0], B=P; const len = Math.hypot(B.x-A.x, B.y-A.y).toFixed(1);
+      addDim(A,B, `${len}px`); polyLive=null;
+    }
+  } else if(tool==='label'){
+    const text=prompt('Room name (e.g., Kitchen):','Room')||'Room'; addLabel(P,text);
   } else if(tool==='erase'){
     let bi=-1, bd=1e9;
     sketch.forEach((d,i)=>{
-      let cx=0,cy=0; if(d.type==='seg'){cx=(d.a.x+d.b.x)/2;cy=(d.a.y+d.b.y)/2;}
-      else if(d.type==='arc'){cx=d.c.x;cy=d.c.y;} else if(d.type==='circ'){cx=d.c.x;cy=d.c.y;}
+      let cx=0,cy=0;
+      if(d.type==='seg'){cx=(d.a.x+d.b.x)/2;cy=(d.a.y+d.b.y)/2;}
+      else if(d.type==='arc'){cx=d.c.x;cy=d.c.y;}
+      else if(d.type==='circ'){cx=d.c.x;cy=d.c.y;}
+      else if(d.type==='door'){cx=d.c.x;cy=d.c.y;}
+      else if(d.type==='window'){cx=(d.a.x+d.b.x)/2;cy=(d.a.y+d.b.y)/2;}
+      else if(d.type==='dim'){cx=(d.a.x+d.b.x)/2;cy=(d.a.y+d.b.y)/2;}
+      else if(d.type==='label'){cx=d.p.x;cy=d.p.y;}
       const dd=(cx-P.x)*(cx-P.x)+(cy-P.y)*(cy-P.y); if(dd<bd){bd=dd; bi=i;}
     });
     if(bi>=0) sketch.splice(bi,1);
   }
-  render(0,true);
 });
-addEventListener('dblclick', e=>{ if(ui.mode.value==='architect2d' && ui.tool2d.value==='poly' && polyLive) polyLive=null; });
+addEventListener('dblclick', e=>{ if(ui.mode.value==='architect2d' && polyLive) polyLive=null; });
 addEventListener('mousemove', e=>{
   if(ui.mode.value==='architect2d'){
+    hoverPoint = snap2D(e.clientX,e.clientY,false);
     if(!ui.lockView.checked && (spacePan || dragging)){ pan.x += (e.movementX||0); pan.y += (e.movementY||0); }
-  } else if(dragging){ rot.xy += (e.movementX||0)*0.005; rot.xz += (e.movementY||0)*0.005; }
+  } else if(ui.mode.value==='bubble4d' && dragging){
+    // rotate in 4D with mouse drag (XY as camera)
+    rot4.xy += (e.movementX||0)*0.003;
+    rot4.xz += (e.movementY||0)*0.003;
+  }
 });
 addEventListener('mouseup', ()=>{ dragging=false; });
 canvas.addEventListener('wheel', e=>{
   e.preventDefault();
   const f=Math.exp(-e.deltaY*0.001);
   if(ui.mode.value==='architect2d'){
-    // zoom about center (stable) to avoid "losing place"
     const before=zoom; zoom = Math.max(0.25, Math.min(5, zoom*f));
-    if(ui.lockView.checked){ recenter(); } else {
-      // keep center stable
-      const w=canvas.width/DPR, h=canvas.height/DPR;
-      const cx=w/2, cy=h/2;
+    if(ui.lockView.checked){ recenter(); }
+    else{
+      const w=canvas.width/DPR, h=canvas.height/DPR; const cx=w/2, cy=h/2;
       pan.x = cx - (cx - pan.x) * (zoom/before);
       pan.y = cy - (cy - pan.y) * (zoom/before);
     }
   } else {
-    scale3d = Math.max(0.3, Math.min(2.5, scale3d * f));
+    scale3d = Math.max(0.5, Math.min(2.2, scale3d * f));
   }
 },{passive:false});
 addEventListener('keydown', e=>{ if(e.code==='Space'){ spacePan=true; dragging=true; } });
 addEventListener('keyup',   e=>{ if(e.code==='Space'){ spacePan=false; dragging=false; } });
 
-/* ===== 3D Tutor (Pythagorean) ===== */
-let scale3d=1.1, persp3d=3.0, rot={xy:0,xz:0,yz:0};
-ui.reset3d.addEventListener('click', ()=>{ scale3d=1.1; persp3d=3.0; rot={xy:0,xz:0,yz:0}; });
-ui.runProblem.addEventListener('click', ()=>{ stepIndex=0; runTutor(); });
+/* ===================== 4D BUBBLE LAB ===================== */
+// 4D state
+let scale3d=1.15, persp3d=3.0; // used for 3D-ish projection step
+let rot4={xy:0.0,xz:0.0,yz:0.0,xw:-0.35,yw:0.35,zw:-0.2}; // include xw/yw/zw rotations
+const lab={ nodes:[], edges:[] }; // edges: [{A:nodeIndex,B:nodeIndex}]
+let hyperLive=null;
+function rebuild4D(){
+  const N = Math.max(2, Math.min(9, +ui.N4.value||5));
+  lab.nodes.length=0; lab.edges.length=0; // reset
+  // Build a simple 4D hypercubic lattice of hypersphere centers in [-1,1]^4
+  for(let i=0;i<N;i++){
+    const t = N<=1?0:(i/(N-1))*2 - 1;
+    for(let j=0;j<N;j++){
+      const u = N<=1?0:(j/(N-1))*2 - 1;
+      for(let k=0;k<N;k++){
+        const v = N<=1?0:(k/(N-1))*2 - 1;
+        for(let l=0;l<N;l++){
+          const w = N<=1?0:(l/(N-1))*2 - 1;
+          lab.nodes.push({x:t,y:u,z:v,w:w});
+        }
+      }
+    }
+  }
+}
+ui.regen4.addEventListener('click', rebuild4D);
+['ax_xw','ax_yw','ax_zw','sliceW','scale4','stroke4'].forEach(id=>$(id).addEventListener('input',()=>{}));
+ui.undo4.addEventListener('click', ()=>{ lab.edges.pop(); });
+ui.clear4.addEventListener('click', ()=>{ lab.edges.length=0; });
+ui.export4json.addEventListener('click', ()=>{
+  const data={nodes:lab.nodes, edges:lab.edges};
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='universe120-4d.json'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+});
 
-function rot2(a,b,t){const c=Math.cos(t),s=Math.sin(t);return[a*c-b*s,a*s+b*c];}
-function proj3(p, pz){ const z=p.z+pz; return {x:p.x/pz*pz/z, y:p.y/pz*pz/z, z:p.z}; }
+// 4D rotations (applied in sequence)
+function rotPlane(a,b,theta){ const c=Math.cos(theta), s=Math.sin(theta); return [a*c - b*s, a*s + b*c]; }
+function project4Dto2D(P){
+  // Apply axis-angle from sliders
+  const axw = (+ui.ax_xw.value||0) * Math.PI/180;
+  const ayw = (+ui.ax_yw.value||0) * Math.PI/180;
+  const azw = (+ui.ax_zw.value||0) * Math.PI/180;
+  let {x,y,z,w}=P;
+  // rotate in xw, yw, zw planes (user controls)
+  [x,w]=rotPlane(x,w,axw);
+  [y,w]=rotPlane(y,w,ayw);
+  [z,w]=rotPlane(z,w,azw);
+  // also allow little camera-ish rotations (mouse drag) in xy/xz
+  [x,y]=rotPlane(x,y,rot4.xy);
+  [x,z]=rotPlane(x,z,rot4.xz);
 
-let steps=[], stepIndex=0;
-function runTutor(){
-  const mode = ui.tutorMode.value;
-  const a = Math.abs(+ui.legA.value||0), b = Math.abs(+ui.legB.value||0);
-  const c = Math.sqrt(a*a + b*b);
-  // build steps
-  steps = [
-    {t:'We have a right triangle with legs a and b. Place points at (0,0,0), (a,0,0), (0,b,0).'},
-    {t:'Draw the legs: one of length a along X, one of length b along Y.'},
-    {t:'Connect the endpoints to form the hypotenuse.'},
-    {t:'By the Pythagorean Theorem, a² + b² = c². Compute c = √(a² + b²).'},
-    {t:`With a=${a}, b=${b}, we get c ≈ ${c.toFixed(4)}.`}
-  ];
-  if(mode==='answer') stepIndex=steps.length-1;
-  coach.innerHTML = renderCoach(steps, stepIndex, mode);
+  // Slice by |w|
+  const slice = +ui.sliceW.value;
+  if(Math.abs(w) > slice) return null;
+
+  // 4D->3D weak perspective using w as "depth"
+  const k = 1/(1 + 0.8*(Math.abs(w))); // nearer w => larger
+  const X3 = x*k, Y3 = y*k, Z3 = z*k;
+
+  // 3D->2D perspective
+  const p = persp3d;
+  const zcam = Z3 + p;
+  const sx = (X3*p)/zcam;
+  const sy = (Y3*p)/zcam;
+  const r2 = k * 8/(1+NORM); // bubble radius hint
+  return {sx,sy,k,w,r:r2};
+}
+const NORM = 1; // radius scaler baseline
+
+function screenXY(pt){ // map to canvas
+  const s = 180*(+ui.scale4.value||1);
+  const cx = canvas.width/DPR/2, cy=canvas.height/DPR/2;
+  return {x: cx + pt.sx*s, y: cy + pt.sy*s};
 }
 
-function renderCoach(steps, i, mode){
-  return `
-    <div><b>3D Tutor — ${mode==='learn'?'Learn':'Answer'}</b></div>
-    <div style="margin:6px 0 10px;color:#333">${steps[i]?.t||'Press Run'}</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button ${i<=0?'disabled':''} onclick="window.__prevStep()">Prev</button>
-      <button ${i>=steps.length-1?'disabled':''} onclick="window.__nextStep()">Next</button>
-      <button onclick="window.__showAnswer()">Show Answer</button>
-    </div>
-  `;
-}
-window.__prevStep = ()=>{ if(stepIndex>0){ stepIndex--; coach.innerHTML=renderCoach(steps,stepIndex,ui.tutorMode.value); } };
-window.__nextStep = ()=>{ if(stepIndex<steps.length-1){ stepIndex++; coach.innerHTML=renderCoach(steps,stepIndex,ui.tutorMode.value); } };
-window.__showAnswer = ()=>{ stepIndex=steps.length-1; coach.innerHTML=renderCoach(steps,stepIndex,ui.tutorMode.value); };
-
-function drawTutor3D(){
-  const a=Math.abs(+ui.legA.value||0), b=Math.abs(+ui.legB.value||0), c=Math.sqrt(a*a+b*b)||1;
-  const s=140*scale3d, p=persp3d;
-  // Points of right triangle in XY plane
-  let A={x:0,y:0,z:0}, B={x:a,y:0,z:0}, C={x:0,y:b,z:0};
-  const pts=[A,B,C].map(P=>{
-    let x=P.x/c, y=P.y/c, z=P.z; // normalize so it fits view
-    [x,y]=rot2(x,y,rot.xy+0.2); [y,z]=rot2(y,z,rot.xz+0.5);
-    const q=proj3({x,y,z},p);
-    return {x:canvas.width/DPR/2+q.x*s, y:canvas.height/DPR/2+q.y*s, z:q.z};
-  });
-  ctx.lineWidth=1.6; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
-
-  // Step-based reveal
-  const showAB = stepIndex>=1, showAC = stepIndex>=1, showBC = stepIndex>=2;
-
-  // points
-  pts.forEach(pt=>{ ctx.beginPath(); ctx.arc(pt.x,pt.y,2.5,0,Math.PI*2); ctx.fill(); });
-
-  // legs
-  if(showAB){ ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y); ctx.lineTo(pts[1].x,pts[1].y); ctx.stroke(); }
-  if(showAC){ ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y); ctx.lineTo(pts[2].x,pts[2].y); ctx.stroke(); }
-  if(showBC){ ctx.beginPath(); ctx.moveTo(pts[1].x,pts[1].y); ctx.lineTo(pts[2].x,pts[2].y); ctx.stroke(); }
-
-  // labels
-  ctx.fillStyle='#222'; ctx.font='12px system-ui';
-  ctx.fillText(`a=${a}`, (pts[0].x+pts[1].x)/2, (pts[0].y+pts[1].y)/2-6);
-  ctx.fillText(`b=${b}`, (pts[0].x+pts[2].x)/2-18, (pts[0].y+pts[2].y)/2);
-  if(showBC) ctx.fillText(`c≈${Math.sqrt(a*a+b*b).toFixed(3)}`, (pts[1].x+pts[2].x)/2, (pts[1].y+pts[2].y)/2-6);
-
-  // footer tip
-  ctx.fillStyle='#222'; ctx.font='12px system-ui';
-  ctx.fillText('3D Tutor: Drag=rotate • Wheel=zoom • Use Learn mode to step through the proof', 16, canvas.height/DPR-18);
+function nearestProjectedNode(mx,my){
+  let best=-1, bd=1e9, bestPt=null;
+  for(let i=0;i<lab.nodes.length;i++){
+    const P=project4Dto2D(lab.nodes[i]); if(!P) continue;
+    const S=screenXY(P);
+    const d2=(S.x-mx)*(S.x-mx)+(S.y-my)*(S.y-my);
+    if(d2<bd){ bd=d2; best=i; bestPt={proj:P,screen:S}; }
+  }
+  return (best>=0)? {index:best, proj:bestPt.proj, screen:bestPt.screen} : null;
 }
 
-/* ===== Shared render ===== */
+canvas.addEventListener('mousedown', e=>{
+  if(ui.mode.value!=='bubble4d' || e.button!==0) return;
+  const pick = nearestProjectedNode(e.clientX,e.clientY);
+  if(!pick) return;
+  const tool=ui.tool4d.value;
+  if(tool==='hseg'){
+    if(!hyperLive) hyperLive={start:pick.index};
+    else{
+      lab.edges.push({A:hyperLive.start, B:pick.index});
+      hyperLive=null;
+    }
+  } else if(tool==='hpoly'){
+    if(!hyperLive) hyperLive={points:[pick.index]};
+    else{
+      const last = hyperLive.points[hyperLive.points.length-1];
+      lab.edges.push({A:last, B:pick.index});
+      hyperLive.points.push(pick.index);
+    }
+  } else if(tool==='erase4'){
+    // remove closest edge by midpoint distance
+    let bi=-1, bd=1e9;
+    for(let i=0;i<lab.edges.length;i++){
+      const eij=lab.edges[i];
+      const Pa=project4Dto2D(lab.nodes[eij.A]);
+      const Pb=project4Dto2D(lab.nodes[eij.B]);
+      if(!Pa||!Pb) continue;
+      const Sa=screenXY(Pa), Sb=screenXY(Pb);
+      const mxp=(Sa.x+Sb.x)/2, myp=(Sa.y+Sb.y)/2;
+      const d2=(mxp-e.clientX)*(mxp-e.clientX)+(myp-e.clientY)*(myp-e.clientY);
+      if(d2<bd){ bd=d2; bi=i; }
+    }
+    if(bi>=0) lab.edges.splice(bi,1);
+  }
+});
+
+/* ===================== SHARED RENDER LOOP ===================== */
+let last=0;
 function drawBackground(){
-  if(!bg.img) return;
+  if(!bg.img || ui.mode.value!=='architect2d') return;
   const w=canvas.width/DPR,h=canvas.height/DPR;
   ctx.save();
   ctx.globalAlpha=bg.alpha;
-  // draw centered, then scale/rotate/offset
   ctx.translate(w/2 + bg.offX, h/2 + bg.offY);
   ctx.rotate(bg.rot);
   ctx.scale(bg.scale, bg.scale);
   ctx.drawImage(bg.img, -bg.img.width/2, -bg.img.height/2);
   ctx.restore();
 }
-
-let last=0;
-function render(t, force=false){
-  if(!force && t-last<14){ requestAnimationFrame(render); return; }
+function render(t){
+  if(t-last<14){ requestAnimationFrame(render); return; }
   last=t;
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round';
 
   if(ui.mode.value==='architect2d'){
     drawBackground();
-    drawGrid();
-    // draw sketch
+    drawGrid2D();
     ctx.lineWidth=+ui.stroke2d.value; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
     sketch.forEach(d=>{
       if(d.type==='seg'){
         ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke();
         if(d.wall>0){
-          const nx = d.b.y-d.a.y, ny = -(d.b.x-d.a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L, t=d.wall/2;
-          ctx.beginPath(); ctx.moveTo(d.a.x+ux*t,d.a.y+uy*t); ctx.lineTo(d.b.x+ux*t,d.b.y+uy*t); ctx.lineTo(d.b.x-ux*t,d.b.y-uy*t); ctx.lineTo(d.a.x-ux*t,d.a.y-uy*t); ctx.closePath(); ctx.stroke();
+          const nx = d.b.y-d.a.y, ny=-(d.b.x-d.a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L, tt=d.wall/2;
+          ctx.beginPath(); ctx.moveTo(d.a.x+ux*tt,d.a.y+uy*tt); ctx.lineTo(d.b.x+ux*tt,d.b.y+uy*tt); ctx.lineTo(d.b.x-ux*tt,d.b.y-uy*tt); ctx.lineTo(d.a.x-ux*tt,d.a.y-uy*tt); ctx.closePath(); ctx.stroke();
         }
       }
       if(d.type==='arc'){ ctx.beginPath(); ctx.arc(d.c.x,d.c.y,d.r,d.a1,d.a2,d.ccw||false); ctx.stroke(); }
       if(d.type==='circ'){ ctx.beginPath(); ctx.arc(d.c.x,d.c.y,d.r,0,Math.PI*2); ctx.stroke(); }
+      if(d.type==='door'){ ctx.strokeStyle='#0077ff'; ctx.beginPath(); ctx.arc(d.c.x,d.c.y,18,0,Math.PI/2,false); ctx.stroke(); ctx.strokeStyle='#111'; }
+      if(d.type==='window'){ ctx.strokeStyle='#00aa66'; ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke(); ctx.strokeStyle='#111'; }
+      if(d.type==='dim'){ ctx.strokeStyle='#cc0000'; ctx.beginPath(); ctx.moveTo(d.a.x,d.a.y); ctx.lineTo(d.b.x,d.b.y); ctx.stroke();
+        const mx=(d.a.x+d.b.x)/2, my=(d.a.y+d.b.y)/2; ctx.fillStyle='#cc0000'; ctx.font='12px system-ui'; ctx.fillText(d.text||'', mx+4, my-4); ctx.strokeStyle='#111'; ctx.fillStyle='#111'; }
+      if(d.type==='label'){ ctx.fillStyle='#333'; ctx.font='14px system-ui'; ctx.fillText(d.text||'Room', d.p.x, d.p.y); ctx.fillStyle='#111'; }
     });
+    if(hoverPoint){ ctx.fillStyle='#333'; ctx.beginPath(); ctx.arc(hoverPoint.x,hoverPoint.y,2,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#111'; }
+    ctx.fillStyle='#222'; ctx.font='12px system-ui';
+    ctx.fillText('2D Architect: Walls/Doors/Windows/Dimensions • SVG export • Photo calibration • View locked', 16, canvas.height/DPR-18);
+  } else {
+    // 4D Bubble Lab
+    const stroke = +ui.stroke4.value||1.4;
+    ctx.lineWidth=stroke; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
+
+    // draw projected hypersphere “bubbles”
+    const nVisible=[];
+    for(let i=0;i<lab.nodes.length;i++){
+      const P=project4Dto2D(lab.nodes[i]); if(!P) continue;
+      const S=screenXY(P);
+      const rr = Math.max(1.2, 6*P.k); // bubble radius scales with W-depth
+      nVisible.push({i,screen:S,r:rr,depth:Math.abs(P.w)});
+    }
+    // back-to-front: farther (bigger |w|) first
+    nVisible.sort((a,b)=>b.depth-a.depth);
+    nVisible.forEach(n=>{
+      ctx.beginPath(); ctx.arc(n.screen.x, n.screen.y, n.r, 0, Math.PI*2); ctx.stroke();
+    });
+
+    // draw edges
+    lab.edges.forEach(eij=>{
+      const Pa=project4Dto2D(lab.nodes[eij.A]); const Pb=project4Dto2D(lab.nodes[eij.B]);
+      if(!Pa||!Pb) return;
+      const Sa=screenXY(Pa), Sb=screenXY(Pb);
+      ctx.beginPath(); ctx.moveTo(Sa.x,Sa.y); ctx.lineTo(Sb.x,Sb.y); ctx.stroke();
+    });
+
     // HUD
     ctx.fillStyle='#222'; ctx.font='12px system-ui';
-    ctx.fillText('2D Architect (locked view): Shift=strong snap • Double-click ends polyline • SVG export for CAD/Illustrator', 16, canvas.height/DPR-18);
-  } else {
-    drawTutor3D();
+    ctx.fillText('4D Bubble Lab: Drag=rotate (XY/XZ) • Sliders rotate xw/yw/zw • Slice |W| • Snap to 4-D nodes • Export JSON', 16, canvas.height/DPR-18);
   }
 
   ctx.restore();
@@ -546,9 +621,12 @@ function render(t, force=false){
 }
 requestAnimationFrame(render);
 
-// initialize coach text
-coach.innerHTML = `<b>Welcome</b><br>Pick <i>2D Architect</i> to trace a photo and draft plans, or <i>3D Tutor</i> → Pythagorean to try Learn vs Answer.`;
-} // end startApp
+// initial states
+rebuild4D();
+coach.innerHTML = `<b>Welcome</b><br>
+Pick <i>2D Architect</i> to draft plans on the bubble grid (SVG export), or <i>4D Bubble Lab</i> to rotate a 4-D bubble lattice and draw hyper-segments.`;
+}
+startApp();
 </script>
 </body>
 </html>
