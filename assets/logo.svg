@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#123b79"/>
+      <stop offset="1" stop-color="#0d2a55"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="24" fill="url(#g)"/>
+  <!-- Bubble grid hint -->
+  <g stroke="#1e4d9a" stroke-width="2" opacity=".6">
+    <circle cx="64" cy="64" r="28" fill="none"/>
+    <circle cx="128" cy="64" r="28" fill="none"/>
+    <circle cx="96" cy="112" r="28" fill="none"/>
+    <circle cx="160" cy="112" r="28" fill="none"/>
+    <circle cx="128" cy="160" r="28" fill="none"/>
+  </g>
+  <!-- U120 mark -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M64 64v84c0 24 18 38 40 38s40-14 40-38V64" stroke="#ffe36a" stroke-width="14"/>
+    <path d="M156 184h36" stroke="#ffffff" stroke-width="10"/>
+    <path d="M192 184c12 0 20 8 20 20s-8 20-20 20-20-8-20-20" stroke="#ffffff" stroke-width="10"/>
+  </g>
+</svg>
