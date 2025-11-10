@@ -13,30 +13,21 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
-/* ===== NAVBAR (Blueprint-style) ===== */
+/* NAVBAR */
 .navbar{
   position:fixed; inset:0 0 auto 0; height:56px; z-index:50;
   display:flex; align-items:center; gap:12px;
-  background:#0f356d; color:#fff; border-bottom:1px solid var(--border);
+  background:#0f356d; border-bottom:1px solid var(--border);
   padding:8px 12px;
 }
-.brand{
-  display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px;
-  text-decoration:none; color:#fff;
-}
-.brand .mark{
-  width:26px; height:26px; border-radius:6px; background:#123b79; display:inline-block;
-  box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659;
-}
-.navlinks{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap }
-.navlinks a{
-  text-decoration:none; color:#fff; border:1px solid #204c96; background:#10366f;
-  padding:7px 12px; border-radius:10px; font-size:13px
-}
-.navlinks a:hover{ background:#13407f }
-.navlinks a.active{ outline:2px solid var(--brand) }
+.brand{display:flex; align-items:center; gap:10px; font-weight:800; color:#fff; text-decoration:none; letter-spacing:.2px}
+.brand .mark{width:26px;height:26px;border-radius:6px;background:#123b79;display:inline-block;box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659}
+.navlinks{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap}
+.navlinks a{color:#fff;text-decoration:none;border:1px solid #204c96;background:#10366f;padding:7px 12px;border-radius:10px;font-size:13px}
+.navlinks a:hover{background:#13407f}
+.navlinks a.active{outline:2px solid var(--brand)}
 
-/* ===== Top action bar ===== */
+/* TOP ACTION BAR */
 .topbar{
   position:fixed; left:0; right:0; top:56px; z-index:45;
   display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:8px 12px;
@@ -51,7 +42,7 @@ button:hover,.btn:hover{ background:#13407f }
 input[type="text"],input[type="number"],select{ padding:6px 8px }
 input[type="range"]{ accent-color:var(--brand) }
 
-/* ===== Floating tools palette (left) ===== */
+/* TOOLS FLYOUT */
 .tools-flyout{
   position:fixed; left:12px; top:120px; z-index:40;
   background:#0f356d; border:1px solid var(--border); border-radius:12px;
@@ -69,7 +60,7 @@ input[type="range"]{ accent-color:var(--brand) }
 .toolBtn .icon{ width:18px; text-align:center }
 .toolBtn.active{ outline:2px solid var(--brand) }
 
-/* ===== Properties (right) ===== */
+/* PROPERTIES (RIGHT) */
 .panel{
   position:fixed; right:12px; top:56px; transform:translateY(56px);
   z-index:28; background:#0f356d; border:1px solid var(--border); border-radius:12px;
@@ -78,7 +69,7 @@ input[type="range"]{ accent-color:var(--brand) }
 .panel h3{ margin:.3rem 0 .2rem; font-size:14px }
 .panel .row{ display:flex; align-items:center; gap:8px; margin:.35rem 0 }
 
-/* ===== Canvas & overlays ===== */
+/* CANVAS & OVERLAY & STATUS */
 #canvas{ position:fixed; left:0; right:0; top:56px; bottom:28px; display:block; width:100%; height:calc(100% - 84px) }
 #overlay{ position:fixed; left:0; right:0; top:56px; bottom:28px; pointer-events:none; }
 .status{
@@ -87,12 +78,12 @@ input[type="range"]{ accent-color:var(--brand) }
   background:#0f356d; color:#fff; border-top:1px solid var(--border); font-size:12px
 }
 
-/* ===== Help overlay ===== */
+/* HELP */
 #help{position:fixed;inset:0;background:rgba(10,12,22,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:70}
 #help .card{background:#10121b;border:1px solid #2a2e3d;color:#e9ebff;border-radius:12px;padding:18px;max-width:720px}
 kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;border-radius:5px;padding:1px 5px;font-family:ui-monospace,Menlo,Consolas,monospace}
 
-/* ===== Passcode lock ===== */
+/* PASSCODE LOCK */
 #lockScreen{
   position:fixed; inset:0; background:#0d2a55; color:#fff; display:flex; align-items:center; justify-content:center; z-index:1000; flex-direction:column;
 }
@@ -104,14 +95,12 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
 #lockScreen button{ margin-top:10px; padding:10px 12px; font-size:16px }
 #lockMsg{ margin-top:10px; color:#ff8a8a; min-height:1.2em }
 
-/* ===== Rotation handle ===== */
+/* ROTATION HANDLE + BADGES */
 .handle{
   position:absolute; width:12px; height:12px; border-radius:50%;
   background:#ffe36a; border:2px solid #0d2a55; box-shadow:0 0 0 1px #204c96;
   transform:translate(-50%,-50%); z-index:42; pointer-events:auto; cursor:grab;
 }
-
-/* ===== Smart guide badge ===== */
 .badge{
   position:absolute; padding:2px 6px; font-size:12px; color:#001327;
   background:rgba(255,227,106,.95); border-radius:6px; border:1px solid #e6c84f;
@@ -120,21 +109,11 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
 }
 .badge.alt{ background:rgba(124,255,124,.95); border-color:#57db57 }
 .badge.muted{ background:rgba(255,255,255,.85); border-color:#bcd3ff }
-
-/* ===== Footer shim ===== */
-.site-footer{ position:fixed; left:0; right:0; bottom:28px; height:0; }
-footer a{ color:#ffe36a; text-decoration:none }
-
-/* Small screens */
-@media (max-width: 980px){
-  .tools-flyout{ left:12px; top:120px }
-  .panel{ right:12px }
-}
 </style>
 </head>
 <body>
 
-<!-- ===== PASSCODE ===== -->
+<!-- PASSCODE -->
 <div id="lockScreen">
   <div class="card">
     <h2 style="margin:.2rem 0 .5rem">Universe120 Beta</h2>
@@ -149,7 +128,7 @@ footer a{ color:#ffe36a; text-decoration:none }
   </div>
 </div>
 
-<!-- ===== NAVBAR ===== -->
+<!-- NAVBAR -->
 <div class="navbar">
   <a class="brand" href="index.html" aria-label="Universe120 Home">
     <span class="mark" aria-hidden="true"></span>
@@ -164,7 +143,7 @@ footer a{ color:#ffe36a; text-decoration:none }
   </div>
 </div>
 
-<!-- ===== TOPBAR ===== -->
+<!-- TOPBAR -->
 <div class="topbar">
   <div class="group">
     <button id="newDoc" type="button">New</button>
@@ -172,19 +151,16 @@ footer a{ color:#ffe36a; text-decoration:none }
     <button id="undoBtn" type="button">Undo</button>
     <button id="redoBtn" type="button">Redo</button>
   </div>
-
   <div class="group">
     <button id="zoomIn" type="button">+</button>
     <button id="zoomOut" type="button">−</button>
     <button id="zoomFit" type="button">Fit</button>
     <button id="zoomReset" type="button">100%</button>
   </div>
-
   <div class="group">
     <label class="small">Grid</label><input id="gridScale" type="range" min="0.6" max="1.8" step="0.01" value="1.0">
     <label class="small">Dots</label><input id="dotSize" type="range" min="0.5" max="1.8" step="0.05" value="1.0">
   </div>
-
   <div class="group">
     <label class="small">Snap</label>
     <select id="snapMode">
@@ -201,23 +177,20 @@ footer a{ color:#ffe36a; text-decoration:none }
       <option value="fortyfive">45/90°</option>
     </select>
   </div>
-
   <div class="group">
     <button id="groupBtn" type="button">Group</button>
     <button id="ungroupBtn" type="button">Ungroup</button>
   </div>
-
   <div class="group">
     <button id="exportSVG" type="button">Export SVG</button>
     <button id="exportPNG" type="button">Export PNG</button>
   </div>
-
   <div class="group">
-    <a class="btn" href="howto.html">Help / How-to</a>
+    <button id="helpBtn" class="btn" type="button">Help</button>
   </div>
 </div>
 
-<!-- ===== TOOLS FLYOUT ===== -->
+<!-- TOOLS -->
 <div class="tools-flyout" id="toolsFlyout" aria-label="Tools">
   <div class="tools-header">
     <div class="tools-title">Tools</div>
@@ -236,7 +209,7 @@ footer a{ color:#ffe36a; text-decoration:none }
   </div>
 </div>
 
-<!-- ===== PROPERTIES ===== -->
+<!-- PROPERTIES -->
 <div class="panel" id="props" style="top:56px; margin-top:56px;">
   <h3>Properties</h3>
   <div class="row"><label class="small">Stroke</label><input id="strokeW" type="range" min="0.8" max="4" step="0.1" value="1.6"></div>
@@ -244,11 +217,11 @@ footer a{ color:#ffe36a; text-decoration:none }
   <div class="row"><label class="small">Label</label><input id="labelText" type="text" placeholder="Room / Note"></div>
 </div>
 
-<!-- ===== CANVAS & OVERLAY ===== -->
+<!-- CANVAS + OVERLAY -->
 <canvas id="canvas"></canvas>
 <div id="overlay"></div>
 
-<!-- ===== STATUS ===== -->
+<!-- STATUS -->
 <div class="status">
   <div id="stTool">Tool: Select</div>
   <div id="stSnap">Snap: Intersections</div>
@@ -256,7 +229,7 @@ footer a{ color:#ffe36a; text-decoration:none }
   <div id="stPos">x:– y:–</div>
 </div>
 
-<!-- ===== HELP MODAL ===== -->
+<!-- HELP MODAL -->
 <div id="help" style="display:none">
   <div class="card">
     <h3>Quick help</h3>
@@ -267,20 +240,12 @@ footer a{ color:#ffe36a; text-decoration:none }
       <li><b>Undo/Redo</b>: <kbd>Ctrl/Cmd</kbd>+<kbd>Z</kbd> / <kbd>Ctrl/Cmd</kbd>+<kbd>Y</kbd></li>
       <li><b>Multi-select</b>: Shift-click shapes • <b>Rotate</b>: drag yellow handle</li>
       <li><b>Smart Guides</b>: 0/30/45/60/90°, equal (≡), parallel (∥), perpendicular (⊥)</li>
-      <li><a href="howto.html">Open the full How-to guide →</a></li>
     </ul>
     <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
       <button id="closeHelp" class="btn" type="button">Got it</button>
     </div>
   </div>
 </div>
-
-<!-- ===== FOOTER ===== -->
-<footer class="site-footer">
-  <small>© <span id="year"></span> Universe120 • Beta •
-    <a href="mailto:120spaceproject@gmail.com">Contact</a>
-  </small>
-</footer>
 
 <script>
 /* ===== PASSCODE ===== */
@@ -295,7 +260,7 @@ document.getElementById('accessCodeInput').addEventListener('keydown', e=>{
   if(e.key === 'Enter') document.getElementById('accessCodeBtn').click();
 });
 
-/* ===== DOM + CANVAS ===== */
+/* ===== DOM / CANVAS ===== */
 const $ = q=>document.querySelector(q);
 const all = q=>[...document.querySelectorAll(q)];
 const canvas = document.getElementById('canvas');
@@ -349,7 +314,8 @@ $('#undoBtn').onclick=undo; $('#redoBtn').onclick=redo;
 $('#exportSVG').onclick=exportSVG;
 $('#exportPNG').onclick=exportPNG;
 
-document.getElementById('closeHelp').onclick = ()=>{ document.getElementById('help').style.display='none'; };
+$('#helpBtn').onclick=()=>{ $('#help').style.display='flex'; };
+document.getElementById('closeHelp').onclick=()=>{ $('#help').style.display='none'; };
 
 /* ===== TOOLS ===== */
 const toolsToggle = $('#toolsToggle');
@@ -369,7 +335,7 @@ function setTool(name){
   all('.toolBtn').forEach(el=>el.classList.toggle('active', el.dataset.tool===name));
 }
 
-/* ===== COORDS ===== */
+/* ===== COORD CONVERT ===== */
 function toWorld(sx,sy){
   return { x:(sx - canvas.width/DPR/2 - state.pan.x)/state.zoom,
            y:(sy - canvas.height/DPR/2 - state.pan.y)/state.zoom };
@@ -379,13 +345,13 @@ function toScreen(x,y){
            y: canvas.height/DPR/2 + state.pan.y + y*state.zoom };
 }
 
-/* ===== SMART GUIDES (badges) ===== */
+/* ===== SMART GUIDES (badge version) ===== */
 const GUIDE = { tolLenRatio: 0.015, tolAngRad: Math.PI/180*2, niceAngles:[0,Math.PI/6,Math.PI/4,Math.PI/3,Math.PI/2,2*Math.PI/3,3*Math.PI/4,Math.PI] };
 function segLen(a,b){ return Math.hypot(b.x-a.x, b.y-a.y); }
 function segAng(a,b){ return Math.atan2(b.y-a.y, b.x-a.x); }
 let badgePool=[]; function clearBadges(){ badgePool.forEach(el=>el.remove()); badgePool.length=0; }
 function placeBadge(screenPt, text, variant='info'){
-  if(badgePool.length>=2) return;
+  if(badgePool.length>=2) return; // avoid clutter
   const el = document.createElement('div');
   el.className='badge'+(variant==='good'?' alt':(variant==='muted'?' muted':'' ));
   el.style.left = screenPt.x+'px';
@@ -441,7 +407,7 @@ function drawSmartGuidesHook(){
   }
 }
 
-/* ===== GRID & SNAPPING ===== */
+/* ===== GRID & SNAP ===== */
 function gridCentersNear(x,y,range=3){
   const {stepX,stepY}=grid();
   const rr=Math.round(y/stepY), cc=Math.round((x-(rr%2? stepX/2:0))/stepX);
@@ -497,7 +463,7 @@ function snapWorld(x,y,strong,excludeSet){
   return best;
 }
 
-/* ===== Angle lock ===== */
+/* ===== ANGLE LOCK ===== */
 function applyAngleLock(a0,a1){
   const mode=state.angleLock;
   if(mode==='off') return a1;
@@ -516,7 +482,7 @@ function pushUndo(){ state.undo.push(JSON.stringify({shapes:state.shapes})); sta
 function undo(){ if(!state.undo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const prev=state.undo.pop(); state.redo.push(cur); state.shapes = JSON.parse(prev).shapes; state.selection.clear(); }
 function redo(){ if(!state.redo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const next=state.redo.pop(); state.undo.push(cur); state.shapes = JSON.parse(next).shapes; state.selection.clear(); }
 
-/* ===== SHAPES / DRAW ===== */
+/* ===== DRAW SHAPES ===== */
 function finishLine(B){ const A=state.drawing.A; const L=applyAngleLock(A,B); state.shapes.push({type:'seg', a:A, b:L, wall:state.wallThick||0}); state.drawing=null; }
 function finishArc(B){ const A=state.drawing.A; const C={x:(A.x+B.x)/2, y:(A.y+B.y)/2}; const r=Math.hypot(B.x-A.x,B.y-A.y)/2; const a1=Math.atan2(A.y-C.y,A.x-C.x), a2=Math.atan2(B.y-C.y,B.x-C.x); state.shapes.push({type:'arc', c:C, r, a1, a2}); state.drawing=null; }
 function finishRect(B){ const A=state.drawing.A; state.shapes.push({type:'rect', a:{x:Math.min(A.x,B.x), y:Math.min(A.y,B.y)}, b:{x:Math.max(A.x,B.x), y:Math.max(A.y,B.y)}, wall:state.wallThick||0}); state.drawing=null; }
@@ -540,7 +506,7 @@ function eraseNearest(P){
   if(bi>=0) state.shapes.splice(bi,1);
 }
 
-/* ===== SELECTION / GROUPS ===== */
+/* ===== HIT TEST / SELECTION / GROUPS ===== */
 function distPointSeg(P,A,B){
   const vx=B.x-A.x, vy=B.y-A.y;
   const wx=P.x-A.x, wy=P.y-A.y;
@@ -692,22 +658,22 @@ function ensureHandle(){
     e.preventDefault();
     state.rotation.active=true;
     state.rotation.center = {x:c.x,y:c.y};
-    // FIXED: atan2(y - cy, x - cx) (your earlier version swapped c.x/c.y)
-    const w = toWorld(e.clientX,e.clientY);
-    state.rotation.startAng = Math.atan2(w.y - c.y, w.x - c.x);
+    state.rotation.startAng = Math.atan2( toWorld(e.clientX,e.clientY).y - c.y,
+                                          toWorld(e.clientX,e.clientY).x - c.x );
     state.rotation.base = [...state.selection].map(i=>({i, s: JSON.parse(JSON.stringify(state.shapes[i])) }));
   };
 }
 document.addEventListener('mousemove', (e)=>{
   if(!state.rotation.active) return;
   const cen=state.rotation.center;
-  const w = toWorld(e.clientX,e.clientY);
-  let dAng = Math.atan2(w.y - cen.y, w.x - cen.x) - state.rotation.startAng;
+  const curAng = Math.atan2( toWorld(e.clientX,e.clientY).y - cen.y,
+                             toWorld(e.clientX,e.clientY).x - cen.x );
+  let dAng = curAng - state.rotation.startAng;
 
-  // snap angle (0/30/45/60/90…)
-  const nice=[0, Math.PI/6, Math.PI/4, Math.PI/3, Math.PI/2, 2*Math.PI/3, 3*Math.PI/4, Math.PI];
+  // snap angle to nice increments
+  const nice=[0, Math.PI/6, Math.PI/4, Math.PI/3, Math.PI/2, 2*Math.PI/3, 3*Math.PI/4, Math.PI, -Math.PI/6,-Math.PI/4,-Math.PI/3,-Math.PI/2,-2*Math.PI/3,-3*Math.PI/4,-Math.PI];
   let best=dAng, bd=1e9;
-  nice.concat(nice.map(a=>-a)).forEach(a=>{
+  nice.forEach(a=>{
     const diff = Math.abs(((dAng-a+Math.PI)%(2*Math.PI))-Math.PI);
     if(diff<bd){ bd=diff; best=a; }
   });
@@ -788,7 +754,7 @@ function exportSVG(){
 }
 function exportPNG(){ const link=document.createElement('a'); link.download='universe120.png'; link.href=canvas.toDataURL('image/png'); link.click(); }
 
-/* ===== RENDER ===== */
+/* ===== RENDER LOOP ===== */
 function drawGrid(){
   const G=grid(); const R=G.R*state.dotScale; const stepX=G.stepX, stepY=G.stepY;
   const w=canvas.width/DPR, h=canvas.height/DPR;
@@ -822,7 +788,7 @@ function drawShapes(){
     if(s.type==='dim'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.strokeStyle='#cc0000'; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); ctx.fillStyle='#cc0000'; ctx.font='12px system-ui'; ctx.fillText(s.text||'', (a.x+b.x)/2+4, (a.y+b.y)/2-4); ctx.strokeStyle='#fff'; ctx.fillStyle='#fff'; }
   });
 
-  // Preview temp
+  // Temp previews
   ctx.setLineDash([6,6]); ctx.strokeStyle = '#cbd5ff';
   const h=state.hover?.screen;
   if(state.drawing){
@@ -853,8 +819,6 @@ function drawShapes(){
 }
 function frame(){ ctx.clearRect(0,0,canvas.width,canvas.height); drawGrid(); drawShapes(); requestAnimationFrame(frame); }
 requestAnimationFrame(frame);
-
-document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
