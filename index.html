@@ -21,7 +21,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family
 }
 .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; text-decoration:none; color:#fff}
 .brand .mark{width:26px; height:26px; border-radius:6px; background:#123b79; display:inline-block; box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659}
-.navlinks{ margin-left:auto; display:flex; gap:8px }
+.navlinks{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap }
 .navlinks a{ text-decoration:none; color:#fff; border:1px solid #204c96; background:#10366f; padding:7px 12px; border-radius:10px; font-size:13px }
 .navlinks a:hover{ background:#13407f }
 .navlinks a.active{ outline:2px solid var(--brand) }
@@ -112,9 +112,7 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
 .badge.muted{ background:rgba(255,255,255,.85); border-color:#bcd3ff }
 
 /* Footer */
-.site-footer{
-  position:fixed; left:0; right:0; bottom:28px; height:0;
-}
+.site-footer{ position:fixed; left:0; right:0; bottom:28px; height:0; }
 footer a{ color:#ffe36a; text-decoration:none }
 
 /* Small screens */
@@ -149,8 +147,10 @@ footer a{ color:#ffe36a; text-decoration:none }
   </a>
   <div class="navlinks">
     <a href="index.html" class="active">Home</a>
+    <a href="howto.html">How-to</a>
     <a href="about.html">About</a>
-    <a href="mailto:120spaceproject@gmail.com">Feedback</a>
+    <a href="feedback.html">Feedback</a>
+    <a href="mailto:120spaceproject@gmail.com">Email</a>
   </div>
 </div>
 
@@ -202,7 +202,9 @@ footer a{ color:#ffe36a; text-decoration:none }
     <button id="exportPNG" type="button">Export PNG</button>
   </div>
 
-  <div class="group"><button id="helpBtn" type="button">?</button></div>
+  <div class="group">
+    <a class="btn" href="howto.html">Help / How-to</a>
+  </div>
 </div>
 
 <!-- TOOLS PALETTE -->
@@ -244,8 +246,8 @@ footer a{ color:#ffe36a; text-decoration:none }
   <div id="stPos">x:– y:–</div>
 </div>
 
-<!-- HELP -->
-<div id="help">
+<!-- HELP MODAL -->
+<div id="help" style="display:none">
   <div class="card">
     <h3>Quick help</h3>
     <ul>
@@ -253,10 +255,9 @@ footer a{ color:#ffe36a; text-decoration:none }
       <li><b>Zoom</b>: mouse wheel (zooms to cursor)</li>
       <li><b>Zoom Fit</b>: <kbd>Shift</kbd>+<kbd>1</kbd> • <b>Reset 100%</b>: <kbd>1</kbd></li>
       <li><b>Undo/Redo</b>: <kbd>Ctrl/Cmd</kbd>+<kbd>Z</kbd> / <kbd>Ctrl/Cmd</kbd>+<kbd>Y</kbd></li>
-      <li><b>Multi-select</b>: Shift-click more shapes</li>
-      <li><b>Rotate</b>: drag the small yellow handle above selection</li>
-      <li><b>End polyline</b>: <kbd>Enter</kbd> • <b>Back one</b>: <kbd>Backspace</kbd></li>
-      <li><b>Support</b>: <a href="mailto:120spaceproject@gmail.com">120spaceproject@gmail.com</a></li>
+      <li><b>Multi-select</b>: Shift-click shapes • <b>Rotate</b>: drag yellow handle</li>
+      <li><b>Smart Guides</b>: 0/30/45/60/90°, equal (≡), parallel (∥), perpendicular (⊥)</li>
+      <li><a href="howto.html">Open the full How-to guide →</a></li>
     </ul>
     <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
       <button id="closeHelp" class="btn" type="button">Got it</button>
@@ -338,8 +339,12 @@ $('#undoBtn').onclick=undo; $('#redoBtn').onclick=redo;
 $('#exportSVG').onclick=exportSVG;
 $('#exportPNG').onclick=exportPNG;
 
-$('#helpBtn').onclick=()=>{ $('#help').style.display='flex'; };
-$('#closeHelp').onclick=()=>{ $('#help').style.display='none'; };
+const helpBtn = document.createElement('button');
+helpBtn.textContent = '?';
+helpBtn.className = 'btn';
+helpBtn.onclick = ()=>{ document.getElementById('help').style.display='flex'; };
+const closeHelp = ()=>{ document.getElementById('help').style.display='none'; };
+document.getElementById('closeHelp').onclick = closeHelp;
 
 /* TOOLS */
 const toolsToggle = $('#toolsToggle');
@@ -369,7 +374,7 @@ function toScreen(x,y){
            y: canvas.height/DPR/2 + state.pan.y + y*state.zoom };
 }
 
-/* SMART GUIDES (badges limited to 2 for clarity) */
+/* SMART GUIDES (limited badges) */
 const GUIDE = { tolLenRatio: 0.015, tolAngRad: Math.PI/180*2, niceAngles:[0,Math.PI/6,Math.PI/4,Math.PI/3,Math.PI/2,2*Math.PI/3,3*Math.PI/4,Math.PI] };
 function segLen(a,b){ return Math.hypot(b.x-a.x, b.y-a.y); }
 function segAng(a,b){ return Math.atan2(b.y-a.y, b.x-a.x); }
@@ -844,7 +849,8 @@ function drawShapes(){
 }
 function frame(){ ctx.clearRect(0,0,canvas.width,canvas.height); drawGrid(); drawShapes(); requestAnimationFrame(frame); }
 requestAnimationFrame(frame);
+
+document.getElementById('year').textContent = new Date().getFullYear();
 </script>
-<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
