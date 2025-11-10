@@ -8,12 +8,11 @@
 <style>
 :root{
   --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a;
-  --toolbar-bg:#10366f;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
-/* ---- NAV ---- */
+/* NAV */
 .navbar{
   position:fixed; inset:0 0 auto 0; height:56px; z-index:50;
   display:flex; align-items:center; gap:12px;
@@ -27,9 +26,9 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family
 .navlinks a:hover{ background:#13407f }
 .navlinks a.active{ outline:2px solid var(--brand) }
 
-/* ---- Top bar (controls) ---- */
+/* Top action bar */
 .topbar{
-  position:fixed; left:0; right:0; top:56px; height:auto; z-index:45;
+  position:fixed; left:0; right:0; top:56px; z-index:45;
   display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:8px 12px;
   background:#10366f; border-bottom:1px solid var(--border);
 }
@@ -42,16 +41,14 @@ button:hover,.btn:hover{ background:#13407f }
 input[type="text"],input[type="number"],select{ padding:6px 8px }
 input[type="range"]{ accent-color:var(--brand) }
 
-/* ---- Floating tools palette on the canvas (left), not draggable ---- */
+/* Floating tools palette (left) */
 .tools-flyout{
   position:fixed; left:12px; top:120px; z-index:40;
   background:#0f356d; border:1px solid var(--border); border-radius:12px;
   box-shadow:0 8px 24px rgba(0,0,0,.2);
   width:210px; padding:8px; user-select:none;
 }
-.tools-header{
-  display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px;
-}
+.tools-header{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
 .tools-title{ font-size:13px; font-weight:700; color:#fff }
 .tools-toggle{ font-size:12px; padding:4px 8px }
 .tools-grid{ display:none; grid-template-columns:1fr; gap:6px }
@@ -62,7 +59,7 @@ input[type="range"]{ accent-color:var(--brand) }
 .toolBtn .icon{ width:18px; text-align:center }
 .toolBtn.active{ outline:2px solid var(--brand) }
 
-/* ---- Properties panel (right) ---- */
+/* Properties (right) */
 .panel{
   position:fixed; right:12px; top:56px; transform:translateY(56px);
   z-index:28; background:#0f356d; border:1px solid var(--border); border-radius:12px;
@@ -71,7 +68,7 @@ input[type="range"]{ accent-color:var(--brand) }
 .panel h3{ margin:.3rem 0 .2rem; font-size:14px }
 .panel .row{ display:flex; align-items:center; gap:8px; margin:.35rem 0 }
 
-/* ---- Canvas & overlays ---- */
+/* Canvas & overlays */
 #canvas{ position:fixed; left:0; right:0; top:56px; bottom:28px; display:block; width:100%; height:calc(100% - 84px) }
 #overlay{ position:fixed; left:0; right:0; top:56px; bottom:28px; pointer-events:none; }
 .status{
@@ -114,7 +111,13 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
 .badge.alt{ background:rgba(124,255,124,.95); border-color:#57db57 }
 .badge.muted{ background:rgba(255,255,255,.85); border-color:#bcd3ff }
 
-/* Small screens: make sure tools panel doesn’t sit under props panel */
+/* Footer */
+.site-footer{
+  position:fixed; left:0; right:0; bottom:28px; height:0;
+}
+footer a{ color:#ffe36a; text-decoration:none }
+
+/* Small screens */
 @media (max-width: 980px){
   .tools-flyout{ left:12px; top:120px }
   .panel{ right:12px }
@@ -123,7 +126,7 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
 </head>
 <body>
 
-<!-- ========= PASSCODE GATE ========= -->
+<!-- PASSCODE -->
 <div id="lockScreen">
   <div class="card">
     <h2 style="margin:.2rem 0 .5rem">Universe120 Beta</h2>
@@ -132,12 +135,13 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
     <button id="accessCodeBtn">Enter</button>
     <div id="lockMsg"></div>
     <p style="margin-top:12px; font-size:12px; color:#cfe0ff">
-      Soft launch for feedback. Thanks for helping improve this tool!
+      Open beta — send ideas or bugs to
+      <a style="color:#ffe36a" href="mailto:120spaceproject@gmail.com">120spaceproject@gmail.com</a>.
     </p>
   </div>
 </div>
 
-<!-- ========= NAV ========= -->
+<!-- NAV -->
 <div class="navbar">
   <a class="brand" href="index.html" aria-label="Universe120 Home">
     <span class="mark" aria-hidden="true"></span>
@@ -146,10 +150,11 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
   <div class="navlinks">
     <a href="index.html" class="active">Home</a>
     <a href="about.html">About</a>
+    <a href="mailto:120spaceproject@gmail.com">Feedback</a>
   </div>
 </div>
 
-<!-- ========= TOPBAR ========= -->
+<!-- TOPBAR -->
 <div class="topbar">
   <div class="group">
     <button id="newDoc" type="button">New</button>
@@ -200,7 +205,7 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
   <div class="group"><button id="helpBtn" type="button">?</button></div>
 </div>
 
-<!-- ========= FLOATING TOOLS PALETTE (on graph, left) ========= -->
+<!-- TOOLS PALETTE -->
 <div class="tools-flyout" id="toolsFlyout" aria-label="Tools">
   <div class="tools-header">
     <div class="tools-title">Tools</div>
@@ -219,7 +224,7 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
   </div>
 </div>
 
-<!-- ========= PROPERTIES ========= -->
+<!-- PROPERTIES -->
 <div class="panel" id="props" style="top:56px; margin-top:56px;">
   <h3>Properties</h3>
   <div class="row"><label class="small">Stroke</label><input id="strokeW" type="range" min="0.8" max="4" step="0.1" value="1.6"></div>
@@ -227,10 +232,11 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
   <div class="row"><label class="small">Label</label><input id="labelText" type="text" placeholder="Room / Note"></div>
 </div>
 
-<!-- ========= CANVAS & OVERLAY ========= -->
+<!-- CANVAS & OVERLAY -->
 <canvas id="canvas"></canvas>
 <div id="overlay"></div>
 
+<!-- STATUS -->
 <div class="status">
   <div id="stTool">Tool: Select</div>
   <div id="stSnap">Snap: Intersections</div>
@@ -238,7 +244,7 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
   <div id="stPos">x:– y:–</div>
 </div>
 
-<!-- ========= HELP ========= -->
+<!-- HELP -->
 <div id="help">
   <div class="card">
     <h3>Quick help</h3>
@@ -250,6 +256,7 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
       <li><b>Multi-select</b>: Shift-click more shapes</li>
       <li><b>Rotate</b>: drag the small yellow handle above selection</li>
       <li><b>End polyline</b>: <kbd>Enter</kbd> • <b>Back one</b>: <kbd>Backspace</kbd></li>
+      <li><b>Support</b>: <a href="mailto:120spaceproject@gmail.com">120spaceproject@gmail.com</a></li>
     </ul>
     <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
       <button id="closeHelp" class="btn" type="button">Got it</button>
@@ -257,23 +264,27 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
   </div>
 </div>
 
+<!-- FOOTER -->
+<footer class="site-footer">
+  <small>© <span id="year"></span> Universe120 • Beta •
+    <a href="mailto:120spaceproject@gmail.com">Contact</a>
+  </small>
+</footer>
+
 <script>
-/* ========= PASSCODE ========= */
+/* PASSCODE */
 const VALID_CODE = "@@U120";
 const lockEl = document.getElementById('lockScreen');
 document.getElementById('accessCodeBtn').onclick = ()=>{
   const v = document.getElementById('accessCodeInput').value.trim();
-  if(v === VALID_CODE){
-    lockEl.style.display = 'none';
-  }else{
-    document.getElementById('lockMsg').textContent = "Incorrect code. Try again.";
-  }
+  if(v === VALID_CODE){ lockEl.style.display = 'none'; }
+  else{ document.getElementById('lockMsg').textContent = "Incorrect code. Try again."; }
 };
 document.getElementById('accessCodeInput').addEventListener('keydown', e=>{
   if(e.key === 'Enter') document.getElementById('accessCodeBtn').click();
 });
 
-/* ========= DOM + CANVAS ========= */
+/* DOM + CANVAS */
 const $ = q=>document.querySelector(q);
 const all = q=>[...document.querySelectorAll(q)];
 const canvas = document.getElementById('canvas');
@@ -289,7 +300,7 @@ function resize(){
 }
 addEventListener('resize', resize); resize();
 
-/* ========= STATE ========= */
+/* STATE */
 const stTool=$('#stTool'), stSnap=$('#stSnap'), stZoom=$('#stZoom'), stPos=$('#stPos');
 const state = {
   tool:'select', zoom:1, pan:{x:0,y:0},
@@ -306,7 +317,7 @@ const Rbase=26; function grid(){ const R=Rbase*state.gridScale; return {R,stepX:
 let lastMouse={x:canvas.width/DPR/2, y:canvas.height/DPR/2};
 let mouseDown=false, panning=false, isSpace=false, middlePanning=false;
 
-/* ========= TOPBAR WIRING ========= */
+/* TOPBAR WIRING */
 $('#gridScale').addEventListener('input', e=>{ state.gridScale=+e.target.value; });
 $('#dotSize').addEventListener('input', e=>{ state.dotScale=+e.target.value; });
 $('#snapMode').addEventListener('change', e=>{ state.snap=e.target.value; stSnap.textContent='Snap: '+e.target.selectedOptions[0].textContent; });
@@ -330,7 +341,7 @@ $('#exportPNG').onclick=exportPNG;
 $('#helpBtn').onclick=()=>{ $('#help').style.display='flex'; };
 $('#closeHelp').onclick=()=>{ $('#help').style.display='none'; };
 
-/* ========= FLOATING TOOLS (simple open/close, no drag-to-pin) ========= */
+/* TOOLS */
 const toolsToggle = $('#toolsToggle');
 const toolsGrid = $('#toolsGrid');
 toolsToggle.onclick = ()=>{
@@ -341,8 +352,6 @@ toolsGrid.addEventListener('click', e=>{
   const btn=e.target.closest('.toolBtn'); if(!btn) return;
   setTool(btn.dataset.tool);
 });
-
-/* ========= TOOL LOGIC ========= */
 function setTool(name){
   state.tool = name;
   state.drawing = null;
@@ -350,7 +359,7 @@ function setTool(name){
   all('.toolBtn').forEach(el=>el.classList.toggle('active', el.dataset.tool===name));
 }
 
-/* ========= COORDS ========= */
+/* COORDS */
 function toWorld(sx,sy){
   return { x:(sx - canvas.width/DPR/2 - state.pan.x)/state.zoom,
            y:(sy - canvas.height/DPR/2 - state.pan.y)/state.zoom };
@@ -360,7 +369,7 @@ function toScreen(x,y){
            y: canvas.height/DPR/2 + state.pan.y + y*state.zoom };
 }
 
-/* ========= SMART GUIDES ========= */
+/* SMART GUIDES (badges limited to 2 for clarity) */
 const GUIDE = { tolLenRatio: 0.015, tolAngRad: Math.PI/180*2, niceAngles:[0,Math.PI/6,Math.PI/4,Math.PI/3,Math.PI/2,2*Math.PI/3,3*Math.PI/4,Math.PI] };
 function segLen(a,b){ return Math.hypot(b.x-a.x, b.y-a.y); }
 function segAng(a,b){ return Math.atan2(b.y-a.y, b.x-a.x); }
@@ -422,7 +431,7 @@ function drawSmartGuidesHook(){
   }
 }
 
-/* ========= GRID & SNAPPING ========= */
+/* GRID & SNAPPING */
 function gridCentersNear(x,y,range=3){
   const {stepX,stepY}=grid();
   const rr=Math.round(y/stepY), cc=Math.round((x-(rr%2? stepX/2:0))/stepX);
@@ -492,12 +501,12 @@ function applyAngleLock(a0,a1){
   return {x:a0.x+Math.cos(best)*len, y:a0.y+Math.sin(best)*len};
 }
 
-/* ========= UNDO ========= */
+/* UNDO */
 function pushUndo(){ state.undo.push(JSON.stringify({shapes:state.shapes})); state.redo.length=0; }
 function undo(){ if(!state.undo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const prev=state.undo.pop(); state.redo.push(cur); state.shapes = JSON.parse(prev).shapes; state.selection.clear(); }
 function redo(){ if(!state.redo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const next=state.redo.pop(); state.undo.push(cur); state.shapes = JSON.parse(next).shapes; state.selection.clear(); }
 
-/* ========= SHAPES / DRAW ========= */
+/* SHAPES / DRAW */
 function finishLine(B){ const A=state.drawing.A; const L=applyAngleLock(A,B); state.shapes.push({type:'seg', a:A, b:L, wall:state.wallThick||0}); state.drawing=null; }
 function finishArc(B){ const A=state.drawing.A; const C={x:(A.x+B.x)/2, y:(A.y+B.y)/2}; const r=Math.hypot(B.x-A.x,B.y-A.y)/2; const a1=Math.atan2(A.y-C.y,A.x-C.x), a2=Math.atan2(B.y-C.y,B.x-C.x); state.shapes.push({type:'arc', c:C, r, a1, a2}); state.drawing=null; }
 function finishRect(B){ const A=state.drawing.A; state.shapes.push({type:'rect', a:{x:Math.min(A.x,B.x), y:Math.min(A.y,B.y)}, b:{x:Math.max(A.x,B.x), y:Math.max(A.y,B.y)}, wall:state.wallThick||0}); state.drawing=null; }
@@ -521,7 +530,7 @@ function eraseNearest(P){
   if(bi>=0) state.shapes.splice(bi,1);
 }
 
-/* ========= SELECTION / GROUPS ========= */
+/* SELECTION / GROUPS */
 function distPointSeg(P,A,B){
   const vx=B.x-A.x, vy=B.y-A.y;
   const wx=P.x-A.x, wy=P.y-A.y;
@@ -568,9 +577,8 @@ function centerOfSelection(){
 $('#groupBtn').onclick=()=>{ if(state.selection.size<2) return; const gid = state.groupsCounter++; state.selection.forEach(i=>{ state.shapes[i].gid = gid; }); };
 $('#ungroupBtn').onclick=()=>{ if(!state.selection.size) return; state.selection.forEach(i=>{ delete state.shapes[i].gid; }); };
 
-/* ========= EVENTS ========= */
-let dragSel=null; // dragging selection
-
+/* EVENTS */
+let dragSel=null;
 canvas.addEventListener('mousemove', (e)=>{
   lastMouse={x:e.clientX,y:e.clientY};
   const w = toWorld(e.clientX,e.clientY);
@@ -578,8 +586,7 @@ canvas.addEventListener('mousemove', (e)=>{
   state.hover = {...snapped, screen: toScreen(snapped.x,snapped.y) };
   stPos.textContent = `x:${snapped.x.toFixed(1)} y:${snapped.y.toFixed(1)}`;
 
-  if(panning){ state.pan.x += e.movementX; state.pan.y += e.movementY; }
-  if(middlePanning){ state.pan.x += e.movementX; state.pan.y += e.movementY; }
+  if(panning || middlePanning){ state.pan.x += e.movementX; state.pan.y += e.movementY; }
 
   if(dragSel && !state.rotation.active){
     const now = toWorld(e.clientX,e.clientY);
@@ -661,7 +668,7 @@ addEventListener('keydown', e=>{
 });
 addEventListener('keyup', e=>{ if(e.code==='Space'){ isSpace=false; } });
 
-/* ========= ROTATION HANDLE ========= */
+/* ROTATION HANDLE */
 let handleEl=null;
 function ensureHandle(){
   if(!state.selection.size) { if(handleEl){ handleEl.remove(); handleEl=null; } return; }
@@ -671,14 +678,12 @@ function ensureHandle(){
   if(!handleEl){ handleEl=document.createElement('div'); handleEl.className='handle'; overlay.appendChild(handleEl); }
   handleEl.style.left = topScreen.x+'px';
   handleEl.style.top  = (topScreen.y - yOff)+'px';
-
   handleEl.onmousedown = (e)=>{
     e.preventDefault();
     state.rotation.active=true;
-    const cenW = {x:c.x, y:c.y};
-    state.rotation.center = cenW;
-    state.rotation.startAng = Math.atan2( toWorld(e.clientX,e.clientY).y - cenW.y,
-                                          toWorld(e.clientX,e.clientY).x - cenW.x );
+    state.rotation.center = {x:c.x,y:c.y};
+    state.rotation.startAng = Math.atan2( toWorld(e.clientX,e.clientY).y - c.x,
+                                          toWorld(e.clientX,e.clientY).x - c.y );
     state.rotation.base = [...state.selection].map(i=>({i, s: JSON.parse(JSON.stringify(state.shapes[i])) }));
   };
 }
@@ -716,7 +721,7 @@ document.addEventListener('mousemove', (e)=>{
 });
 document.addEventListener('mouseup', ()=>{ if(state.rotation.active){ state.rotation.active=false; } });
 
-/* ========= ZOOM / EXPORT ========= */
+/* ZOOM / EXPORT */
 function zoomAt(factor, screenPoint){
   const before=state.zoom; const after=Math.max(0.25, Math.min(6, before*factor));
   if(after===before) return;
@@ -774,7 +779,7 @@ function exportSVG(){
 }
 function exportPNG(){ const link=document.createElement('a'); link.download='universe120.png'; link.href=canvas.toDataURL('image/png'); link.click(); }
 
-/* ========= RENDER ========= */
+/* RENDER */
 function drawGrid(){
   const G=grid(); const R=G.R*state.dotScale; const stepX=G.stepX, stepY=G.stepY;
   const w=canvas.width/DPR, h=canvas.height/DPR;
@@ -840,5 +845,6 @@ function drawShapes(){
 function frame(){ ctx.clearRect(0,0,canvas.width,canvas.height); drawGrid(); drawShapes(); requestAnimationFrame(frame); }
 requestAnimationFrame(frame);
 </script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
