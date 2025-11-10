@@ -284,6 +284,125 @@ function toWorld(sx,sy){
 function toScreen(x,y){
   return { x: canvas.width/DPR/2 + state.pan.x + x*state.zoom,
            y: canvas.height/DPR/2 + state.pan.y + y*state.zoom };
+  /* ===================== SMART GUIDES (Adobe-like) ===================== */
+const GUIDE = {
+  tolLenRatio: 0.015,                   // 1.5% length tolerance
+  tolAngRad:   Math.PI/180 * 2.0,       // 2 degrees angle tolerance
+  niceAngles:  [0, Math.PI/6, Math.PI/4, Math.PI/3, Math.PI/2, 2*Math.PI/3, 3*Math.PI/4, Math.PI], // 0°,30°,45°,60°,90°...
+  colorGood:   '#7CFF7C',               // green-ish
+  colorInfo:   '#FFE36A',               // yellow-ish (matches brand)
+  colorWarn:   '#FF8A8A'                // red-ish
+};
+
+function segLen(a,b){ return Math.hypot(b.x-a.x, b.y-a.y); }
+function segAng(a,b){ return Math.atan2(b.y-a.y, b.x-a.x); }
+function normAng(rad){ let x=rad%(2*Math.PI); if(x<0) x+=2*Math.PI; return x; }
+function minAngDelta(a,b){ // smallest absolute delta between 2 angles in [0,2π)
+  const d = Math.abs(normAng(a)-normAng(b));
+  return Math.min(d, 2*Math.PI - d);
+}
+function nearLen(L1,L2,rel=GUIDE.tolLenRatio){ return Math.abs(L1-L2) <= Math.max(1e-6, rel*Math.max(L1,L2)); }
+function nearAng(a,b,tol=GUIDE.tolAngRad){ return minAngDelta(a,b) <= tol; }
+
+function drawBadgeAt(screenPt, text, color){
+  ctx.save();
+  ctx.font = '12px system-ui';
+  ctx.textBaseline = 'bottom';
+  const x = screenPt.x + 10, y = screenPt.y - 10;
+  // soft halo for legibility
+  ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(10,20,30,0.45)'; ctx.strokeText(text, x, y);
+  ctx.fillStyle = color; ctx.fillText(text, x, y);
+  ctx.restore();
+}
+
+function drawSmartGuidesForEdge(A_world, B_world, cursor_screen, prevEdge){ 
+  // prevEdge = {A,B} in *world* coords from last finished segment (if any)
+  const L  = segLen(A_world, B_world);
+  const ang= segAng(A_world, B_world);
+
+  // Show running length near cursor
+  drawBadgeAt(cursor_screen, `${L.toFixed(1)}`, GUIDE.colorInfo);
+
+  // Angle niceness (0/30/45/60/90…)
+  for(const na of GUIDE.niceAngles){
+    if(nearAng(ang, na)){
+      const deg = Math.round(na * 180/Math.PI);
+      drawBadgeAt(cursor_screen, `${deg}°`, GUIDE.colorGood);
+      break;
+    }
+  }
+
+  if(!prevEdge) return;
+
+  const Lprev  = segLen(prevEdge.A, prevEdge.B);
+  const Aprev  = segAng(prevEdge.A, prevEdge.B);
+
+  // Equal length (≡)
+  if(nearLen(L, Lprev)){
+    drawBadgeAt(cursor_screen, '≡ equal length', GUIDE.colorGood);
+  }
+
+  // Parallel (∥) / Perpendicular (⊥)
+  if(nearAng(ang, Aprev)) {
+    drawBadgeAt(cursor_screen, '∥ parallel', GUIDE.colorGood);
+  } else if(nearAng(ang, Aprev + Math.PI/2)) {
+    drawBadgeAt(cursor_screen, '⊥ perpendicular', GUIDE.colorGood);
+  }
+}
+
+/* Find "previous edge" for comparison:
+   - If user is drawing a polyline: use the last finished segment of that poly.
+   - If drawing a simple line: use the last *scene* segment as a loose reference (optional).
+*/
+function getPreviousEdgeForContext(){
+  // Prefer last segment of an in-progress polyline
+  if(state.drawing?.type === 'tempPoly' && state.drawing.points.length >= 2){
+    const pts = state.drawing.points;
+    return { A: pts[pts.length-2], B: pts[pts.length-1] };
+  }
+
+  // Otherwise, use the most recently added scene segment (optional fallback)
+  for(let i=state.shapes.length-1;i>=0;i--){
+    const s=state.shapes[i];
+    if(s.type==='seg') return {A:s.a, B:s.b};
+    if(s.type==='rect') return {A:s.a, B:{x:s.b.x, y:s.a.y}}; // top edge as a proxy
+  }
+  return null;
+}
+
+/* Main hook: call this from your drawing preview (tempLine/tempPoly/tempRect) */
+function drawSmartGuidesHook(){
+  if(!state.drawing || !state.hover?.screen) return;
+
+  const h = state.hover;
+  const prevEdge = getPreviousEdgeForContext();
+
+  if(state.drawing.type === 'tempLine'){
+    const A = state.drawing.A;
+    drawSmartGuidesForEdge(A, h, h.screen, prevEdge);
+  }
+  else if(state.drawing.type === 'tempPoly'){
+    const pts = state.drawing.points;
+    if(pts.length){
+      // temporarily apply angle lock so the preview matches your line
+      const A = pts[pts.length-1];
+      const L = applyAngleLock(A, h);
+      const Lscr = toScreen(L.x, L.y);
+      drawSmartGuidesForEdge(A, L, Lscr, getPreviousEdgeForContext());
+    }
+  }
+  else if(state.drawing.type === 'tempRect'){
+    // For rectangles: compare width & height equality → 'square'
+    const A = state.drawing.A;
+    const B = h;
+    const w = Math.abs(B.x - A.x), hgt = Math.abs(B.y - A.y);
+    const isSquare = nearLen(w, hgt);
+    if(isSquare){
+      const mid = toScreen((A.x+B.x)/2, (A.y+B.y)/2);
+      drawBadgeAt(mid, '□ square', GUIDE.colorGood);
+    }
+  }
+}
 }
 
 /* Grid & snapping */
