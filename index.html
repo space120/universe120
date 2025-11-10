@@ -7,229 +7,310 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <style>
 :root{
-  --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a; --toolbar-bg:#10366f;
+  --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a;
+  --toolbar-bg:#10366f;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
-/* NAV */
-.navbar{position:fixed;inset:0 0 auto 0;height:56px;z-index:40;display:flex;align-items:center;gap:12px;background:#0f356d;color:#fff;border-bottom:1px solid var(--border);padding:8px 12px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px;text-decoration:none;color:#fff}
-.brand .mark{width:26px;height:26px;border-radius:6px;background:#123b79;display:inline-block;box-shadow:inset 0 0 0 2px #204c96,0 0 0 1px #092659}
-.navlinks{margin-left:auto;display:flex;gap:8px}
-.navlinks a{text-decoration:none;color:#fff;border:1px solid #204c96;background:#10366f;padding:7px 12px;border-radius:10px;font-size:13px}
-.navlinks a:hover{background:#13407f}
-.navlinks a.active{outline:2px solid var(--brand)}
+/* ---- Blueprint NAV ---- */
+.navbar{
+  position:fixed; inset:0 0 auto 0; height:56px; z-index:50;
+  display:flex; align-items:center; gap:12px;
+  background:#0f356d; color:#fff; border-bottom:1px solid var(--border);
+  padding:8px 12px;
+}
+.brand{
+  display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px;
+  text-decoration:none; color:#fff;
+}
+.brand .mark{
+  width:26px; height:26px; border-radius:6px; background:#123b79; display:inline-block;
+  box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659;
+}
+.navlinks{ margin-left:auto; display:flex; gap:8px }
+.navlinks a{
+  text-decoration:none; color:#fff; border:1px solid #204c96; background:#10366f;
+  padding:7px 12px; border-radius:10px; font-size:13px
+}
+.navlinks a:hover{ background:#13407f }
+.navlinks a.active{ outline:2px solid var(--brand) }
 
-/* Topbar */
-.topbar{position:fixed;left:0;right:0;top:56px;height:48px;z-index:30;display:flex;align-items:center;gap:10px;padding:8px 12px;background:#10366f;border-bottom:1px solid var(--border);flex-wrap:wrap}
-.group{display:flex;gap:6px;align-items:center;background:#0d2e5f;border:1px solid #1e4d9a;border-radius:10px;padding:4px 6px}
-label.small{font-size:12px;color:#eaf1ff}
-button,.btn,select,input[type="text"],input[type="number"],input[type="file"]{appearance:none;border:1px solid #204c96;background:#10366f;color:#fff;border-radius:10px;padding:8px 10px;font-size:13px;cursor:pointer}
-button:hover,.btn:hover{background:#13407f}
-input[type="text"],input[type="number"],select{padding:6px 8px}
-input[type="range"]{accent-color:var(--brand)}
-input[type="file"]{padding:6px}
+/* ---- Top bar (controls) ---- */
+.topbar{
+  position:fixed; left:0; right:0; top:56px; height:auto; z-index:45;
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:8px 12px;
+  background:#10366f; border-bottom:1px solid var(--border);
+}
+.group{display:flex; gap:6px; align-items:center; background:#0d2e5f; border:1px solid #1e4d9a; border-radius:10px; padding:4px 6px}
+label.small{font-size:12px; color:#eaf1ff}
+button,.btn,select,input[type="text"],input[type="number"]{
+  appearance:none; border:1px solid #204c96; background:#10366f; color:#fff; border-radius:10px; padding:8px 10px; font-size:13px; cursor:pointer
+}
+button:hover,.btn:hover{ background:#13407f }
+input[type="text"],input[type="number"],select{ padding:6px 8px }
+input[type="range"]{ accent-color:var(--brand) }
 
-/* Tools */
-.toolbar{position:fixed;left:12px;top:56px;margin-top:56px;z-index:28;display:flex;flex-direction:column;gap:10px}
-.tool{width:148px;height:44px;display:flex;align-items:center;gap:10px;border:1px solid #204c96;border-radius:10px;background:#10366f;color:#fff;padding:6px 10px;cursor:pointer;text-align:left}
-.tool:hover{background:#13407f}
-.tool.active{outline:2px solid var(--brand)}
-.tool .icon{width:24px;flex:0 0 24px;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1}
-.tool .label{font-size:13px;line-height:1}
+/* Tools dropdown & pinned buttons */
+.toolsWrap{ position:relative }
+#toolsToggle{ display:flex; align-items:center; gap:6px }
+#toolsMenu{
+  position:absolute; top:40px; left:0; min-width:220px; padding:8px;
+  background:#0f356d; border:1px solid var(--border); border-radius:10px;
+  display:none; flex-wrap:wrap; gap:6px; z-index:60;
+}
+.toolBtn{
+  display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid #204c96; border-radius:10px; background:#10366f; color:#fff; font-size:13px;
+}
+.toolBtn .icon{ width:18px; text-align:center }
+.toolBtn.active{ outline:2px solid var(--brand) }
+.pinTip{ font-size:11px; color:#cfe0ff; width:100%; margin-top:6px; opacity:.85 }
+.pinnedBtn{
+  position:absolute; z-index:40; display:flex; align-items:center; gap:6px;
+  padding:6px 8px; border:1px solid #204c96; border-radius:10px; background:#10366f; color:#fff; font-size:12px;
+  user-select:none;
+}
 
-/* Panel */
-.panel{position:fixed;right:12px;top:56px;margin-top:56px;z-index:28;background:#0f356d;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.2);padding:10px 12px;min-width:260px;color:#eaf1ff}
-.panel h3{margin:.3rem 0 .2rem;font-size:14px}
-.panel .row{display:flex;align-items:center;gap:8px;margin:.35rem 0}
+/* Properties side panel */
+.panel{
+  position:fixed; right:12px; top:56px; transform:translateY(56px);
+  z-index:28; background:#0f356d; border:1px solid var(--border); border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.2); padding:10px 12px; min-width:260px; color:#eaf1ff
+}
+.panel h3{ margin:.3rem 0 .2rem; font-size:14px }
+.panel .row{ display:flex; align-items:center; gap:8px; margin:.35rem 0 }
 
-/* Canvas + status */
-#canvas{position:fixed;left:0;right:0;top:56px;bottom:28px;display:block;width:100%;height:calc(100% - 84px)}
-.status{position:fixed;left:0;right:0;bottom:0;height:28px;z-index:30;display:flex;align-items:center;gap:16px;padding:0 10px;background:#0f356d;color:#fff;border-top:1px solid var(--border);font-size:12px}
+/* Canvas & overlays */
+#canvas{ position:fixed; left:0; right:0; top:56px; bottom:28px; display:block; width:100%; height:calc(100% - 84px) }
+#overlay{ position:fixed; left:0; right:0; top:56px; bottom:28px; pointer-events:none; }
+.status{
+  position:fixed; left:0; right:0; bottom:0; height:28px; z-index:30;
+  display:flex; align-items:center; gap:16px; padding:0 10px;
+  background:#0f356d; color:#fff; border-top:1px solid var(--border); font-size:12px
+}
 
-/* Help */
-#help{position:fixed;inset:0;background:rgba(10,12,22,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50}
+/* Help overlay */
+#help{position:fixed;inset:0;background:rgba(10,12,22,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:70}
 #help .card{background:#10121b;border:1px solid #2a2e3d;color:#e9ebff;border-radius:12px;padding:18px;max-width:720px}
 kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;border-radius:5px;padding:1px 5px;font-family:ui-monospace,Menlo,Consolas,monospace}
 
-/* Marquee */
-.marquee{position:fixed;pointer-events:none;border:1px dashed #cbd5ff;background:rgba(203,213,255,.12)}
-.badge{position:fixed;left:10px;top:108px;background:#123b79;color:#fff;border:1px solid #204c96;border-radius:10px;padding:6px 10px;font-size:12px;z-index:45;display:none}
-.badge.show{display:block}
+/* Passcode lock */
+#lockScreen{
+  position:fixed; inset:0; background:#0d2a55; color:#fff; display:flex; align-items:center; justify-content:center; z-index:1000; flex-direction:column;
+}
+#lockScreen .card{
+  background:#0f356d; border:1px solid var(--border); border-radius:12px; padding:18px; width:min(92vw,440px);
+  box-shadow:0 12px 28px rgba(0,0,0,.25);
+}
+#lockScreen input{ width:100%; margin-top:8px; background:#10366f; color:#fff; border:1px solid #204c96; border-radius:10px; padding:10px 12px; font-size:16px }
+#lockScreen button{ margin-top:10px; padding:10px 12px; font-size:16px }
+#lockMsg{ margin-top:10px; color:#ff8a8a; min-height:1.2em }
+
+/* Rotation handle */
+.handle{
+  position:absolute; width:12px; height:12px; border-radius:50%;
+  background:#ffe36a; border:2px solid #0d2a55; box-shadow:0 0 0 1px #204c96;
+  transform:translate(-50%,-50%); z-index:42; pointer-events:auto; cursor:grab;
+}
+
+/* Smart guide badge */
+.badge{
+  position:absolute; padding:2px 6px; font-size:12px; color:#001327;
+  background:rgba(255,227,106,.95); border-radius:6px; border:1px solid #e6c84f;
+  white-space:nowrap; user-select:none; z-index:41; transform:translate(-50%,-100%);
+  pointer-events:none;
+}
+.badge.alt{ background:rgba(124,255,124,.95); border-color:#57db57 }
+.badge.muted{ background:rgba(255,255,255,.85); border-color:#bcd3ff }
 </style>
 </head>
 <body>
-  <div class="navbar">
-    <a class="brand" href="index.html" aria-label="Universe120 Home">
-      <span class="mark" aria-hidden="true"></span><span>Universe120</span>
-    </a>
-    <div class="navlinks">
-      <a href="index.html" class="active">Home</a>
-      <a href="about.html">About</a>
-      <a href="help.html">Help</a>
+
+<!-- ========= PASSCODE GATE ========= -->
+<div id="lockScreen">
+  <div class="card">
+    <h2 style="margin:.2rem 0 .5rem">Universe120 Beta</h2>
+    <p style="margin:0 0 .5rem">Enter access code to continue.</p>
+    <input type="password" id="accessCodeInput" placeholder="Access code">
+    <button id="accessCodeBtn">Enter</button>
+    <div id="lockMsg"></div>
+    <p style="margin-top:12px; font-size:12px; color:#cfe0ff">
+      Soft launch for feedback. Thanks for helping improve this tool!
+    </p>
+  </div>
+</div>
+
+<!-- ========= NAV ========= -->
+<div class="navbar">
+  <a class="brand" href="index.html" aria-label="Universe120 Home">
+    <span class="mark" aria-hidden="true"></span>
+    <span>Universe120</span>
+  </a>
+  <div class="navlinks">
+    <a href="index.html" class="active">Home</a>
+    <a href="about.html">About</a>
+  </div>
+</div>
+
+<!-- ========= TOPBAR ========= -->
+<div class="topbar">
+  <div class="group">
+    <button id="newDoc" type="button">New</button>
+    <button id="clearAll" type="button">Clear</button>
+    <button id="undoBtn" type="button">Undo</button>
+    <button id="redoBtn" type="button">Redo</button>
+  </div>
+
+  <div class="group">
+    <button id="zoomIn" type="button">+</button>
+    <button id="zoomOut" type="button">−</button>
+    <button id="zoomFit" type="button">Fit</button>
+    <button id="zoomReset" type="button">100%</button>
+  </div>
+
+  <div class="group">
+    <label class="small">Grid</label><input id="gridScale" type="range" min="0.6" max="1.8" step="0.01" value="1.0">
+    <label class="small">Dots</label><input id="dotSize" type="range" min="0.5" max="1.8" step="0.05" value="1.0">
+  </div>
+
+  <div class="group">
+    <label class="small">Snap</label>
+    <select id="snapMode">
+      <option value="intersections" selected>Intersections</option>
+      <option value="centers">Centers</option>
+      <option value="midpoints">Midpoints</option>
+      <option value="free">Free</option>
+    </select>
+    <label class="small">Angle</label>
+    <select id="angleLock">
+      <option value="off">Off</option>
+      <option value="ortho">0/90°</option>
+      <option value="thirty" selected>30/60/90°</option>
+      <option value="fortyfive">45/90°</option>
+    </select>
+  </div>
+
+  <div class="group">
+    <button id="groupBtn" type="button">Group</button>
+    <button id="ungroupBtn" type="button">Ungroup</button>
+  </div>
+
+  <div class="group">
+    <button id="exportSVG" type="button">Export SVG</button>
+    <button id="exportPNG" type="button">Export PNG</button>
+  </div>
+
+  <!-- Tools dropdown + pin -->
+  <div class="group toolsWrap">
+    <button id="toolsToggle" type="button">Tools ▾</button>
+    <div id="toolsMenu">
+      <!-- draggable tool buttons -->
+      <button class="toolBtn" draggable="true" data-tool="select"><span class="icon">🖱️</span><span>Select</span></button>
+      <button class="toolBtn" draggable="true" data-tool="pen"><span class="icon">✏️</span><span>Pen</span></button>
+      <button class="toolBtn" draggable="true" data-tool="line"><span class="icon">⎯</span><span>Line</span></button>
+      <button class="toolBtn" draggable="true" data-tool="arc"><span class="icon">⌒</span><span>Arc</span></button>
+      <button class="toolBtn" draggable="true" data-tool="rect"><span class="icon">▭</span><span>Rect</span></button>
+      <button class="toolBtn" draggable="true" data-tool="circ"><span class="icon">◯</span><span>Circle</span></button>
+      <button class="toolBtn" draggable="true" data-tool="text"><span class="icon">T</span><span>Text</span></button>
+      <button class="toolBtn" draggable="true" data-tool="dim"><span class="icon">⇄</span><span>Dimension</span></button>
+      <button class="toolBtn" draggable="true" data-tool="erase"><span class="icon">⌫</span><span>Erase</span></button>
+      <div class="pinTip">Tip: drag a tool out to pin it on the canvas. Drag it back here to remove.</div>
     </div>
   </div>
 
-  <div class="topbar">
-    <div class="group">
-      <button id="newDoc" type="button">New</button>
-      <button id="clearAll" type="button">Clear</button>
-      <button id="undoBtn" type="button">Undo</button>
-      <button id="redoBtn" type="button">Redo</button>
-    </div>
-    <div class="group">
-      <button id="zoomIn" type="button">+</button>
-      <button id="zoomOut" type="button">−</button>
-      <button id="zoomFit" type="button">Fit</button>
-      <button id="zoomReset" type="button">100%</button>
-    </div>
-    <div class="group">
-      <label class="small">Grid</label><input id="gridScale" type="range" min="0.6" max="1.8" step="0.01" value="1.0">
-      <label class="small">Dots</label><input id="dotSize" type="range" min="0.5" max="1.8" step="0.05" value="1.0">
-    </div>
-    <div class="group">
-      <label class="small">Snap</label>
-      <select id="snapMode">
-        <option value="intersections" selected>Intersections</option>
-        <option value="centers">Centers</option>
-        <option value="midpoints">Midpoints</option>
-        <option value="free">Free</option>
-      </select>
-      <label class="small">Angle</label>
-      <select id="angleLock">
-        <option value="off">Off</option>
-        <option value="ortho">0/90°</option>
-        <option value="thirty" selected>30/60/90°</option>
-        <option value="fortyfive">45/90°</option>
-      </select>
-    </div>
+  <div class="group"><button id="helpBtn" type="button">?</button></div>
+</div>
 
-    <!-- NEW: Blueprint upload + controls -->
-    <div class="group">
-      <input id="blueUpload" type="file" accept="image/*" title="Upload Blueprint">
-      <label class="small">Opacity</label><input id="blueOpacity" type="range" min="0.1" max="1" step="0.05" value="0.55">
-      <label class="small"><input id="blueLock" type="checkbox"> Lock</label>
-      <button id="blueClear" type="button" title="Remove image">Clear</button>
-    </div>
+<!-- ========= PROPERTIES ========= -->
+<div class="panel" id="props" style="top:56px; margin-top:56px;">
+  <h3>Properties</h3>
+  <div class="row"><label class="small">Stroke</label><input id="strokeW" type="range" min="0.8" max="4" step="0.1" value="1.6"></div>
+  <div class="row"><label class="small">Wall (px)</label><input id="wallThick" type="number" value="0" min="0" max="60" step="1"></div>
+  <div class="row"><label class="small">Label</label><input id="labelText" type="text" placeholder="Room / Note"></div>
+</div>
 
-    <div class="group">
-      <button id="exportSVG" type="button">Export SVG</button>
-      <button id="exportPNG" type="button">Export PNG</button>
-      <button id="helpBtn" type="button">?</button>
-    </div>
-    <div class="group">
-      <button id="groupBtn" type="button" title="Group (G)">Group</button>
-      <button id="ungroupBtn" type="button" title="Ungroup (U)">Ungroup</button>
+<!-- ========= CANVAS & OVERLAYS ========= -->
+<canvas id="canvas"></canvas>
+<div id="overlay"></div>
+
+<div class="status">
+  <div id="stTool">Tool: Select</div>
+  <div id="stSnap">Snap: Intersections</div>
+  <div id="stZoom">Zoom: 100%</div>
+  <div id="stPos">x:– y:–</div>
+</div>
+
+<!-- ========= HELP ========= -->
+<div id="help">
+  <div class="card">
+    <h3>Quick help</h3>
+    <ul>
+      <li><b>Pan</b>: hold <kbd>Space</kbd> and drag (or middle-mouse drag)</li>
+      <li><b>Zoom</b>: mouse wheel (zooms to cursor)</li>
+      <li><b>Zoom Fit</b>: <kbd>Shift</kbd>+<kbd>1</kbd> • <b>Reset 100%</b>: <kbd>1</kbd></li>
+      <li><b>Undo/Redo</b>: <kbd>Ctrl/Cmd</kbd>+<kbd>Z</kbd> / <kbd>Ctrl/Cmd</kbd>+<kbd>Y</kbd></li>
+      <li><b>Multi-select</b>: Shift-click more shapes</li>
+      <li><b>Rotate</b>: drag the small yellow handle above selection</li>
+      <li><b>End polyline</b>: <kbd>Enter</kbd> • <b>Back one</b>: <kbd>Backspace</kbd></li>
+    </ul>
+    <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
+      <button id="closeHelp" class="btn" type="button">Got it</button>
     </div>
   </div>
-
-  <div class="toolbar" aria-label="Tools">
-    <button type="button" class="tool active" data-tool="select" title="Select (V)" aria-label="Select">
-      <span class="icon">🖱️</span><span class="label">Select</span>
-    </button>
-    <button type="button" class="tool" data-tool="pen" title="Pen / Polyline (P)" aria-label="Pen / Polyline">
-      <span class="icon">✏️</span><span class="label">Pen</span>
-    </button>
-    <button type="button" class="tool" data-tool="line" title="Line (L)" aria-label="Line">
-      <span class="icon">⎯</span><span class="label">Line</span>
-    </button>
-    <button type="button" class="tool" data-tool="arc" title="Arc (A)" aria-label="Arc">
-      <span class="icon">⌒</span><span class="label">Arc</span>
-    </button>
-    <button type="button" class="tool" data-tool="rect" title="Rectangle (R)" aria-label="Rectangle">
-      <span class="icon">▭</span><span class="label">Rect</span>
-    </button>
-    <button type="button" class="tool" data-tool="circ" title="Circle (O)" aria-label="Circle">
-      <span class="icon">◯</span><span class="label">Circle</span>
-    </button>
-    <button type="button" class="tool" data-tool="text" title="Text (T)" aria-label="Text">
-      <span class="icon">T</span><span class="label">Text</span>
-    </button>
-    <button type="button" class="tool" data-tool="dim" title="Dimension (D)" aria-label="Dimension">
-      <span class="icon">⇄</span><span class="label">Dim</span>
-    </button>
-    <button type="button" class="tool" data-tool="erase" title="Erase (E)" aria-label="Erase">
-      <span class="icon">⌫</span><span class="label">Erase</span>
-    </button>
-  </div>
-
-  <div class="panel" id="props">
-    <h3>Properties</h3>
-    <div class="row"><label class="small">Stroke</label><input id="strokeW" type="range" min="0.8" max="4" step="0.1" value="1.6"></div>
-    <div class="row"><label class="small">Wall (px)</label><input id="wallThick" type="number" value="0" min="0" max="60" step="1"></div>
-    <div class="row"><label class="small">Label</label><input id="labelText" type="text" placeholder="Room / Note"></div>
-  </div>
-
-  <canvas id="canvas"></canvas>
-
-  <div class="status">
-    <div id="stTool">Tool: Select</div>
-    <div id="stSnap">Snap: Intersections</div>
-    <div id="stZoom">Zoom: 100%</div>
-    <div id="stPos">x:– y:–</div>
-  </div>
-
-  <div id="help">
-    <div class="card">
-      <h3>Quick help</h3>
-      <ul>
-        <li><b>Pan</b>: hold <kbd>Space</kbd> and drag</li>
-        <li><b>Zoom</b>: wheel (zooms to cursor)</li>
-        <li><b>Zoom Fit</b>: <kbd>Shift</kbd>+<kbd>1</kbd> • <b>Reset 100%</b>: <kbd>1</kbd></li>
-        <li><b>Undo/Redo</b>: <kbd>Ctrl/Cmd</kbd>+<kbd>Z</kbd> / <kbd>Ctrl/Cmd</kbd>+<kbd>Y</kbd></li>
-        <li><b>Multi-select</b>: drag a box, or <kbd>Shift</kbd>+click</li>
-        <li><b>Group</b>: <kbd>G</kbd> • <b>Ungroup</b>: <kbd>U</kbd></li>
-        <li><b>Rotate</b>: drag the yellow handle above selection</li>
-        <li><b>Upload + Align</b>: see <a href="help.html">Help</a> for 2-point alignment</li>
-      </ul>
-      <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
-        <button id="closeHelp" class="btn" type="button">Got it</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="alignBadge" class="badge"></div>
+</div>
 
 <script>
-/* ========= Canvas setup ========= */
+/* ========= PASSCODE ========= */
+const VALID_CODE = "@@U120";
+const lockEl = document.getElementById('lockScreen');
+document.getElementById('accessCodeBtn').onclick = ()=>{
+  const v = document.getElementById('accessCodeInput').value.trim();
+  if(v === VALID_CODE){
+    lockEl.style.display = 'none';
+  }else{
+    document.getElementById('lockMsg').textContent = "Incorrect code. Try again.";
+  }
+};
+document.getElementById('accessCodeInput').addEventListener('keydown', e=>{
+  if(e.key === 'Enter') document.getElementById('accessCodeBtn').click();
+});
+
+/* ========= DOM SHORTCUTS ========= */
+const $ = q=>document.querySelector(q);
+const all = q=>[...document.querySelectorAll(q)];
 const canvas = document.getElementById('canvas');
+const overlay = document.getElementById('overlay');
 const ctx = canvas.getContext('2d',{alpha:true});
 let DPR = Math.min(devicePixelRatio||1,2);
-function resize(){ const w=innerWidth, h=innerHeight-56-28; canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR); canvas.style.width=w+'px'; canvas.style.height=h+'px'; ctx.setTransform(DPR,0,0,DPR,0,0); }
+function resize(){
+  const w=innerWidth, h=innerHeight-56-28; // nav + status
+  canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR);
+  canvas.style.width=w+'px'; canvas.style.height=h+'px';
+  overlay.style.left=0; overlay.style.top='56px'; overlay.style.right=0; overlay.style.bottom='28px';
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+}
 addEventListener('resize', resize); resize();
 
-function $(q){ return document.querySelector(q); }
+/* ========= STATE ========= */
 const stTool=$('#stTool'), stSnap=$('#stSnap'), stZoom=$('#stZoom'), stPos=$('#stPos');
-const alignBadge = $('#alignBadge');
-
 const state = {
   tool:'select', zoom:1, pan:{x:0,y:0},
   gridScale:1.0, dotScale:1.0,
   strokeW:1.6, wallThick:0,
   snap:'intersections', angleLock:'thirty',
   drawing:null, hover:null,
-  shapes:[], selection:new Set(),
+  shapes:[], selection:new Set(), // indices
+  groupsCounter:1,
   undo:[], redo:[],
-  marquee:null,
-  // NEW: blueprint image layer + alignment
-  image:{
-    img:null, opacity:0.55, locked:false,
-    // similarity transform world = T + R(θ)*s*(imgLocal)
-    tx:0, ty:0, s:1, th:0,
-    // alignment steps
-    mode:'idle', // idle | pickImg1 | pickGrid1 | pickImg2 | pickGrid2
-    p1I:null, p1G:null, p2I:null, p2G:null
-  }
+  rotation:{active:false, startAng:0, baseAng:0, center:null},
+  pinned:[] // {tool,x,y,el}
 };
-
-const Rbase=26;
-function grid(){ const R=Rbase*state.gridScale; return {R, stepX:R, stepY:R*Math.sqrt(3)/2}; }
+const Rbase=26; function grid(){ const R=Rbase*state.gridScale; return {R,stepX:R, stepY:R*Math.sqrt(3)/2}; }
 
 let lastMouse={x:canvas.width/DPR/2, y:canvas.height/DPR/2};
-let isSpace=false, mouseDown=false, panning=false;
+let mouseDown=false, panning=false, isSpace=false;
 
-/* ===== UI wiring ===== */
+/* ========= UI WIRING ========= */
 $('#gridScale').addEventListener('input', e=>{ state.gridScale=+e.target.value; });
 $('#dotSize').addEventListener('input', e=>{ state.dotScale=+e.target.value; });
 $('#snapMode').addEventListener('change', e=>{ state.snap=e.target.value; stSnap.textContent='Snap: '+e.target.selectedOptions[0].textContent; });
@@ -237,254 +318,306 @@ $('#angleLock').addEventListener('change', e=>{ state.angleLock=e.target.value; 
 $('#strokeW').addEventListener('input', e=>{ state.strokeW=+e.target.value; });
 $('#wallThick').addEventListener('input', e=>{ state.wallThick=+e.target.value; });
 $('#labelText').addEventListener('input', e=>{ state.labelDraft=e.target.value; });
+
 $('#zoomIn').onclick=()=>zoomAt(1.1, lastMouse);
 $('#zoomOut').onclick=()=>zoomAt(1/1.1, lastMouse);
 $('#zoomReset').onclick=()=>{ state.zoom=1; state.pan={x:0,y:0}; stZoom.textContent='Zoom: 100%'; };
 $('#zoomFit').onclick=()=>zoomToFit();
+
 $('#newDoc').onclick=()=>{ pushUndo(); state.shapes.length=0; state.selection.clear(); };
 $('#clearAll').onclick=()=>{ pushUndo(); state.shapes.length=0; state.selection.clear(); };
 $('#undoBtn').onclick=undo; $('#redoBtn').onclick=redo;
-$('#exportSVG').onclick=exportSVG; $('#exportPNG').onclick=exportPNG;
-$('#groupBtn').onclick=groupSelection; $('#ungroupBtn').onclick=ungroupSelection;
-$('#helpBtn').onclick=()=>{ $('#help').style.display='flex'; }; $('#closeHelp').onclick=()=>{ $('#help').style.display='none'; };
 
-/* ===== Toolbar ===== */
+$('#exportSVG').onclick=exportSVG;
+$('#exportPNG').onclick=exportPNG;
+
+$('#helpBtn').onclick=()=>{ $('#help').style.display='flex'; };
+$('#closeHelp').onclick=()=>{ $('#help').style.display='none'; };
+
+/* Tools dropdown & pin */
+const toolsToggle = $('#toolsToggle');
+const toolsMenu = $('#toolsMenu');
+toolsToggle.onclick = ()=>{ toolsMenu.style.display = (toolsMenu.style.display==='block'?'none':'block'); };
+document.addEventListener('click', (e)=>{ if(!toolsMenu.contains(e.target) && e.target!==toolsToggle){ toolsMenu.style.display='none'; }});
+toolsMenu.addEventListener('click', e=>{
+  const btn=e.target.closest('.toolBtn'); if(!btn) return;
+  setTool(btn.dataset.tool);
+});
+toolsMenu.addEventListener('dragstart', e=>{
+  const btn=e.target.closest('.toolBtn'); if(!btn) return;
+  e.dataTransfer.setData('text/tool', btn.dataset.tool);
+});
+overlay.addEventListener('dragover', e=>{ e.preventDefault(); });
+overlay.addEventListener('drop', e=>{
+  e.preventDefault();
+  const tool=e.dataTransfer.getData('text/tool');
+  if(!tool) return;
+  const x=e.clientX, y=e.clientY;
+  const el=document.createElement('div');
+  el.className='pinnedBtn'; el.textContent=tool.toUpperCase();
+  el.style.left=(x-40)+'px'; el.style.top=(y-20)+'px';
+  el.draggable=true;
+  el.addEventListener('click', ()=>setTool(tool));
+  el.addEventListener('dragstart', ev=>{ ev.dataTransfer.setData('text/pin', tool); ev.dataTransfer.setData('text/pin-idx', String(state.pinned.indexOf(pin))); });
+  overlay.appendChild(el);
+  const pin={tool, x:x, y:y, el};
+  state.pinned.push(pin);
+});
+toolsMenu.addEventListener('dragover', e=>{ e.preventDefault(); });
+toolsMenu.addEventListener('drop', e=>{
+  e.preventDefault();
+  const idx=parseInt(e.dataTransfer.getData('text/pin-idx'),10);
+  const pin=state.pinned[idx];
+  if(pin){ pin.el.remove(); state.pinned.splice(idx,1); }
+});
+
+/* ========= TOOL LOGIC ========= */
 function setTool(name){
-  if(state.tool===name) return;
   state.tool = name;
-  state.drawing = null; // avoid stuck temp states
-  document.querySelectorAll('.tool').forEach(el=>el.classList.toggle('active', el.dataset.tool===name));
-  const titles={select:'Select', pen:'Pen / Polyline', line:'Line', arc:'Arc', rect:'Rectangle', circ:'Circle', text:'Text', dim:'Dimension', erase:'Erase'};
-  stTool.textContent='Tool: '+(titles[name]||name);
-}
-document.querySelector('.toolbar').addEventListener('click', (e)=>{
-  const btn = e.target.closest('.tool'); if(!btn) return; e.preventDefault(); setTool(btn.dataset.tool);
-});
-
-/* ===== Upload & Align ===== */
-const up = $('#blueUpload');
-const op = $('#blueOpacity');
-const lk = $('#blueLock');
-const clr= $('#blueClear');
-
-up.addEventListener('change', async (e)=>{
-  if(!e.target.files?.length) return;
-  const file = e.target.files[0];
-  const img = new Image();
-  img.onload = ()=>{
-    state.image.img = img;
-    // initial placement: center + scale to ~70% width
-    const w = canvas.width/DPR, h = canvas.height/DPR;
-    const targetW = w*0.7;
-    const s0 = targetW / img.width;
-    state.image.s = s0;
-    state.image.th = 0;
-    state.image.tx = (w/2) - (img.width*s0)/2;
-    state.image.ty = (h/2) - (img.height*s0)/2;
-    // start alignment
-    startAlignFlow();
-  };
-  img.src = URL.createObjectURL(file);
-});
-
-op.addEventListener('input', e=>{ state.image.opacity=+e.target.value; });
-lk.addEventListener('change', e=>{ state.image.locked=e.target.checked; });
-clr.addEventListener('click', ()=>{
-  state.image = {img:null,opacity:+op.value||0.55,locked:lk.checked||false,tx:0,ty:0,s:1,th:0,mode:'idle',p1I:null,p1G:null,p2I:null,p2G:null};
-  alignBadge.classList.remove('show');
-});
-
-function startAlignFlow(){
-  state.image.mode='pickImg1';
-  state.image.p1I=state.image.p1G=state.image.p2I=state.image.p2G=null;
-  showAlignBadge('Alignment: Click <b>Point 1</b> on the image');
-}
-function showAlignBadge(html){ alignBadge.innerHTML=html; alignBadge.classList.add('show'); }
-function hideAlignBadge(){ alignBadge.classList.remove('show'); }
-
-/* convert between screen/world/image-local */
-function toWorld(sx,sy){ return { x:(sx - canvas.width/DPR/2 - state.pan.x)/state.zoom, y:(sy - canvas.height/DPR/2 - state.pan.y)/state.zoom }; }
-function toScreen(x,y){ return { x: canvas.width/DPR/2 + state.pan.x + x*state.zoom, y: canvas.height/DPR/2 + state.pan.y + y*state.zoom }; }
-function worldToImageLocal(wx,wy){
-  // invert similarity transform: first remove translation, then rotate -th, scale 1/s
-  const {tx,ty,s,th} = state.image;
-  const x = wx - tx, y = wy - ty;
-  const c=Math.cos(-th), si=Math.sin(-th);
-  const rx = (x*c - y*si) / s;
-  const ry = (x*si + y*c) / s;
-  return {x:rx, y:ry};
-}
-function imageLocalToWorld(ix,iy){
-  const {tx,ty,s,th} = state.image;
-  const c=Math.cos(th), si=Math.sin(th);
-  const x = (ix*c - iy*si)*s + tx;
-  const y = (ix*si + iy*c)*s + ty;
-  return {x,y};
+  state.drawing = null;
+  stTool.textContent = 'Tool: ' + name[0].toUpperCase()+name.slice(1);
+  all('.toolBtn').forEach(el=>el.classList.toggle('active', el.dataset.tool===name));
 }
 
-/* compute similarity transform from two point pairs */
-function solveSimilarity(i1,i2,g1,g2){
-  const dxI = i2.x - i1.x, dyI = i2.y - i1.y;
-  const dxG = g2.x - g1.x, dyG = g2.y - g1.y;
-  const LI = Math.hypot(dxI,dyI) || 1;
-  const LG = Math.hypot(dxG,dyG) || 1;
-  const s = LG / LI;
-  const angI = Math.atan2(dyI,dxI);
-  const angG = Math.atan2(dyG,dxG);
-  const th = angG - angI;
-  // T = g1 - R(th)*s*i1
-  const c=Math.cos(th), si=Math.sin(th);
-  const tx = g1.x - (i1.x*c - i1.y*si)*s;
-  const ty = g1.y - (i1.x*si + i1.y*c)*s;
-  return {s,th,tx,ty};
+/* ========= COORDS ========= */
+function toWorld(sx,sy){
+  return { x:(sx - canvas.width/DPR/2 - state.pan.x)/state.zoom,
+           y:(sy - canvas.height/DPR/2 - state.pan.y)/state.zoom };
+}
+function toScreen(x,y){
+  return { x: canvas.width/DPR/2 + state.pan.x + x*state.zoom,
+           y: canvas.height/DPR/2 + state.pan.y + y*state.zoom };
 }
 
-/* ===== Smart Guides (unchanged core) ===== */
-const GUIDE={ tolLenRatio:.015, tolAngRad:Math.PI/180*2, niceAngles:[0,Math.PI/6,Math.PI/4,Math.PI/3,Math.PI/2,2*Math.PI/3,3*Math.PI/4,Math.PI], colorGood:'#7CFF7C', colorInfo:'#FFE36A' };
-function segLen(a,b){ return Math.hypot(b.x-a.x,b.y-a.y); }
-function segAng(a,b){ return Math.atan2(b.y-a.y,b.x-a.x); }
-function drawBadgeAt(scr,text,color){ ctx.save(); ctx.font='12px system-ui'; ctx.textBaseline='bottom'; const x=scr.x+10,y=scr.y-10; ctx.lineWidth=4; ctx.strokeStyle='rgba(10,20,30,.45)'; ctx.strokeText(text,x,y); ctx.fillStyle=color; ctx.fillText(text,x,y); ctx.restore(); }
-function drawSmartGuidesForEdge(A,B,cursorScr,prev){ const L=segLen(A,B), ang=segAng(A,B); drawBadgeAt(cursorScr, `${L.toFixed(1)}`, GUIDE.colorInfo); for(const na of GUIDE.niceAngles){ const d=Math.abs(((ang-na+Math.PI)%(2*Math.PI))-Math.PI); if(d<=GUIDE.tolAngRad){ drawBadgeAt(cursorScr, `${Math.round(na*180/Math.PI)}°`, GUIDE.colorGood); break; } } if(!prev) return; const Lp=segLen(prev.A,prev.B), Ap=segAng(prev.A,prev.B); if(Math.abs(L-Lp)<=Math.max(1e-6,GUIDE.tolLenRatio*Math.max(L,Lp))) drawBadgeAt(cursorScr,'≡ equal',GUIDE.colorGood); const isPar=Math.abs(((ang-Ap+Math.PI)%(2*Math.PI))-Math.PI)<=GUIDE.tolAngRad; const isPerp=Math.abs(((ang-(Ap+Math.PI/2)+Math.PI)%(2*Math.PI))-Math.PI)<=GUIDE.tolAngRad; if(isPar) drawBadgeAt(cursorScr,'∥ parallel',GUIDE.colorGood); else if(isPerp) drawBadgeAt(cursorScr,'⊥ perp',GUIDE.colorGood); }
-function getPrevEdge(){ if(state.drawing?.type==='tempPoly' && state.drawing.points.length>=2){ const pts=state.drawing.points; return {A:pts[pts.length-2],B:pts[pts.length-1]}; } for(let i=state.shapes.length-1;i>=0;i--){ const s=state.shapes[i]; if(s.type==='seg') return {A:s.a,B:s.b}; if(s.type==='rect') return {A:s.a,B:{x:s.b.x,y:s.a.y}}; } return null; }
-function drawSmartGuidesHook(){ if(!state.drawing||!state.hover?.screen) return; const h=state.hover, prev=getPrevEdge(); if(state.drawing.type==='tempLine'){ const A=state.drawing.A; drawSmartGuidesForEdge(A,h,h.screen,prev); } else if(state.drawing.type==='tempPoly'){ const pts=state.drawing.points; if(pts.length){ const A=pts[pts.length-1], L=applyAngleLock(A,h), Lscr=toScreen(L.x,L.y); drawSmartGuidesForEdge(A,L,Lscr,getPrevEdge()); } } else if(state.drawing.type==='tempRect'){ const A=state.drawing.A, B=h; const w=Math.abs(B.x-A.x), hg=Math.abs(B.y-A.y); if(Math.abs(w-hg)<=Math.max(1e-6,GUIDE.tolLenRatio*Math.max(w,hg))){ const mid=toScreen((A.x+B.x)/2,(A.y+B.y)/2); drawBadgeAt(mid,'□ square',GUIDE.colorGood); } } }
+/* ========= SMART GUIDES ========= */
+const GUIDE = {
+  tolLenRatio: 0.015,             // 1.5% length tolerance
+  tolAngRad:   Math.PI/180 * 2.0, // 2°
+  niceAngles:  [0, Math.PI/6, Math.PI/4, Math.PI/3, Math.PI/2, 2*Math.PI/3, 3*Math.PI/4, Math.PI]
+};
+function segLen(a,b){ return Math.hypot(b.x-a.x, b.y-a.y); }
+function segAng(a,b){ return Math.atan2(b.y-a.y, b.x-a.x); }
+function normAng(rad){ let x=rad%(2*Math.PI); if(x<0) x+=2*Math.PI; return x; }
+function minAngDelta(a,b){ const d=Math.abs(normAng(a)-normAng(b)); return Math.min(d, 2*Math.PI - d); }
+function nearLen(L1,L2,rel=GUIDE.tolLenRatio){ return Math.abs(L1-L2) <= Math.max(1e-6, rel*Math.max(L1,L2)); }
+function nearAng(a,b,tol=GUIDE.tolAngRad){ return minAngDelta(a,b) <= tol; }
 
-/* ===== Grid & snap ===== */
-function gridCentersNear(x,y,range=3){ const {stepX,stepY}=grid(); const rr=Math.round(y/stepY), cc=Math.round((x-(rr%2? stepX/2:0))/stepX); const pts=[]; for(let dr=-range;dr<=range;dr++) for(let dc=-range;dc<=range;dc++){ const r=rr+dr,c=cc+dc,gx=c*stepX+(r%2? stepX/2:0), gy=r*stepY; pts.push({x:gx,y:gy,kind:'center'});} const mids=[]; for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){ const a=pts[i],b=pts[j]; if(Math.hypot(a.x-b.x)<stepX*1.02) mids.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,kind:'mid'});} return pts.concat(mids); }
-function snapPoint(x,y,strong=false){ if(state.snap==='free') return {x,y,kind:'free'}; const cand=gridCentersNear(x,y,strong?4:3); let best=null,bd=1e9; cand.forEach(p=>{ const d2=(p.x-x)**2+(p.y-y)**2; if(d2<bd){bd=d2; best=p;} }); return best||{x,y,kind:'free'}; }
+let badgePool=[];
+function clearBadges(){ badgePool.forEach(el=>el.remove()); badgePool.length=0; }
+function placeBadge(screenPt, text, variant='info'){
+  if(badgePool.length>=2) return; // show max 2 badges to avoid clutter
+  const el = document.createElement('div');
+  el.className='badge'+(variant==='good'?' alt':(variant==='muted'?' muted':'' ));
+  el.style.left = screenPt.x+'px';
+  el.style.top  = (screenPt.y- (badgePool.length*18) )+'px';
+  el.textContent = text;
+  overlay.appendChild(el);
+  badgePool.push(el);
+}
+function getPreviousEdgeForContext(){
+  if(state.drawing?.type === 'tempPoly' && state.drawing.points.length >= 2){
+    const pts = state.drawing.points;
+    return { A: pts[pts.length-2], B: pts[pts.length-1] };
+  }
+  for(let i=state.shapes.length-1;i>=0;i--){
+    const s=state.shapes[i];
+    if(s.type==='seg') return {A:s.a, B:s.b};
+    if(s.type==='rect') return {A:s.a, B:{x:s.b.x, y:s.a.y}};
+  }
+  return null;
+}
+function drawSmartGuidesHook(){
+  clearBadges();
+  if(!state.drawing || !state.hover?.screen) return;
+  const h = state.hover;
+  const prevEdge = getPreviousEdgeForContext();
+  function annotate(A_world, B_world, cursor_screen){
+    const L  = segLen(A_world, B_world);
+    const ang= segAng(A_world, B_world);
+    placeBadge(cursor_screen, `${L.toFixed(1)}`, 'info');
+    for(const na of GUIDE.niceAngles){
+      if(nearAng(ang, na)){ placeBadge(cursor_screen, `${Math.round(na*180/Math.PI)}°`, 'good'); break; }
+    }
+    if(prevEdge){
+      const Lp=segLen(prevEdge.A, prevEdge.B), Ap=segAng(prevEdge.A, prevEdge.B);
+      if(nearLen(L,Lp)) placeBadge(cursor_screen, '≡ equal', 'good');
+      else if(nearAng(ang,Ap)) placeBadge(cursor_screen, '∥ parallel', 'good');
+      else if(nearAng(ang,Ap+Math.PI/2)) placeBadge(cursor_screen, '⊥ perp', 'good');
+    }
+  }
+  if(state.drawing.type==='tempLine'){ annotate(state.drawing.A, h, h.screen); }
+  else if(state.drawing.type==='tempPoly'){
+    const pts=state.drawing.points; if(pts.length){
+      const A=pts[pts.length-1]; const L=applyAngleLock(A, h); const Lscr=toScreen(L.x,L.y); annotate(A, L, Lscr);
+    }
+  } else if(state.drawing.type==='tempRect'){
+    const A=state.drawing.A; const B=h;
+    const w=Math.abs(B.x-A.x), ht=Math.abs(B.y-A.y);
+    if(nearLen(w,ht)) placeBadge(toScreen((A.x+B.x)/2,(A.y+B.y)/2),'□ square','good');
+  }
+}
+
+/* ========= GRID & SNAPPING ========= */
+function gridCentersNear(x,y,range=3){
+  const {stepX,stepY}=grid();
+  const rr=Math.round(y/stepY), cc=Math.round((x-(rr%2? stepX/2:0))/stepX);
+  const pts=[];
+  for(let dr=-range; dr<=range; dr++)
+    for(let dc=-range; dc<=range; dc++){
+      const r=rr+dr, c=cc+dc, gx=c*stepX+(r%2? stepX/2:0), gy=r*stepY;
+      pts.push({x:gx,y:gy,kind:'center'});
+    }
+  const mids=[];
+  for(let i=0;i<pts.length;i++)
+    for(let j=i+1;j<pts.length;j++){
+      const a=pts[i], b=pts[j];
+      if(Math.hypot(a.x-b.x,a.y-b.y) < stepX*1.02) mids.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,kind:'mid'});
+    }
+  return pts.concat(mids);
+}
+function snapPoint(worldX,worldY, strong=false){
+  if(state.snap==='free') return {x:worldX, y:worldY, kind:'free'};
+  const cand = gridCentersNear(worldX,worldY,strong?4:3);
+  let best=null, bd=1e9;
+  cand.forEach(p=>{
+    const d2=(p.x-worldX)*(p.x-worldX)+(p.y-worldY)*(p.y-worldY);
+    if(d2<bd){ bd=d2; best=p; }
+  });
+  return best||{x:worldX,y:worldY,kind:'free'};
+}
 function shapeAnchors(s){
-  const out=[];
-  if(s.type==='group'){ s.children.forEach(ch=>out.push(...shapeAnchors(ch))); return out; }
-  if(s.type==='seg'){ out.push(s.a,s.b); }
-  if(s.type==='rect'){ out.push(s.a,{x:s.b.x,y:s.a.y},s.b,{x:s.a.x,y:s.b.y}); }
-  if(s.type==='arc'){ out.push({x:s.c.x + s.r*Math.cos(s.a1), y:s.c.y + s.r*Math.sin(s.a1)},{x:s.c.x + s.r*Math.cos(s.a2), y:s.c.y + s.r*Math.sin(s.a2)},s.c); }
-  if(s.type==='circ'){ out.push(s.c); }
-  if(s.type==='dim'){ out.push(s.a,s.b); }
-  if(s.type==='label'){ out.push(s.p); }
-  return out;
+  const pts=[];
+  if(s.type==='seg'){ pts.push(s.a, s.b); }
+  if(s.type==='rect'){ pts.push(s.a, {x:s.b.x,y:s.a.y}, s.b, {x:s.a.x,y:s.b.y}); }
+  if(s.type==='arc'){ pts.push(
+    {x:s.c.x + s.r*Math.cos(s.a1), y:s.c.y + s.r*Math.sin(s.a1)},
+    {x:s.c.x + s.r*Math.cos(s.a2), y:s.c.y + s.r*Math.sin(s.a2)},
+    s.c
+  );}
+  if(s.type==='circ'){ pts.push(s.c); }
+  if(s.type==='dim'){ pts.push(s.a,s.b); }
+  if(s.type==='label'){ pts.push(s.p); }
+  return pts;
 }
-function sceneSnapCandidates(excludeSet){ const pts=[]; state.shapes.forEach((s,i)=>{ if(!excludeSet?.has(i)) pts.push(...shapeAnchors(s)); }); return pts; }
-function snapWorld(x,y,strong,excludeSet){ if(state.snap==='free') return {x,y}; const gridPts=gridCentersNear(x,y,strong?4:3), objPts=sceneSnapCandidates(excludeSet||new Set()); let best={x,y},bd=1e9; function test(px,py){ const d2=(px-x)*(px-x)+(py-y)*(py-y); if(d2<bd){bd=d2; best={x:px,y:py};}} gridPts.forEach(p=>test(p.x,p.y)); objPts.forEach(p=>test(p.x,p.y)); return best; }
+function sceneSnapCandidates(excludeSet){
+  const pts=[]; state.shapes.forEach((s,i)=>{ if(!excludeSet?.has(i)) pts.push(...shapeAnchors(s)); }); return pts;
+}
+function snapWorld(x,y,strong,excludeSet){
+  if(state.snap==='free') return {x,y};
+  const gridPts = gridCentersNear(x,y,strong?4:3);
+  const objPts  = sceneSnapCandidates(excludeSet);
+  let best={x,y}, bd=1e9;
+  function test(px,py){ const d2=(px-x)*(px-x)+(py-y)*(py-y); if(d2<bd){ bd=d2; best={x:px,y:py}; } }
+  gridPts.forEach(p=>test(p.x,p.y));
+  objPts.forEach(p=>test(p.x,p.y));
+  return best;
+}
 
-/* ===== Angle lock ===== */
+/* Angle lock */
 function applyAngleLock(a0,a1){
-  const mode=state.angleLock; if(mode==='off') return a1;
+  const mode=state.angleLock;
+  if(mode==='off') return a1;
   const dx=a1.x-a0.x, dy=a1.y-a0.y, ang=Math.atan2(dy,dx);
-  let snaps=[]; if(mode==='ortho') snaps=[0,Math.PI/2,Math.PI,3*Math.PI/2];
+  let snaps=[];
+  if(mode==='ortho') snaps=[0,Math.PI/2,Math.PI,3*Math.PI/2];
   else if(mode==='thirty') snaps=[0,Math.PI/6,Math.PI/3,Math.PI/2,2*Math.PI/3,5*Math.PI/6,Math.PI,7*Math.PI/6,4*Math.PI/3,3*Math.PI/2,5*Math.PI/3,11*Math.PI/6];
   else if(mode==='fortyfive') snaps=[0,Math.PI/4,Math.PI/2,3*Math.PI/4,Math.PI,5*Math.PI/4,3*Math.PI/2,7*Math.PI/4];
-  let best=ang,bd=1e9; snaps.forEach(s=>{const d=Math.abs(((ang-s+Math.PI)%(2*Math.PI))-Math.PI); if(d<bd){bd=d;best=s;}}); const len=Math.hypot(dx,dy);
+  let best=ang,bd=1e9; snaps.forEach(s=>{const d=Math.abs(((ang-s+Math.PI)%(2*Math.PI))-Math.PI); if(d<bd){bd=d;best=s;}});
+  const len=Math.hypot(dx,dy);
   return {x:a0.x+Math.cos(best)*len, y:a0.y+Math.sin(best)*len};
 }
 
-/* ===== Rotation & grouping helpers (same as prior build) ===== */
-function bboxFromAnchors(anchors){ let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9; anchors.forEach(p=>{ if(p.x<minX)minX=p.x; if(p.y<minY)minY=p.y; if(p.x>maxX)maxX=p.x; if(p.y>maxY)maxY=p.y; }); return {minX,minY,maxX,maxY,cx:(minX+maxX)/2,cy:(minY+maxY)/2}; }
-function rotatePoint(p, pivot, ang){ const dx=p.x-pivot.x, dy=p.y-pivot.y, c=Math.cos(ang), s=Math.sin(ang); return {x:pivot.x+dx*c-dy*s, y:pivot.y+dx*s+dy*c}; }
-function rectToSegs(rect){ const a=rect.a,b=rect.b; const TL={x:a.x,y:a.y},TR={x:b.x,y:a.y},BR={x:b.x,y:b.y},BL={x:a.x,y:b.y}; return [{type:'seg',a:TL,b:TR,wall:rect.wall||0},{type:'seg',a:TR,b:BR,wall:rect.wall||0},{type:'seg',a:BR,b:BL,wall:rect.wall||0},{type:'seg',a:BL,b:TL,wall:rect.wall||0}]; }
-function cloneShape(s){ return JSON.parse(JSON.stringify(s)); }
-function rotateShape(s,pivot,ang){
-  if(s.type==='group'){ return [{type:'group', children:s.children.flatMap(ch=>rotateShape(ch,pivot,ang))}]; }
-  s=cloneShape(s);
-  if(s.type==='seg'){ s.a=rotatePoint(s.a,pivot,ang); s.b=rotatePoint(s.b,pivot,ang); return [s]; }
-  if(s.type==='label'){ s.p=rotatePoint(s.p,pivot,ang); return [s]; }
-  if(s.type==='dim'){ s.a=rotatePoint(s.a,pivot,ang); s.b=rotatePoint(s.b,pivot,ang); return [s]; }
-  if(s.type==='circ'){ s.c=rotatePoint(s.c,pivot,ang); return [s]; }
-  if(s.type==='arc'){ s.c=rotatePoint(s.c,pivot,ang); return [s]; }
-  if(s.type==='rect'){ return rectToSegs(s).map(seg=>rotateShape(seg,pivot,ang)[0]); }
-  return [s];
-}
-function snapAngle(raw){ const mode=state.angleLock; if(mode==='off') return raw; let snaps=[]; if(mode==='ortho') snaps=[0,Math.PI/2,Math.PI,3*Math.PI/2]; else if(mode==='thirty') snaps=[0,Math.PI/6,Math.PI/3,Math.PI/2,2*Math.PI/3,5*Math.PI/6,Math.PI,7*Math.PI/6,4*Math.PI/3,3*Math.PI/2,5*Math.PI/3,11*Math.PI/6]; else if(mode==='fortyfive') snaps=[0,Math.PI/4,Math.PI/2,3*Math.PI/4,Math.PI,5*Math.PI/4,3*Math.PI/2,7*Math.PI/4]; let best=raw,bd=1e9; snaps.forEach(s=>{const d=Math.abs(((raw-s+Math.PI)%(2*Math.PI))-Math.PI); if(d<bd){bd=d;best=s;}}); return best; }
-function rotationHandleForShape(s){ const box=bboxFromAnchors(shapeAnchors(s)); const pad=12/state.zoom; const handleWorld={x:box.cx,y:box.minY-pad*2}; return {world:handleWorld,screen:toScreen(handleWorld.x,handleWorld.y)}; }
+/* ========= UNDO ========= */
+function pushUndo(){ state.undo.push(JSON.stringify({shapes:state.shapes})); state.redo.length=0; }
+function undo(){ if(!state.undo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const prev=state.undo.pop(); state.redo.push(cur); state.shapes = JSON.parse(prev).shapes; state.selection.clear(); }
+function redo(){ if(!state.redo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const next=state.redo.pop(); state.undo.push(cur); state.shapes = JSON.parse(next).shapes; state.selection.clear(); }
 
-/* ===== Undo/redo & finishers ===== */
-function pushUndo(){ state.undo.push(JSON.stringify({shapes:state.shapes})); if(state.undo.length>200) state.undo.shift(); state.redo.length=0; }
-function undo(){ if(!state.undo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const prev=state.undo.pop(); state.redo.push(cur); state.shapes=JSON.parse(prev).shapes; }
-function redo(){ if(!state.redo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const next=state.redo.pop(); state.undo.push(cur); state.shapes=JSON.parse(next).shapes; }
+/* ========= SHAPES / DRAW ========= */
+function finishLine(B){ const A=state.drawing.A; const L=applyAngleLock(A,B); state.shapes.push({type:'seg', a:A, b:L, wall:state.wallThick||0}); state.drawing=null; }
+function finishArc(B){ const A=state.drawing.A; const C={x:(A.x+B.x)/2, y:(A.y+B.y)/2}; const r=Math.hypot(B.x-A.x,B.y-A.y)/2; const a1=Math.atan2(A.y-C.y,A.x-C.x), a2=Math.atan2(B.y-C.y,B.x-C.x); state.shapes.push({type:'arc', c:C, r, a1, a2}); state.drawing=null; }
+function finishRect(B){ const A=state.drawing.A; state.shapes.push({type:'rect', a:{x:Math.min(A.x,B.x), y:Math.min(A.y,B.y)}, b:{x:Math.max(A.x,B.x), y:Math.max(A.y,B.y)}, wall:state.wallThick||0}); state.drawing=null; }
+function finishCirc(B){ const A=state.drawing.A; const r=Math.hypot(B.x-A.x,B.y-A.y); state.shapes.push({type:'circ', c:A, r}); state.drawing=null; }
+function finishDim(B){ const A=state.drawing.A; const len=Math.hypot(B.x-A.x,B.y-A.y); state.shapes.push({type:'dim', a:A, b:B, text:`${len.toFixed(1)}`}); state.drawing=null; }
+function finalizePolyline(){ const pts=state.drawing.points; if(pts.length>=2){ for(let i=0;i<pts.length-1;i++){ state.shapes.push({type:'seg', a:pts[i], b:pts[i+1], wall:state.wallThick||0}); } } state.drawing=null; }
 
-function finishLine(B){ const A=state.drawing.A; const L=applyAngleLock(A,B); state.shapes.push({type:'seg',a:A,b:L,wall:state.wallThick||0}); state.drawing=null; }
-function finishArc(B){ const A=state.drawing.A; const C={x:(A.x+B.x)/2,y:(A.y+B.y)/2}; const r=Math.hypot(B.x-A.x,B.y-A.y)/2; const a1=Math.atan2(A.y-C.y,A.x-C.x), a2=Math.atan2(B.y-C.y,B.x-C.x); state.shapes.push({type:'arc',c:C,r,a1,a2}); state.drawing=null; }
-function finishRect(B){ const A=state.drawing.A; state.shapes.push({type:'rect',a:{x:Math.min(A.x,B.x),y:Math.min(A.y,B.y)},b:{x:Math.max(A.x,B.x),y:Math.max(A.y,B.y)},wall:state.wallThick||0}); state.drawing=null; }
-function finishCirc(B){ const A=state.drawing.A; const r=Math.hypot(B.x-A.x,B.y-A.y); state.shapes.push({type:'circ',c:A,r}); state.drawing=null; }
-function finishDim(B){ const A=state.drawing.A; const len=Math.hypot(B.x-A.x,B.y-A.y); state.shapes.push({type:'dim',a:A,b:B,text:`${len.toFixed(1)}`}); state.drawing=null; }
-function finalizePolyline(){ const pts=state.drawing.points; if(pts.length>=2){ for(let i=0;i<pts.length-1;i++){ state.shapes.push({type:'seg',a:pts[i],b:pts[i+1],wall:state.wallThick||0}); } } state.drawing=null; }
 function eraseNearest(P){
   let bi=-1, bd=1e9;
-  state.shapes.forEach((d,i)=>{ let cx=0,cy=0;
-    if(d.type==='group'){ const a=bboxFromAnchors(shapeAnchors(d)); cx=a.cx; cy=a.cy; }
-    else if(d.type==='seg'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
+  state.shapes.forEach((d,i)=>{
+    let cx=0,cy=0;
+    if(d.type==='seg'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
     else if(d.type==='rect'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
     else if(d.type==='arc'){ cx=d.c.x; cy=d.c.y; }
     else if(d.type==='circ'){ cx=d.c.x; cy=d.c.y; }
     else if(d.type==='label'){ cx=d.p.x; cy=d.p.y; }
     else if(d.type==='dim'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
-    const d2=(P.x-cx)*(P.x-cx)+(P.y-cy)*(P.y-cy); if(d2<bd){bd=d2; bi=i;}
+    const d2=(P.x-cx)*(P.x-cx)+(P.y-cy)*(P.y-cy);
+    if(d2<bd){ bd=d2; bi=i; }
   });
   if(bi>=0) state.shapes.splice(bi,1);
 }
 
-/* ===== Hit test & selection ===== */
-function distPointSeg(P,A,B){ const vx=B.x-A.x, vy=B.y-A.y; const wx=P.x-A.x, wy=P.y-A.y; const t=Math.max(0,Math.min(1,(vx*wx+vy*wy)/(vx*vx+vy*vy||1))); const dx=(A.x+t*vx)-P.x, dy=(A.y+t*vy)-P.y; return Math.hypot(dx,dy); }
+/* ========= HIT TEST / SELECTION / GROUPS ========= */
+function distPointSeg(P,A,B){
+  const vx=B.x-A.x, vy=B.y-A.y;
+  const wx=P.x-A.x, wy=P.y-A.y;
+  const t=Math.max(0, Math.min(1, (vx*wx+vy*wy)/(vx*vx+vy*vy || 1)));
+  const dx=(A.x+t*vx)-P.x, dy=(A.y+t*vy)-P.y; return Math.hypot(dx,dy);
+}
 function hitTest(worldP, tol=10/state.zoom){
   let best=-1, bd=1e9;
   state.shapes.forEach((s,i)=>{
     let d=1e9;
-    if(s.type==='group'){
-      const a=bboxFromAnchors(shapeAnchors(s));
-      const inside = (worldP.x>=a.minX && worldP.x<=a.maxX && worldP.y>=a.minY && worldP.y<=a.maxY);
-      if(inside) d=0;
-    } else if(s.type==='seg'){ d=distPointSeg(worldP,s.a,s.b); }
+    if(s.type==='seg'){ d=distPointSeg(worldP, s.a, s.b); }
     else if(s.type==='rect'){
       const minX=Math.min(s.a.x,s.b.x), maxX=Math.max(s.a.x,s.b.x);
       const minY=Math.min(s.a.y,s.b.y), maxY=Math.max(s.a.y,s.b.y);
-      const nearX=Math.min(Math.abs(worldP.x-minX),Math.abs(worldP.x-maxX));
-      const nearY=Math.min(Math.abs(worldP.y-minY),Math.abs(worldP.y-maxY));
-      d=Math.min(nearX,nearY);
+      const nearX = Math.min(Math.abs(worldP.x-minX), Math.abs(worldP.x-maxX));
+      const nearY = Math.min(Math.abs(worldP.y-minY), Math.abs(worldP.y-maxY));
+      d = Math.min(nearX,nearY);
     }
     else if(s.type==='circ'){ d=Math.abs(Math.hypot(worldP.x-s.c.x,worldP.y-s.c.y)-s.r); }
     else if(s.type==='arc'){ const R=Math.hypot(worldP.x-s.c.x,worldP.y-s.c.y); d=Math.abs(R-s.r); }
     else if(s.type==='label'){ d=Math.hypot(worldP.x-s.p.x,worldP.y-s.p.y); }
-    else if(s.type==='dim'){ d=distPointSeg(worldP,s.a,s.b); }
+    else if(s.type==='dim'){ d=distPointSeg(worldP, s.a, s.b); }
     if(d<bd){ bd=d; best=i; }
   });
   return (bd<=tol)? best : -1;
 }
-let dragSel=null, rotateSel=null, marqueeEl=null;
-function startMarquee(x,y){ state.marquee={x0:x,y0:y,x1:x,y1:y}; marqueeEl=document.createElement('div'); marqueeEl.className='marquee'; document.body.appendChild(marqueeEl); updateMarqueeEl(); }
-function updateMarquee(x,y){ if(!state.marquee) return; state.marquee.x1=x; state.marquee.y1=y; updateMarqueeEl(); }
-function updateMarqueeEl(){ const m=state.marquee; if(!m) return; const left=Math.min(m.x0,m.x1), top=Math.min(m.y0,m.y1), w=Math.abs(m.x1-m.x0), h=Math.abs(m.y1-m.y0); marqueeEl.style.left=left+'px'; marqueeEl.style.top=top+'px'; marqueeEl.style.width=w+'px'; marqueeEl.style.height=h+'px'; }
-function endMarquee(add=false){
-  if(!state.marquee) return;
-  const m=state.marquee;
-  const minS={x:Math.min(m.x0,m.x1), y:Math.min(m.y0,m.y1)}, maxS={x:Math.max(m.x0,m.x1), y:Math.max(m.y0,m.y1)};
-  const minW=toWorld(minS.x,minS.y), maxW=toWorld(maxS.x,maxS.y);
-  const sel = add ? new Set(state.selection) : new Set();
-  state.shapes.forEach((s,i)=>{
-    const box=bboxFromAnchors(shapeAnchors(s));
-    const inside = (box.minX>=minW.x && box.maxX<=maxW.x && box.minY>=minW.y && box.maxY<=maxW.y);
-    if(inside) sel.add(i);
+
+/* Multi-select helpers */
+function centerOfSelection(){
+  if(!state.selection.size) return null;
+  let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
+  function include(x,y){ if(x<minX)minX=x; if(y<minY)minY=y; if(x>maxX)maxX=x; if(y>maxY)maxY=y; }
+  state.selection.forEach(i=>{
+    const s=state.shapes[i];
+    if(s.type==='seg'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
+    if(s.type==='rect'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
+    if(s.type==='arc'){ include(s.c.x-s.r,s.c.y-s.r); include(s.c.x+s.r,s.c.y+s.r); }
+    if(s.type==='circ'){ include(s.c.x-s.r,s.c.y-s.r); include(s.c.x+s.r,s.c.y+s.r); }
+    if(s.type==='label'){ include(s.p.x,s.p.y); }
+    if(s.type==='dim'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
   });
-  state.selection = sel;
-  state.marquee=null;
-  if(marqueeEl){ marqueeEl.remove(); marqueeEl=null; }
-}
-function groupSelection(){
-  if(state.selection.size<=1) return;
-  pushUndo();
-  const ids=[...state.selection].sort((a,b)=>a-b);
-  const children=ids.map(i=>state.shapes[i]);
-  for(let i=ids.length-1;i>=0;i--) state.shapes.splice(ids[i],1);
-  const at=ids[0];
-  state.shapes.splice(at,0,{type:'group', children});
-  state.selection=new Set([at]);
-}
-function ungroupSelection(){
-  if(state.selection.size!==1) return;
-  const idx=[...state.selection][0];
-  const s=state.shapes[idx];
-  if(s.type!=='group') return;
-  pushUndo(); state.shapes.splice(idx,1,...s.children); state.selection.clear();
+  return { x:(minX+maxX)/2, y:(minY+maxY)/2,
+           screen: toScreen((minX+maxX)/2,(minY+maxY)/2),
+           box: {minX,minY,maxX,maxY}};
 }
 
-/* ===== Events ===== */
+/* Group / Ungroup */
+$('#groupBtn').onclick=()=>{
+  if(state.selection.size<2) return;
+  const gid = state.groupsCounter++;
+  state.selection.forEach(i=>{ state.shapes[i].gid = gid; });
+};
+$('#ungroupBtn').onclick=()=>{
+  if(!state.selection.size) return;
+  state.selection.forEach(i=>{ delete state.shapes[i].gid; });
+};
+
+/* ========= EVENTS ========= */
+let dragSel=null; // {startMouse, delta, originalShapes:[{i,copy}], rotating:false}
+let middlePanning=false;
+
 canvas.addEventListener('mousemove', (e)=>{
   lastMouse={x:e.clientX,y:e.clientY};
   const w = toWorld(e.clientX,e.clientY);
@@ -492,189 +625,80 @@ canvas.addEventListener('mousemove', (e)=>{
   state.hover = {...snapped, screen: toScreen(snapped.x,snapped.y) };
   stPos.textContent = `x:${snapped.x.toFixed(1)} y:${snapped.y.toFixed(1)}`;
 
-  if(panning && mouseDown){ state.pan.x += e.movementX; state.pan.y += e.movementY; }
-  if(state.marquee) updateMarquee(e.clientX,e.clientY);
+  if(panning){ state.pan.x += e.movementX; state.pan.y += e.movementY; }
 
-  if(dragSel){
+  if(middlePanning){ state.pan.x += e.movementX; state.pan.y += e.movementY; }
+
+  if(dragSel && !state.rotation.active){
     const now = toWorld(e.clientX,e.clientY);
     const dx = now.x - dragSel.startMouse.x;
     const dy = now.y - dragSel.startMouse.y;
-    const newRef = {x: dragSel.originalRef.x + dx, y: dragSel.originalRef.y + dy};
-    const snappedRef = snapWorld(newRef.x, newRef.y, e.shiftKey, dragSel.excludeSet);
-    const snapDx = snappedRef.x - dragSel.originalRef.x;
-    const snapDy = snappedRef.y - dragSel.originalRef.y;
+    const ref = {x: dragSel.ref.x + dx, y: dragSel.ref.y + dy};
+    const snappedRef = snapWorld(ref.x, ref.y, e.shiftKey, state.selection);
+    const snapDx = snappedRef.x - dragSel.ref0.x;
+    const snapDy = snappedRef.y - dragSel.ref0.y;
 
-    const movePoint = p=>{ p.x+=snapDx; p.y+=snapDy; };
-
-    if(dragSel.multi){
-      state.shapes = JSON.parse(JSON.stringify(dragSel.sceneStart));
-      dragSel.indices.forEach(i=>{
-        const s=state.shapes[i];
-        if(s.type==='group'){ s.children.forEach(ch=>moveAny(ch,movePoint)); }
-        else moveAny(s,movePoint);
-      });
-    }else{
-      state.shapes[dragSel.index] = JSON.parse(JSON.stringify(dragSel.original));
-      moveAny(state.shapes[dragSel.index], movePoint);
-    }
-  }
-
-  if(rotateSel){
-    const nowW = toWorld(e.clientX,e.clientY);
-    let ang = Math.atan2(nowW.y - rotateSel.pivot.y, nowW.x - rotateSel.pivot.x) - rotateSel.startMouseAngle;
-    ang = snapAngle(ang);
-    state.shapes = JSON.parse(JSON.stringify(rotateSel.sceneStart));
-    rotateSel.indices.forEach((i,k)=>{
-      const orig = rotateSel.originals[k];
-      const rotatedList = rotateShape(orig, rotateSel.pivot, ang);
-      let dx=0,dy=0;
-      if(k===0){
-        const anchors = shapeAnchors(rotatedList[0]);
-        const refRot = rotatePoint(rotateSel.refAnchor, rotateSel.pivot, ang);
-        let best=anchors[0], bd=1e9;
-        anchors.forEach(p=>{ const d2=(p.x-refRot.x)**2 + (p.y-refRot.y)**2; if(d2<bd){bd=d2; best=p;}});
-        const snappedRef = snapWorld(best.x, best.y, e.shiftKey, rotateSel.excludeSet);
-        dx = snappedRef.x - best.x; dy = snappedRef.y - best.y;
-      }
-      const movedList = rotatedList.map(s=>{
-        const t=cloneShape(s);
-        const shift=p=>{ p.x+=dx; p.y+=dy; };
-        moveAny(t,shift);
-        return t;
-      });
-      state.shapes.splice(i,1,movedList[0]);
-      for(let j=1;j<movedList.length;j++) state.shapes.splice(i+j,0,movedList[j]);
+    // move all selected shapes by snapDx/snapDy
+    state.selection.forEach((idx, _)=>{
+      const base = dragSel.base.find(b=>b.i===idx).s;
+      const moved = JSON.parse(JSON.stringify(base));
+      const shift = p=>{ p.x += snapDx; p.y += snapDy; };
+      if(moved.type==='seg'){ shift(moved.a); shift(moved.b); }
+      if(moved.type==='rect'){ shift(moved.a); shift(moved.b); }
+      if(moved.type==='arc'){ shift(moved.c); }
+      if(moved.type==='circ'){ shift(moved.c); }
+      if(moved.type==='dim'){ shift(moved.a); shift(moved.b); }
+      if(moved.type==='label'){ shift(moved.p); }
+      state.shapes[idx]=moved;
     });
-    const cursor = toScreen(nowW.x, nowW.y);
-    drawBadgeAt(cursor, `${Math.round(ang*180/Math.PI)}°`, '#7CFF7C');
   }
 });
-
-function moveAny(s, movePoint){
-  if(s.type==='group'){ s.children.forEach(ch=>moveAny(ch, movePoint)); return; }
-  if(s.type==='seg'){ movePoint(s.a); movePoint(s.b); }
-  else if(s.type==='rect'){ movePoint(s.a); movePoint(s.b); }
-  else if(s.type==='arc'){ movePoint(s.c); }
-  else if(s.type==='circ'){ movePoint(s.c); }
-  else if(s.type==='dim'){ movePoint(s.a); movePoint(s.b); }
-  else if(s.type==='label'){ movePoint(s.p); }
-}
-
 canvas.addEventListener('mousedown', (e)=>{
+  if(e.button===1){ middlePanning=true; return; }
   if(e.button===2) return;
   mouseDown=true;
   if(isSpace){ panning=true; return; }
 
   const w = toWorld(e.clientX,e.clientY);
 
-  // Alignment flow clicks (image points & grid points)
-  if(state.image.img && !state.image.locked && state.image.mode!=='idle'){
-    if(state.image.mode==='pickImg1'){
-      // any click → map to image local
-      const iLocal = worldToImageLocal(w.x,w.y);
-      state.image.p1I = iLocal;
-      state.image.mode='pickGrid1';
-      showAlignBadge('Alignment: Now click matching <b>Point 1</b> on the grid (snaps).');
-      return;
-    }
-    if(state.image.mode==='pickGrid1'){
-      const g = snapPoint(w.x,w.y,true);
-      state.image.p1G = {x:g.x,y:g.y};
-      state.image.mode='pickImg2';
-      showAlignBadge('Alignment: Click <b>Point 2</b> on the image (different spot).');
-      return;
-    }
-    if(state.image.mode==='pickImg2'){
-      const iLocal = worldToImageLocal(w.x,w.y);
-      state.image.p2I = iLocal;
-      state.image.mode='pickGrid2';
-      showAlignBadge('Alignment: Click matching <b>Point 2</b> on the grid (snaps).');
-      return;
-    }
-    if(state.image.mode==='pickGrid2'){
-      const g = snapPoint(w.x,w.y,true);
-      state.image.p2G = {x:g.x,y:g.y};
-      // solve transform
-      const {s,th,tx,ty} = solveSimilarity(state.image.p1I, state.image.p2I, state.image.p1G, state.image.p2G);
-      state.image.s=s; state.image.th=th; state.image.tx=tx; state.image.ty=ty;
-      state.image.mode='idle';
-      hideAlignBadge();
-      return;
-    }
-  }
-
   if(state.tool==='select'){
-    // rotation handle?
-    if(state.selection.size>=1){
-      const idx0=[...state.selection][0];
-      const handle = rotationHandleForShape({type:'group',children:[state.shapes[idx0]]}).screen;
-      const hitHandle = Math.hypot(e.clientX-handle.x,e.clientY-handle.y) <= 12;
-      if(hitHandle){
-        const indices=[...state.selection].sort((a,b)=>a-b);
-        const anchorsAll = indices.flatMap(i=>shapeAnchors(state.shapes[i]));
-        const box=bboxFromAnchors(anchorsAll);
-        const pivot={x:box.cx,y:box.cy};
-        const firstAnch=shapeAnchors(state.shapes[indices[0]]);
-        let ref=firstAnch[0], bd=1e9;
-        firstAnch.forEach(p=>{ const d2=(p.x-w.x)*(p.x-w.x)+(p.y-w.y)*(p.y-w.y); if(d2<bd){bd=d2; ref=p;} });
-        rotateSel = {
-          indices,
-          originals: indices.map(i=>cloneShape(state.shapes[i])),
-          sceneStart: JSON.parse(JSON.stringify(state.shapes)),
-          pivot,
-          startMouseAngle: Math.atan2(w.y-pivot.y,w.x-pivot.x),
-          refAnchor: {x:ref.x,y:ref.y},
-          excludeSet: new Set(indices)
-        };
-        return;
-      }
-    }
-
-    // hit-test shapes
     const idx = hitTest(w);
     if(idx>=0){
-      if(e.shiftKey){ if(state.selection.has(idx)) state.selection.delete(idx); else state.selection.add(idx); }
-      else{ state.selection=new Set([idx]); }
-      const indices=[...state.selection].sort((a,b)=>a-b);
-      const anchors = shapeAnchors(state.shapes[indices[0]]);
+      if(e.shiftKey){
+        if(state.selection.has(idx)) state.selection.delete(idx); else state.selection.add(idx);
+      }else{
+        state.selection = new Set([idx]);
+      }
+      // Prepare drag move
+      const anchors = shapeAnchors(state.shapes[idx]);
       let ref=anchors[0], bd=1e9;
       anchors.forEach(p=>{ const d2=(p.x-w.x)*(p.x-w.x)+(p.y-w.y)*(p.y-w.y); if(d2<bd){bd=d2; ref=p;}});
       dragSel = {
-        multi: indices.length>1,
-        indices,
-        index: indices[0],
-        original: JSON.parse(JSON.stringify(state.shapes[indices[0]])),
-        originalRef: {x:ref.x, y:ref.y},
+        ref: {x:w.x,y:w.y},
+        ref0:{x:ref.x,y:ref.y},
         startMouse: w,
-        sceneStart: JSON.parse(JSON.stringify(state.shapes)),
-        excludeSet: new Set(indices)
+        base: [...state.selection].map(i=>({i, s: JSON.parse(JSON.stringify(state.shapes[i])) }))
       };
       return;
     }else{
-      startMarquee(e.clientX,e.clientY);
-      return;
+      state.selection.clear();
     }
   }
 
-  // start drawing
+  /* start drawing */
+  pushUndo();
   const P = snapPoint(w.x,w.y,e.shiftKey);
   const t=state.tool;
-  if(t==='line'){ state.drawing = state.drawing ? (pushUndo(), finishLine(P)) : {type:'tempLine',A:P}; }
-  else if(t==='pen'){ if(!state.drawing) state.drawing={type:'tempPoly',points:[P]}; else { const pts=state.drawing.points; const A=pts[pts.length-1]; const L=applyAngleLock(A,P); pts.push(L);} }
-  else if(t==='arc'){ state.drawing = state.drawing ? (pushUndo(), finishArc(P)) : {type:'tempArc',A:P}; }
-  else if(t==='rect'){ state.drawing = state.drawing ? (pushUndo(), finishRect(P)) : {type:'tempRect',A:P}; }
-  else if(t==='circ'){ state.drawing = state.drawing ? (pushUndo(), finishCirc(P)) : {type:'tempCirc',A:P}; }
-  else if(t==='text'){ pushUndo(); const txt=(state.labelDraft||prompt('Text:','Room')||'Note'); state.shapes.push({type:'label',p:P,text:txt}); }
-  else if(t==='dim'){ state.drawing = state.drawing ? (pushUndo(), finishDim(P)) : {type:'tempDim',A:P}; }
-  else if(t==='erase'){ pushUndo(); eraseNearest(P); }
+  if(t==='line'){ state.drawing = state.drawing ? (finishLine(P)) : {type:'tempLine', A:P}; }
+  else if(t==='pen'){ if(!state.drawing) state.drawing={type:'tempPoly', points:[P]}; else { const pts=state.drawing.points; const A=pts[pts.length-1]; const L=applyAngleLock(A,P); pts.push(L);} }
+  else if(t==='arc'){ state.drawing = state.drawing ? (finishArc(P)) : {type:'tempArc', A:P}; }
+  else if(t==='rect'){ state.drawing = state.drawing ? (finishRect(P)) : {type:'tempRect', A:P}; }
+  else if(t==='circ'){ state.drawing = state.drawing ? (finishCirc(P)) : {type:'tempCirc', A:P}; }
+  else if(t==='text'){ const txt=(state.labelDraft||prompt('Text:','Room')||'Note'); state.shapes.push({type:'label', p:P, text:txt}); }
+  else if(t==='dim'){ state.drawing = state.drawing ? (finishDim(P)) : {type:'tempDim', A:P}; }
+  else if(t==='erase'){ eraseNearest(P); }
 });
-
-addEventListener('mouseup', (e)=>{
-  if(state.marquee) endMarquee(e.shiftKey);
-  if(dragSel){ dragSel=null; }
-  if(rotateSel){ rotateSel=null; }
-  mouseDown=false; panning=false;
-});
+addEventListener('mouseup', (e)=>{ if(e.button===1){ middlePanning=false; } dragSel=null; mouseDown=false; panning=false; });
 canvas.addEventListener('wheel', e=>{ e.preventDefault(); zoomAt(Math.exp(-e.deltaY*0.0018), {x:e.clientX,y:e.clientY}); }, {passive:false});
 addEventListener('contextmenu', e=>e.preventDefault());
 addEventListener('keydown', e=>{
@@ -683,21 +707,75 @@ addEventListener('keydown', e=>{
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){ e.preventDefault(); redo(); }
   if(e.key==='1' && e.shiftKey){ zoomToFit(); }
   else if(e.key==='1'){ state.zoom=1; state.pan={x:0,y:0}; stZoom.textContent='Zoom: 100%'; }
-  if(e.key==='Escape'){
-    state.drawing=null; state.marquee=null;
-    if(marqueeEl){ marqueeEl.remove(); marqueeEl=null; }
-    if(state.image.mode!=='idle'){ state.image.mode='idle'; hideAlignBadge(); }
-  }
-  if(e.key==='Enter' && state.drawing?.type==='tempPoly'){ pushUndo(); finalizePolyline(); }
-  if(e.key==='Backspace' && state.drawing?.type==='tempPoly'){ state.drawing.points.pop(); if(state.drawing.points.length<2) state.drawing=null; }
-  if(e.key.toLowerCase()==='g'){ groupSelection(); }
-  if(e.key.toLowerCase()==='u'){ ungroupSelection(); }
+  if(e.key==='Escape'){ state.drawing=null; clearBadges(); }
+  if(e.key==='Enter' && state.drawing?.type==='tempPoly'){ finalizePolyline(); }
+
   const map={v:'select', p:'pen', l:'line', a:'arc', r:'rect', o:'circ', t:'text', d:'dim', e:'erase'};
   const k=e.key.toLowerCase(); if(map[k]) setTool(map[k]);
 });
 addEventListener('keyup', e=>{ if(e.code==='Space'){ isSpace=false; } });
 
-/* ===== Zoom & export ===== */
+/* ========= ROTATION HANDLE ========= */
+let handleEl=null;
+function ensureHandle(){
+  if(!state.selection.size) { if(handleEl){ handleEl.remove(); handleEl=null; } return; }
+  const c = centerOfSelection(); if(!c) return;
+  const topScreen = toScreen(c.box.minX + (c.box.maxX-c.box.minX)/2, c.box.minY) ;
+  const yOff = 24;
+  if(!handleEl){ handleEl=document.createElement('div'); handleEl.className='handle'; overlay.appendChild(handleEl); }
+  handleEl.style.left = topScreen.x+'px';
+  handleEl.style.top  = (topScreen.y - yOff)+'px';
+
+  handleEl.onmousedown = (e)=>{
+    e.preventDefault();
+    state.rotation.active=true;
+    const cenW = {x:c.x, y:c.y};
+    state.rotation.center = cenW;
+    state.rotation.baseAng = 0;
+    state.rotation.startAng = Math.atan2( toWorld(e.clientX,e.clientY).y - cenW.y,
+                                          toWorld(e.clientX,e.clientY).x - cenW.x );
+    state.rotation.base = [...state.selection].map(i=>({i, s: JSON.parse(JSON.stringify(state.shapes[i])) }));
+  };
+}
+document.addEventListener('mousemove', (e)=>{
+  if(!state.rotation.active) return;
+  const cen=state.rotation.center;
+  const curAng = Math.atan2( toWorld(e.clientX,e.clientY).y - cen.y,
+                             toWorld(e.clientX,e.clientY).x - cen.x );
+  let dAng = curAng - state.rotation.startAng;
+
+  // snap angle
+  const nice=[0, Math.PI/6, Math.PI/4, Math.PI/3, Math.PI/2, 2*Math.PI/3, 3*Math.PI/4, Math.PI];
+  let best=dAng, bd=1e9;
+  nice.concat(nice.map(a=>-a)).forEach(a=>{
+    const diff = Math.abs(((dAng-a+Math.PI)%(2*Math.PI))-Math.PI);
+    if(diff<bd){ bd=diff; best=a; }
+  });
+  if(bd < Math.PI/180*6) dAng = best; // snap within ~6°
+
+  // rotate each selected shape around center
+  const sin=Math.sin(dAng), cos=Math.cos(dAng);
+  const rot = (p)=>({ x: cen.x + (p.x - cen.x)*cos - (p.y - cen.y)*sin,
+                      y: cen.y + (p.x - cen.x)*sin + (p.y - cen.y)*cos });
+
+  state.rotation.base.forEach(({i,s})=>{
+    const m = JSON.parse(JSON.stringify(s));
+    if(m.type==='seg'){ m.a=rot(m.a); m.b=rot(m.b); }
+    if(m.type==='rect'){ m.a=rot(m.a); m.b=rot(m.b); }
+    if(m.type==='arc'){ m.c=rot(m.c); } // orientation irrelevant for circle/arc outline
+    if(m.type==='circ'){ m.c=rot(m.c); }
+    if(m.type==='dim'){ m.a=rot(m.a); m.b=rot(m.b); }
+    if(m.type==='label'){ m.p=rot(m.p); }
+    state.shapes[i]=m;
+  });
+});
+document.addEventListener('mouseup', ()=>{
+  if(state.rotation.active){
+    state.rotation.active=false;
+  }
+});
+
+/* ========= ZOOM / EXPORT ========= */
 function zoomAt(factor, screenPoint){
   const before=state.zoom; const after=Math.max(0.25, Math.min(6, before*factor));
   if(after===before) return;
@@ -712,7 +790,14 @@ function zoomToFit(){
   if(!state.shapes.length){ state.zoom=1; state.pan={x:0,y:0}; stZoom.textContent='Zoom: 100%'; return; }
   let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
   function include(x,y){ if(x<minX)minX=x; if(y<minY)minY=y; if(x>maxX)maxX=x; if(y>maxY)maxY=y; }
-  state.shapes.forEach(s=>{ shapeAnchors(s).forEach(p=>include(p.x,p.y)); });
+  state.shapes.forEach(s=>{
+    if(s.type==='seg'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
+    if(s.type==='rect'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
+    if(s.type==='arc'){ include(s.c.x-s.r,s.c.y-s.r); include(s.c.x+s.r,s.c.y+s.r); }
+    if(s.type==='circ'){ include(s.c.x-s.r,s.c.y-s.r); include(s.c.x+s.r,s.c.y+s.r); }
+    if(s.type==='label'){ include(s.p.x,s.p.y); }
+    if(s.type==='dim'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
+  });
   const pad=40, w=canvas.width/DPR, h=canvas.height/DPR;
   const zw=(w-pad*2)/(maxX-minX || 1), zh=(h-pad*2)/(maxY-minY || 1);
   state.zoom = Math.max(0.25, Math.min(6, Math.min(zw,zh)));
@@ -725,103 +810,94 @@ function exportSVG(){
   const stroke='#ffffff', gridStroke='#ffffff22';
   const out=[];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none" stroke="${stroke}" stroke-width="${sw}">`);
-  // (Note: blueprint image is raster; for now we do not embed it in SVG export)
   const G=grid(); const R=G.R*state.dotScale; const stepX=G.stepX, stepY=G.stepY;
   out.push(`<g id="grid" stroke="${gridStroke}" stroke-width="${0.9}">`);
-  for(let r=-30;r<60;r++){ for(let c=-30;c<60;c++){ const x=c*stepX+(r%2? stepX/2:0), y=r*stepY; const p=toScreen(x,y); out.push(`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${(R*state.zoom).toFixed(2)}"/>`); } }
-  out.push(`</g><g id="draw">`);
-  function writeShape(s){
-    if(s.type==='group'){ s.children.forEach(writeShape); return; }
-    if(s.type==='seg'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"/>`); }
-    if(s.type==='rect'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); out.push(`<rect x="${Math.min(a.x,b.x)}" y="${Math.min(a.y,b.y)}" width="${Math.abs(b.x-a.x)}" height="${Math.abs(b.y-a.y)}"/>`); }
-    if(s.type==='arc'){ const c=toScreen(s.c.x,s.c.y); const x1=c.x+s.r*state.zoom*Math.cos(s.a1), y1=c.y+s.r*state.zoom*Math.sin(s.a1); const x2=c.x+s.r*state.zoom*Math.cos(s.a2), y2=c.y+s.r*state.zoom*Math.sin(s.a2); out.push(`<path d="M ${x1} ${y1} A ${s.r*state.zoom} ${s.r*state.zoom} 0 0 1 ${x2} ${y2}"/>`); }
-    if(s.type==='circ'){ const c=toScreen(s.c.x,s.c.y); out.push(`<circle cx="${c.x}" cy="${c.y}" r="${s.r*state.zoom}"/>`); }
-    if(s.type==='label'){ const p=toScreen(s.p.x,s.p.y); out.push(`<text x="${p.x}" y="${p.y}" font-size="14" fill="${stroke}" stroke="none">${(s.text||'Label')}</text>`); }
-    if(s.type==='dim'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#cc0000"/>`); const mx=(a.x+b.x)/2, my=(a.y+b.y)/2; out.push(`<text x="${mx+4}" y="${my-4}" font-size="12" fill="#cc0000" stroke="none">${s.text||''}</text>`); }
+  for(let r=-30;r<60;r++){
+    for(let c=-30;c<60;c++){
+      const x=c*stepX+(r%2? stepX/2:0), y=r*stepY;
+      const p=toScreen(x,y);
+      out.push(`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${(R*state.zoom).toFixed(2)}"/>`);
+    }
   }
-  state.shapes.forEach(writeShape);
+  out.push(`</g><g id="draw">`);
+  state.shapes.forEach(d=>{
+    if(d.type==='seg'){ const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y); out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"/>`); }
+    if(d.type==='rect'){ const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y); out.push(`<rect x="${Math.min(a.x,b.x)}" y="${Math.min(a.y,b.y)}" width="${Math.abs(b.x-a.x)}" height="${Math.abs(b.y-a.y)}"/>`); }
+    if(d.type==='arc'){ const c=toScreen(d.c.x,d.c.y); const x1=c.x+d.r*state.zoom*Math.cos(d.a1), y1=c.y+d.r*state.zoom*Math.sin(d.a1); const x2=c.x+d.r*state.zoom*Math.cos(d.a2), y2=c.y+d.r*state.zoom*Math.sin(d.a2); out.push(`<path d="M ${x1} ${y1} A ${d.r*state.zoom} ${d.r*state.zoom} 0 0 1 ${x2} ${y2}"/>`); }
+    if(d.type==='circ'){ const c=toScreen(d.c.x,d.c.y); out.push(`<circle cx="${c.x}" cy="${c.y}" r="${d.r*state.zoom}"/>`); }
+    if(d.type==='label'){ const p=toScreen(d.p.x,d.p.y); out.push(`<text x="${p.x}" y="${p.y}" font-size="14" fill="${stroke}" stroke="none">${(d.text||'Label')}</text>`); }
+    if(d.type==='dim'){ const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y); out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#cc0000"/>`); const mx=(a.x+b.x)/2, my=(a.y+b.y)/2; out.push(`<text x="${mx+4}" y="${my-4}" font-size="12" fill="#cc0000" stroke="none">${d.text||''}</text>`); }
+  });
   out.push(`</g></svg>`);
   const blob = new Blob([out.join('\n')],{type:'image/svg+xml'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='universe120.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
 function exportPNG(){ const link=document.createElement('a'); link.download='universe120.png'; link.href=canvas.toDataURL('image/png'); link.click(); }
 
-/* ===== Render ===== */
-function drawBlueprint(){
-  const I = state.image; if(!I.img) return;
-  const w = canvas.width/DPR, h = canvas.height/DPR;
-  ctx.save();
-  ctx.globalAlpha = I.opacity;
-  // draw in world coords: imageLocal (0,0) → world via similarity transform
-  // We draw by transforming the canvas, then drawing the image at its local 0,0
-  const scr = toScreen(0,0); // not used; we set transform manually
-  // Build world->screen transform components
-  // But easier: map world to screen, so we compute the screen transform for the image:
-  ctx.translate( canvas.width/2 + state.pan.x*DPR, canvas.height/2 + state.pan.y*DPR );
-  ctx.scale(state.zoom*DPR, state.zoom*DPR);
-  ctx.translate(I.tx, I.ty);
-  ctx.rotate(I.th);
-  ctx.scale(I.s, I.s);
-  ctx.drawImage(I.img, 0, 0);
-  ctx.restore();
-}
-
+/* ========= RENDER ========= */
 function drawGrid(){
   const G=grid(); const R=G.R*state.dotScale; const stepX=G.stepX, stepY=G.stepY;
   const w=canvas.width/DPR, h=canvas.height/DPR;
-  ctx.save(); ctx.translate(w/2 + state.pan.x, h/2 + state.pan.y); ctx.scale(state.zoom, state.zoom);
+  ctx.save();
+  ctx.translate(w/2 + state.pan.x, h/2 + state.pan.y);
+  ctx.scale(state.zoom, state.zoom);
   ctx.lineWidth=0.9/state.zoom; ctx.strokeStyle='#ffffff22';
   const cols=Math.ceil(w/(stepX*state.zoom))+4, rows=Math.ceil(h/(stepY*state.zoom))+4;
-  const x0 = -((w/2 + state.pan.x)/state.zoom); const y0 = -((h/2 + state.pan.y)/state.zoom);
+  const x0 = -((w/2 + state.pan.x)/state.zoom);
+  const y0 = -((h/2 + state.pan.y)/state.zoom);
   const cStart = Math.floor((x0 - 2*stepX)/stepX), rStart = Math.floor((y0 - 2*stepY)/stepY);
-  for(let r=rStart;r<rStart+rows;r++){ for(let c=cStart;c<cStart+cols;c++){ const x=c*stepX+(r%2? stepX/2:0), y=r*stepY; ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2); ctx.stroke(); } }
+  for(let r=rStart;r<rStart+rows;r++){
+    for(let c=cStart;c<cStart+cols;c++){
+      const x=c*stepX+(r%2? stepX/2:0), y=r*stepY;
+      ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2); ctx.stroke();
+    }
+  }
   ctx.restore();
 }
-function drawShapeStroke(s){
-  if(s.type==='group'){ s.children.forEach(drawShapeStroke); return; }
-  if(s.type==='seg'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }
-  if(s.type==='rect'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.strokeRect(Math.min(a.x,b.x), Math.min(a.y,b.y), Math.abs(b.x-a.x), Math.abs(b.y-a.y)); }
-  if(s.type==='arc'){ const c=toScreen(s.c.x,s.c.y); ctx.beginPath(); ctx.arc(c.x,c.y, s.r*state.zoom, s.a1, s.a2); ctx.stroke(); }
-  if(s.type==='circ'){ const c=toScreen(s.c.x,s.c.y); ctx.beginPath(); ctx.arc(c.x,c.y, s.r*state.zoom, 0, Math.PI*2); ctx.stroke(); }
-  if(s.type==='label'){ const p=toScreen(s.p.x,s.p.y); ctx.font='14px system-ui'; ctx.fillText(s.text||'Label', p.x, p.y); }
-  if(s.type==='dim'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.strokeStyle='#cc0000'; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); ctx.fillStyle='#cc0000'; ctx.font='12px system-ui'; ctx.fillText(s.text||'', (a.x+b.x)/2+4, (a.y+b.y)/2-4); ctx.strokeStyle='#fff'; ctx.fillStyle='#fff'; }
-}
-function drawSelectionAndHandle(){
-  if(!state.selection.size) return;
-  const ids=[...state.selection];
-  const allAnch = ids.flatMap(i=>shapeAnchors(state.shapes[i]));
-  const minX=Math.min(...allAnch.map(p=>p.x)), maxX=Math.max(...allAnch.map(p=>p.x));
-  const minY=Math.min(...allAnch.map(p=>p.y)), maxY=Math.max(...allAnch.map(p=>p.y));
-  const pad=12/state.zoom; const a=toScreen(minX-pad,minY-pad), b=toScreen(maxX+pad,maxY+pad);
-  ctx.save(); ctx.setLineDash([6,6]); ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--brand')||'#ffe36a';
-  ctx.strokeRect(a.x,a.y, b.x-a.x, b.y-a.y);
-  const fakeShape={type:'group',children:ids.map(i=>state.shapes[i])};
-  const h=rotationHandleForShape(fakeShape).screen;
-  ctx.fillStyle='#ffe36a'; ctx.beginPath(); ctx.arc(h.x,h.y,6,0,Math.PI*2); ctx.fill();
-  const topCenter={x:(a.x+b.x)/2,y:a.y}; ctx.beginPath(); ctx.moveTo(topCenter.x,topCenter.y); ctx.lineTo(h.x,h.y); ctx.stroke();
-  ctx.restore();
-}
-function drawTempPreviews(){
-  const h=state.hover?.screen; if(!state.drawing||!h) return;
-  ctx.setLineDash([6,6]); ctx.strokeStyle='#cbd5ff';
-  if(state.drawing.type==='tempLine'){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(h.x,h.y); ctx.stroke(); }
-  if(state.drawing.type==='tempRect'){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); ctx.strokeRect(Math.min(A.x,h.x),Math.min(A.y,h.y),Math.abs(h.x-A.x),Math.abs(h.y-A.y)); }
-  if(state.drawing.type==='tempCirc'){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); const r=Math.hypot(h.x-A.x,h.y-A.y); ctx.beginPath(); ctx.arc(A.x,A.y,r,0,Math.PI*2); ctx.stroke(); }
-  if(state.drawing.type==='tempArc'){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); const C={x:(A.x+h.x)/2,y:(A.y+h.y)/2}, r=Math.hypot(h.x-A.x,h.y-A.y)/2; const a1=Math.atan2(A.y-C.y, A.x-C.x), a2=Math.atan2(h.y-C.y, h.x-C.x); ctx.beginPath(); ctx.arc(C.x,C.y,r,a1,a2); ctx.stroke(); }
-  if(state.drawing.type==='tempPoly'){ const pts=state.drawing.points; const A=pts[pts.length-1]; const L=applyAngleLock(A,state.hover); const pA=toScreen(A.x,A.y), pL=toScreen(L.x,L.y); ctx.beginPath(); ctx.moveTo(pA.x,pA.y); ctx.lineTo(pL.x,pL.y); ctx.stroke(); }
+function drawShapes(){
+  ctx.save();
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.lineWidth=state.strokeW; ctx.strokeStyle='#fff'; ctx.fillStyle='#fff';
+
+  state.shapes.forEach(s=>{
+    if(s.type==='seg'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }
+    if(s.type==='rect'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.strokeRect(Math.min(a.x,b.x), Math.min(a.y,b.y), Math.abs(b.x-a.x), Math.abs(b.y-a.y)); }
+    if(s.type==='arc'){ const c=toScreen(s.c.x,s.c.y); ctx.beginPath(); ctx.arc(c.x,c.y, s.r*state.zoom, s.a1, s.a2); ctx.stroke(); }
+    if(s.type==='circ'){ const c=toScreen(s.c.x,s.c.y); ctx.beginPath(); ctx.arc(c.x,c.y, s.r*state.zoom, 0, Math.PI*2); ctx.stroke(); }
+    if(s.type==='label'){ const p=toScreen(s.p.x,s.p.y); ctx.font='14px system-ui'; ctx.fillText(s.text||'Label', p.x, p.y); }
+    if(s.type==='dim'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.strokeStyle='#cc0000'; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); ctx.fillStyle='#cc0000'; ctx.font='12px system-ui'; ctx.fillText(s.text||'', (a.x+b.x)/2+4, (a.y+b.y)/2-4); ctx.strokeStyle='#fff'; ctx.fillStyle='#fff'; }
+  });
+
+  // Preview temp
+  ctx.setLineDash([6,6]); ctx.strokeStyle = '#cbd5ff';
+  const h=state.hover?.screen;
+  if(state.drawing){
+    if(state.drawing.type==='tempLine' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(h.x,h.y); ctx.stroke(); }
+    if(state.drawing.type==='tempRect' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); ctx.strokeRect(Math.min(A.x,h.x), Math.min(A.y,h.y), Math.abs(h.x-A.x), Math.abs(h.y-A.y)); }
+    if(state.drawing.type==='tempCirc' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); const r=Math.hypot(h.x-A.x,h.y-A.y); ctx.beginPath(); ctx.arc(A.x,A.y, r, 0, Math.PI*2); ctx.stroke(); }
+    if(state.drawing.type==='tempArc' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); const C={x:(A.x+h.x)/2, y:(A.y+h.y)/2}, r=Math.hypot(h.x-A.x,h.y-A.y)/2; const a1=Math.atan2(A.y-C.y, A.x-C.x), a2=Math.atan2(h.y-C.y, h.x-C.x); ctx.beginPath(); ctx.arc(C.x,C.y,r,a1,a2); ctx.stroke(); }
+    if(state.drawing.type==='tempPoly' && h){ const pts=state.drawing.points; const A=pts[pts.length-1]; const L=applyAngleLock(A, state.hover); const pA=toScreen(A.x,A.y), pL=toScreen(L.x,L.y); ctx.beginPath(); ctx.moveTo(pA.x,pA.y); ctx.lineTo(pL.x,pL.y); ctx.stroke(); }
+  }
   ctx.setLineDash([]);
-  drawSmartGuidesHook();
-}
-function drawHoverDot(){ if(!state.hover?.screen) return; ctx.fillStyle='#ffe36a'; ctx.beginPath(); ctx.arc(state.hover.screen.x,state.hover.screen.y,3.2,0,Math.PI*2); ctx.fill(); }
-function frame(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  drawBlueprint();     // blueprint raster underlay
-  drawGrid();          // bubble grid above it
-  ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineWidth=state.strokeW; ctx.strokeStyle='#fff'; ctx.fillStyle='#fff';
-  state.shapes.forEach(drawShapeStroke);
-  drawTempPreviews(); drawHoverDot(); drawSelectionAndHandle();
+
+  // Hover dot
+  if(state.hover?.screen){ ctx.fillStyle='#ffe36a'; ctx.beginPath(); ctx.arc(state.hover.screen.x, state.hover.screen.y, 3.2, 0, Math.PI*2); ctx.fill(); ctx.fillStyle='#fff'; }
+
+  // Selection box
+  if(state.selection && state.selection.size){
+    let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
+    function include(x,y){minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);}
+    state.selection.forEach(i=>shapeAnchors(state.shapes[i]).forEach(p=>include(p.x,p.y)));
+    const pad=12/state.zoom; const a=toScreen(minX-pad,minY-pad), b=toScreen(maxX+pad,maxY+pad);
+    ctx.save(); ctx.setLineDash([6,6]); ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--brand')||'#ffe36a'; ctx.strokeRect(a.x,a.y, b.x-a.x, b.y-a.y); ctx.restore();
+  }
+
   ctx.restore();
-  requestAnimationFrame(frame);
+
+  // Smart guide badges for this frame
+  drawSmartGuidesHook();
+  ensureHandle();
 }
+function frame(){ ctx.clearRect(0,0,canvas.width,canvas.height); drawGrid(); drawShapes(); requestAnimationFrame(frame); }
 requestAnimationFrame(frame);
 </script>
 </body>
