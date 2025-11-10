@@ -6,25 +6,18 @@
 <title>About — Universe120</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <style>
-:root{
-  --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a;
-}
+:root{ --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a; }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
 /* NAVBAR */
-.navbar{
-  position:fixed; inset:0 0 auto 0; height:56px; z-index:50;
-  display:flex; align-items:center; gap:12px;
-  background:#0f356d; color:#fff; border-bottom:1px solid var(--border);
-  padding:8px 12px;
-}
-.brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; text-decoration:none; color:#fff}
-.brand .mark{width:26px; height:26px; border-radius:6px; background:#123b79; display:inline-block; box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659}
-.navlinks{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap }
-.navlinks a{ text-decoration:none; color:#fff; border:1px solid #204c96; background:#10366f; padding:7px 12px; border-radius:10px; font-size:13px }
-.navlinks a:hover{ background:#13407f }
-.navlinks a.active{ outline:2px solid var(--brand) }
+.navbar{position:fixed; inset:0 0 auto 0; height:56px; z-index:50; display:flex; align-items:center; gap:12px; background:#0f356d; border-bottom:1px solid var(--border); padding:8px 12px}
+.brand{display:flex; align-items:center; gap:10px; font-weight:800; color:#fff; text-decoration:none; letter-spacing:.2px}
+.brand .mark{width:26px;height:26px;border-radius:6px;background:#123b79;display:inline-block;box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659}
+.navlinks{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap}
+.navlinks a{color:#fff;text-decoration:none;border:1px solid #204c96;background:#10366f;padding:7px 12px;border-radius:10px;font-size:13px}
+.navlinks a:hover{background:#13407f}
+.navlinks a.active{outline:2px solid var(--brand)}
 
 /* PAGE */
 .page{padding:88px 20px 80px; max-width:880px; margin:0 auto}
@@ -35,15 +28,12 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family
 a{ color:#ffe36a }
 
 /* FOOTER */
-.site-footer{
-  position:fixed; left:0; right:0; bottom:0; background:#0f356d; color:#fff;
-  border-top:1px solid var(--border); height:40px; display:flex; align-items:center; justify-content:center;
-}
+.site-footer{ position:fixed; left:0; right:0; bottom:0; background:#0f356d; color:#fff;
+  border-top:1px solid var(--border); height:40px; display:flex; align-items:center; justify-content:center; }
 .site-footer a{ color:#ffe36a; text-decoration:none }
 </style>
 </head>
 <body>
-  <!-- NAV -->
   <div class="navbar">
     <a class="brand" href="index.html" aria-label="Universe120 Home">
       <span class="mark" aria-hidden="true"></span>
@@ -52,14 +42,12 @@ a{ color:#ffe36a }
     <div class="navlinks">
       <a href="index.html">Home</a>
       <a href="howto.html">How-to</a>
-      <a href="about.html" class="active">About</a>
-      <a href="examples.html">Examples</a>
+      <a class="active" href="about.html">About</a>
       <a href="feedback.html">Feedback</a>
       <a href="mailto:120spaceproject@gmail.com">Email</a>
     </div>
   </div>
 
-  <!-- CONTENT -->
   <main class="page">
     <h1>About Universe120</h1>
     <p class="lead">
@@ -104,15 +92,11 @@ a{ color:#ffe36a }
     </section>
   </main>
 
-  <!-- FOOTER -->
   <footer class="site-footer">
     <small>© <span id="year"></span> Universe120 • Beta •
       <a href="mailto:120spaceproject@gmail.com">Contact</a>
     </small>
   </footer>
-
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
