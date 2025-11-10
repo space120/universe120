@@ -75,6 +75,35 @@ body.blueprint .tool{background:#10366f;color:#fff;border-color:#204c96}
 body.blueprint .tool:hover{background:#13407f}
 body.blueprint .tool.active{outline-color:var(--brand)}
 /* --------------------------------- */
+  /* ===== Blueprint readability fixes ===== */
+body.blueprint .topbar, 
+body.blueprint .status { color:#eaf1ff; }
+
+body.blueprint .topbar .group label.small,
+body.blueprint .panel label,
+body.blueprint .panel h3,
+body.blueprint .status { color:#eaf1ff; }
+
+body.blueprint .panel {
+  background:#0f356d; 
+  border-color:#1e4d9a; 
+  color:#eaf1ff;
+}
+
+/* Inputs readable on dark panels */
+body.blueprint select,
+body.blueprint input[type="number"],
+body.blueprint input[type="text"]{
+  background:#0b2c59;
+  color:#ffffff;
+  border:1px solid #204c96;
+  border-radius:8px;
+}
+
+/* Range track/thumb (basic cross-browser) */
+body.blueprint input[type="range"]{
+  accent-color:#ffe36a;  /* modern browsers */
+}
 </style>
 </head>
 <body>
