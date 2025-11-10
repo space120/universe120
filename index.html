@@ -36,7 +36,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family
 .navlinks a:hover{ background:#13407f }
 .navlinks a.active{ outline:2px solid var(--brand) }
 
-/* ---- Your existing app chrome (kept minimal so nothing breaks) ---- */
+/* ---- App chrome ---- */
 .topbar{
   position:fixed; left:0; right:0; top:56px; height:48px; z-index:30;
   display:flex; align-items:center; gap:10px; padding:8px 12px;
@@ -51,11 +51,10 @@ button:hover,.btn:hover{ background:#13407f }
 input[type="text"],input[type="number"],select{ padding:6px 8px }
 input[type="range"]{ accent-color:var(--brand) }
 
-/* Left tool rail you already use */
+/* Left tool rail */
 .toolbar{
-  position:fixed; left:12px; top:56px; transform:translateY(56px);
-  /* top +48 actually = 104px; we visually stack under topbar */
-  top:56px; z-index:28; display:flex; flex-direction:column; gap:10px;
+  position:fixed; left:12px; top:56px; margin-top:56px;
+  z-index:28; display:flex; flex-direction:column; gap:10px;
 }
 .tool{
   width:148px; height:44px; display:flex; align-items:center; gap:10px;
@@ -69,7 +68,7 @@ input[type="range"]{ accent-color:var(--brand) }
 
 /* Right properties panel */
 .panel{
-  position:fixed; right:12px; top:56px; transform:translateY(56px);
+  position:fixed; right:12px; top:56px; margin-top:56px;
   z-index:28; background:#0f356d; border:1px solid var(--border); border-radius:12px;
   box-shadow:0 8px 24px rgba(0,0,0,.2); padding:10px 12px; min-width:260px; color:#eaf1ff
 }
@@ -84,7 +83,7 @@ input[type="range"]{ accent-color:var(--brand) }
   background:#0f356d; color:#fff; border-top:1px solid var(--border); font-size:12px
 }
 
-/* Help overlay kept */
+/* Help overlay */
 #help{position:fixed;inset:0;background:rgba(10,12,22,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50}
 #help .card{background:#10121b;border:1px solid #2a2e3d;color:#e9ebff;border-radius:12px;padding:18px;max-width:720px}
 kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;border-radius:5px;padding:1px 5px;font-family:ui-monospace,Menlo,Consolas,monospace}
@@ -104,7 +103,7 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
     </div>
   </div>
 
-  <!-- Your existing control bar (kept generic) -->
+  <!-- Control bar -->
   <div class="topbar">
     <div class="group">
       <button id="newDoc" type="button">New</button>
@@ -146,7 +145,7 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
   </div>
 
   <!-- Tools (left) -->
-  <div class="toolbar" aria-label="Tools" style="top:56px; margin-top:56px;">
+  <div class="toolbar" aria-label="Tools">
     <button type="button" class="tool active" data-tool="select" title="Select (V)" aria-label="Select">
       <span class="icon">🖱️</span><span class="label">Select</span>
     </button>
@@ -177,7 +176,7 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
   </div>
 
   <!-- Properties (right) -->
-  <div class="panel" id="props" style="top:56px; margin-top:56px;">
+  <div class="panel" id="props">
     <h3>Properties</h3>
     <div class="row"><label class="small">Stroke</label><input id="strokeW" type="range" min="0.8" max="4" step="0.1" value="1.6"></div>
     <div class="row"><label class="small">Wall (px)</label><input id="wallThick" type="number" value="0" min="0" max="60" step="1"></div>
@@ -211,11 +210,16 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
   </div>
 
 <script>
-/* ========= Canvas + Grid + Tools (kept from your working version) ========= */
+/* ========= Canvas + Grid + Tools ========= */
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d',{alpha:true});
 let DPR = Math.min(devicePixelRatio||1,2);
-function resize(){ const w=innerWidth, h=innerHeight-56-28; canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR); canvas.style.width=w+'px'; canvas.style.height=h+'px'; ctx.setTransform(DPR,0,0,DPR,0,0); }
+function resize(){
+  const w=innerWidth, h=innerHeight-56-28;
+  canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR);
+  canvas.style.width=w+'px'; canvas.style.height=h+'px';
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+}
 addEventListener('resize', resize); resize();
 
 function $(q){ return document.querySelector(q); }
@@ -278,52 +282,50 @@ toolbarEl.addEventListener('click', (e)=>{
 
 /* Coordinates */
 function toWorld(sx,sy){
-  return { x:(sx - canvas.width/DPR/2 - state.pan.x)/state.zoom,
-           y:(sy - canvas.height/DPR/2 - state.pan.y)/state.zoom };
+  return {
+    x:(sx - canvas.width/DPR/2 - state.pan.x)/state.zoom,
+    y:(sy - canvas.height/DPR/2 - state.pan.y)/state.zoom
+  };
 }
 function toScreen(x,y){
-  return { x: canvas.width/DPR/2 + state.pan.x + x*state.zoom,
-           y: canvas.height/DPR/2 + state.pan.y + y*state.zoom };
-  /* ===================== SMART GUIDES (Adobe-like) ===================== */
+  return {
+    x: canvas.width/DPR/2 + state.pan.x + x*state.zoom,
+    y: canvas.height/DPR/2 + state.pan.y + y*state.zoom
+  };
+}
+
+/* ===================== SMART GUIDES (Adobe-like) ===================== */
 const GUIDE = {
   tolLenRatio: 0.015,                   // 1.5% length tolerance
   tolAngRad:   Math.PI/180 * 2.0,       // 2 degrees angle tolerance
-  niceAngles:  [0, Math.PI/6, Math.PI/4, Math.PI/3, Math.PI/2, 2*Math.PI/3, 3*Math.PI/4, Math.PI], // 0°,30°,45°,60°,90°...
-  colorGood:   '#7CFF7C',               // green-ish
-  colorInfo:   '#FFE36A',               // yellow-ish (matches brand)
-  colorWarn:   '#FF8A8A'                // red-ish
+  niceAngles:  [0, Math.PI/6, Math.PI/4, Math.PI/3, Math.PI/2, 2*Math.PI/3, 3*Math.PI/4, Math.PI],
+  colorGood:   '#7CFF7C',
+  colorInfo:   '#FFE36A',
+  colorWarn:   '#FF8A8A'
 };
-
 function segLen(a,b){ return Math.hypot(b.x-a.x, b.y-a.y); }
 function segAng(a,b){ return Math.atan2(b.y-a.y, b.x-a.x); }
 function normAng(rad){ let x=rad%(2*Math.PI); if(x<0) x+=2*Math.PI; return x; }
-function minAngDelta(a,b){ // smallest absolute delta between 2 angles in [0,2π)
-  const d = Math.abs(normAng(a)-normAng(b));
-  return Math.min(d, 2*Math.PI - d);
-}
+function minAngDelta(a,b){ const d = Math.abs(normAng(a)-normAng(b)); return Math.min(d, 2*Math.PI - d); }
 function nearLen(L1,L2,rel=GUIDE.tolLenRatio){ return Math.abs(L1-L2) <= Math.max(1e-6, rel*Math.max(L1,L2)); }
 function nearAng(a,b,tol=GUIDE.tolAngRad){ return minAngDelta(a,b) <= tol; }
-
 function drawBadgeAt(screenPt, text, color){
   ctx.save();
   ctx.font = '12px system-ui';
   ctx.textBaseline = 'bottom';
   const x = screenPt.x + 10, y = screenPt.y - 10;
-  // soft halo for legibility
   ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(10,20,30,0.45)'; ctx.strokeText(text, x, y);
   ctx.fillStyle = color; ctx.fillText(text, x, y);
   ctx.restore();
 }
-
-function drawSmartGuidesForEdge(A_world, B_world, cursor_screen, prevEdge){ 
-  // prevEdge = {A,B} in *world* coords from last finished segment (if any)
+function drawSmartGuidesForEdge(A_world, B_world, cursor_screen, prevEdge){
   const L  = segLen(A_world, B_world);
   const ang= segAng(A_world, B_world);
 
-  // Show running length near cursor
+  // Live length
   drawBadgeAt(cursor_screen, `${L.toFixed(1)}`, GUIDE.colorInfo);
 
-  // Angle niceness (0/30/45/60/90…)
+  // Nice angles
   for(const na of GUIDE.niceAngles){
     if(nearAng(ang, na)){
       const deg = Math.round(na * 180/Math.PI);
@@ -337,40 +339,22 @@ function drawSmartGuidesForEdge(A_world, B_world, cursor_screen, prevEdge){
   const Lprev  = segLen(prevEdge.A, prevEdge.B);
   const Aprev  = segAng(prevEdge.A, prevEdge.B);
 
-  // Equal length (≡)
-  if(nearLen(L, Lprev)){
-    drawBadgeAt(cursor_screen, '≡ equal length', GUIDE.colorGood);
-  }
-
-  // Parallel (∥) / Perpendicular (⊥)
-  if(nearAng(ang, Aprev)) {
-    drawBadgeAt(cursor_screen, '∥ parallel', GUIDE.colorGood);
-  } else if(nearAng(ang, Aprev + Math.PI/2)) {
-    drawBadgeAt(cursor_screen, '⊥ perpendicular', GUIDE.colorGood);
-  }
+  if(nearLen(L, Lprev)) drawBadgeAt(cursor_screen, '≡ equal length', GUIDE.colorGood);
+  if(nearAng(ang, Aprev)) drawBadgeAt(cursor_screen, '∥ parallel', GUIDE.colorGood);
+  else if(nearAng(ang, Aprev + Math.PI/2)) drawBadgeAt(cursor_screen, '⊥ perpendicular', GUIDE.colorGood);
 }
-
-/* Find "previous edge" for comparison:
-   - If user is drawing a polyline: use the last finished segment of that poly.
-   - If drawing a simple line: use the last *scene* segment as a loose reference (optional).
-*/
 function getPreviousEdgeForContext(){
-  // Prefer last segment of an in-progress polyline
   if(state.drawing?.type === 'tempPoly' && state.drawing.points.length >= 2){
     const pts = state.drawing.points;
     return { A: pts[pts.length-2], B: pts[pts.length-1] };
   }
-
-  // Otherwise, use the most recently added scene segment (optional fallback)
   for(let i=state.shapes.length-1;i>=0;i--){
     const s=state.shapes[i];
-    if(s.type==='seg') return {A:s.a, B:s.b};
-    if(s.type==='rect') return {A:s.a, B:{x:s.b.x, y:s.a.y}}; // top edge as a proxy
+    if(s.type==='seg')  return {A:s.a, B:s.b};
+    if(s.type==='rect') return {A:s.a, B:{x:s.b.x, y:s.a.y}}; // top edge proxy
   }
   return null;
 }
-
-/* Main hook: call this from your drawing preview (tempLine/tempPoly/tempRect) */
 function drawSmartGuidesHook(){
   if(!state.drawing || !state.hover?.screen) return;
 
@@ -384,7 +368,6 @@ function drawSmartGuidesHook(){
   else if(state.drawing.type === 'tempPoly'){
     const pts = state.drawing.points;
     if(pts.length){
-      // temporarily apply angle lock so the preview matches your line
       const A = pts[pts.length-1];
       const L = applyAngleLock(A, h);
       const Lscr = toScreen(L.x, L.y);
@@ -392,17 +375,14 @@ function drawSmartGuidesHook(){
     }
   }
   else if(state.drawing.type === 'tempRect'){
-    // For rectangles: compare width & height equality → 'square'
     const A = state.drawing.A;
     const B = h;
     const w = Math.abs(B.x - A.x), hgt = Math.abs(B.y - A.y);
-    const isSquare = nearLen(w, hgt);
-    if(isSquare){
+    if(nearLen(w, hgt)){
       const mid = toScreen((A.x+B.x)/2, (A.y+B.y)/2);
       drawBadgeAt(mid, '□ square', GUIDE.colorGood);
     }
   }
-}
 }
 
 /* Grid & snapping */
@@ -712,17 +692,42 @@ function drawShapes(){
   ctx.setLineDash([6,6]); ctx.strokeStyle = '#cbd5ff';
   const h=state.hover?.screen;
   if(state.drawing){
-    if(state.drawing.type==='tempLine' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(h.x,h.y); ctx.stroke(); }
-    if(state.drawing.type==='tempRect' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); ctx.strokeRect(Math.min(A.x,h.x), Math.min(A.y,h.y), Math.abs(h.x-A.x), Math.abs(h.y-A.y)); }
-    if(state.drawing.type==='tempCirc' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); const r=Math.hypot(h.x-A.x,h.y-A.y); ctx.beginPath(); ctx.arc(A.x,A.y, r, 0, Math.PI*2); ctx.stroke(); }
-    if(state.drawing.type==='tempArc' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); const C={x:(A.x+h.x)/2, y:(A.y+h.y)/2}, r=Math.hypot(h.x-A.x,h.y-A.y)/2; const a1=Math.atan2(A.y-C.y, A.x-C.x), a2=Math.atan2(h.y-C.y, h.x-C.x); ctx.beginPath(); ctx.arc(C.x,C.y,r,a1,a2); ctx.stroke(); }
-    if(state.drawing.type==='tempPoly' && h){ const pts=state.drawing.points; const A=pts[pts.length-1]; const L=applyAngleLock(A, state.hover); const pA=toScreen(A.x,A.y), pL=toScreen(L.x,L.y); ctx.beginPath(); ctx.moveTo(pA.x,pA.y); ctx.lineTo(pL.x,pL.y); ctx.stroke();
-drawSmartGuidesHook();
-}
+    if(state.drawing.type==='tempLine' && h){
+      const A=toScreen(state.drawing.A.x,state.drawing.A.y);
+      ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(h.x,h.y); ctx.stroke();
+    }
+    if(state.drawing.type==='tempRect' && h){
+      const A=toScreen(state.drawing.A.x,state.drawing.A.y);
+      ctx.strokeRect(Math.min(A.x,h.x), Math.min(A.y,h.y), Math.abs(h.x-A.x), Math.abs(h.y-A.y));
+    }
+    if(state.drawing.type==='tempCirc' && h){
+      const A=toScreen(state.drawing.A.x,state.drawing.A.y);
+      const r=Math.hypot(h.x-A.x,h.y-A.y);
+      ctx.beginPath(); ctx.arc(A.x,A.y, r, 0, Math.PI*2); ctx.stroke();
+    }
+    if(state.drawing.type==='tempArc' && h){
+      const A=toScreen(state.drawing.A.x,state.drawing.A.y);
+      const C={x:(A.x+h.x)/2, y:(A.y+h.y)/2}, r=Math.hypot(h.x-A.x,h.y-A.y)/2;
+      const a1=Math.atan2(A.y-C.y, A.x-C.x), a2=Math.atan2(h.y-C.y, h.x-C.x);
+      ctx.beginPath(); ctx.arc(C.x,C.y,r,a1,a2); ctx.stroke();
+    }
+    if(state.drawing.type==='tempPoly' && h){
+      const pts=state.drawing.points;
+      const A=pts[pts.length-1];
+      const L=applyAngleLock(A, state.hover);
+      const pA=toScreen(A.x,A.y), pL=toScreen(L.x,L.y);
+      ctx.beginPath(); ctx.moveTo(pA.x,pA.y); ctx.lineTo(pL.x,pL.y); ctx.stroke();
+    }
+
+    /* Smart Guides badges for any temp shape */
+    drawSmartGuidesHook();
   }
   ctx.setLineDash([]);
 
-  if(state.hover?.screen){ ctx.fillStyle='#ffe36a'; ctx.beginPath(); ctx.arc(state.hover.screen.x, state.hover.screen.y, 3.2, 0, Math.PI*2); ctx.fill(); }
+  if(state.hover?.screen){
+    ctx.fillStyle='#ffe36a';
+    ctx.beginPath(); ctx.arc(state.hover.screen.x, state.hover.screen.y, 3.2, 0, Math.PI*2); ctx.fill();
+  }
 
   if(state.selection && state.selection.size===1){
     const i=[...state.selection][0], s=state.shapes[i];
