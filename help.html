@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Universe120 — Help</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#0d2a55;--card:#0f356d;--ink:#fff;--muted:#d8e7ffcc;--border:#1e4d9a;--brand:#ffe36a}
+*{box-sizing:border-box} html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+.navbar{position:fixed;inset:0 0 auto 0;height:56px;z-index:40;display:flex;align-items:center;gap:12px;background:#0f356d;border-bottom:1px solid var(--border);padding:8px 12px}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:800}
+.brand .mark{width:26px;height:26px;border-radius:6px;background:#123b79;display:inline-block;box-shadow:inset 0 0 0 2px #204c96,0 0 0 1px #092659}
+.navlinks{margin-left:auto;display:flex;gap:8px}
+.navlinks a{text-decoration:none;color:#fff;border:1px solid #204c96;background:#10366f;padding:7px 12px;border-radius:10px;font-size:13px}
+.navlinks a:hover{background:#13407f} .navlinks a.active{outline:2px solid var(--brand)}
+.page{padding:88px 18px 40px;max-width:920px;margin:0 auto}
+h1{margin:.4rem 0 1rem} h2{margin:1.2rem 0 .5rem}
+.card{background:#0f356d;border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:12px 0}
+kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;border-radius:5px;padding:1px 5px;font-family:ui-monospace,Menlo,Consolas,monospace}
+ul,ol{line-height:1.65}
+</style>
+</head>
+<body>
+  <div class="navbar">
+    <a class="brand" href="index.html" aria-label="Universe120 Home">
+      <span class="mark" aria-hidden="true"></span><span>Universe120</span>
+    </a>
+    <div class="navlinks">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a class="active" href="help.html">Help</a>
+    </div>
+  </div>
+
+  <main class="page">
+    <h1>Help & Shortcuts</h1>
+    <div class="card">
+      <h2>Navigation</h2>
+      <ul>
+        <li><b>Pan:</b> hold <kbd>Space</kbd> and drag</li>
+        <li><b>Zoom:</b> mouse wheel (zooms to cursor)</li>
+        <li><b>Zoom Fit:</b> <kbd>Shift</kbd>+<kbd>1</kbd> • <b>Reset 100%:</b> <kbd>1</kbd></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Tools</h2>
+      <ul>
+        <li><b>Select (V):</b> click to select; <b>Shift+click</b> to add; drag a box to multi-select. Move selection by dragging; rotate using the yellow handle.</li>
+        <li><b>Line (L):</b> click–click to draw edges. Smart guides show <em>equal length</em>, <em>parallel</em>, <em>perpendicular</em>, and “nice” angles (0/30/45/60/90°).</li>
+        <li><b>Pen (P):</b> chained lines (polylines). <kbd>Enter</kbd> to finish; <kbd>Backspace</kbd> to undo a point.</li>
+        <li><b>Rect (R), Circle (O), Arc (A):</b> shape primitives for fast layout.</li>
+        <li><b>Text (T):</b> labels; <b>Dim (D):</b> measurement line with length.</li>
+        <li><b>Erase (E):</b> delete nearest element.</li>
+      </ul>
+      <p><b>Snapping:</b> use the toolbar “Snap” menu (Intersections / Centers / Midpoints / Free) and “Angle” menu for 0/90°, 30/60/90°, or 45/90° locks.</p>
+    </div>
+
+    <div class="card">
+      <h2>Groups</h2>
+      <ul>
+        <li>Select multiple → <b>Group</b> (button or <kbd>G</kbd>) → move/rotate as one.</li>
+        <li><b>Ungroup</b> with button or <kbd>U</kbd>.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Uploading & Auto-Aligning Blueprints</h2>
+      <ol>
+        <li>Click <b>Upload Blueprint</b> (top bar) and choose an image (PNG/JPG).</li>
+        <li>Follow the status prompt:
+          <ul>
+            <li>Click <b>Point 1 on the image</b> (a corner or door center).</li>
+            <li>Then click the <b>matching grid point</b> (it will snap to the graph).</li>
+            <li>Repeat for <b>Point 2</b> image → <b>Point 2</b> grid.</li>
+          </ul>
+          The app computes the best rotation/scale/position so the plan sits perfectly on the grid.</li>
+        <li>Use the <b>Blueprint Opacity</b> slider or <b>Lock</b> toggle to prevent accidental moves.</li>
+        <li>Trace, add walls, annotate, or export SVG/PNG.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>Export</h2>
+      <p>Use <b>Export SVG</b> for vector CAD-friendly output, or <b>Export PNG</b> for screenshots.</p>
+    </div>
+  </main>
+</body>
+</html>
