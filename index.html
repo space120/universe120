@@ -3,40 +3,50 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Universe120 — Bubble Graph Builder</title>
+<title>Universe120 — Bubble Graph Builder (Blueprint)</title>
 <style>
 :root{
-  --bg:#f7f7fb; --ink:#111; --muted:#666; --card:#ffffffcc; --border:#e7e7ee; --brand:#3538ff;
+  --bg:#f7f7fb; --card:#ffffffcc; --ink:#111; --muted:#666; --border:#e7e7ee; --brand:#3538ff;
 }
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
 /* Top bar */
-.topbar{position:fixed;left:0;right:0;top:0;height:54px;display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff;box-shadow:0 1px 0 var(--border);z-index:20}
+.topbar{position:fixed;left:0;right:0;top:0;height:56px;display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff;box-shadow:0 1px 0 var(--border);z-index:20}
 .brand{font-weight:800;margin-right:8px}
 .topbar .group{display:flex;gap:6px;align-items:center;border:1px solid var(--border);border-radius:10px;background:#fafafe;padding:4px 6px}
-button, .btn{appearance:none;border:1px solid var(--border);background:#fff;border-radius:8px;padding:7px 10px;font-size:13px;cursor:pointer}
+button{appearance:none;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer}
 button:hover{background:#f5f6ff}
 button.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
 label.small{font-size:12px;color:#333;margin-right:4px}
 input[type=range]{width:120px}
 
-/* Left toolbar */
-.toolbar{position:fixed;left:12px;top:66px;z-index:18;display:flex;flex-direction:column;gap:8px}
-.tool{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-size:12px}
+/* Toolbar (left) */
+.toolbar{
+  position:fixed;left:12px;top:68px;z-index:18;
+  display:flex;flex-direction:column;gap:10px
+}
+.tool{
+  width:148px;height:44px;display:flex;align-items:center;gap:10px;
+  border:1px solid var(--border);border-radius:10px;background:#fff;
+  padding:6px 10px;cursor:pointer;text-align:left
+}
+.tool:hover{background:#f5f6ff}
 .tool.active{outline:2px solid var(--brand)}
-.tool span{user-select:none}
+.tool .icon{
+  width:24px;flex:0 0 24px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;line-height:1
+}
+.tool .label{font-size:13px;color:#111;line-height:1}
 
 /* Right panel */
-.panel{position:fixed;right:12px;top:66px;z-index:18;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.08);padding:10px 12px;min-width:260px}
+.panel{position:fixed;right:12px;top:68px;z-index:18;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.08);padding:10px 12px;min-width:260px}
 .panel h3{margin:.3rem 0 .2rem;font-size:14px}
 .panel .row{display:flex;align-items:center;gap:8px;margin:.35rem 0}
 .panel input[type="number"], .panel select, .panel input[type="text"]{font-size:13px;padding:4px 6px}
 
-/* Canvas */
-#canvas{position:fixed;inset:54px 0 28px 0;display:block;width:100%;height:calc(100% - 82px);}
-
-/* Status bar */
+/* Canvas & status */
+#canvas{position:fixed;inset:56px 0 28px 0;display:block;width:100%;height:calc(100% - 84px)}
 .status{position:fixed;left:0;right:0;bottom:0;height:28px;display:flex;align-items:center;gap:16px;padding:0 10px;background:#fff;border-top:1px solid var(--border);font-size:12px;color:#333;z-index:20}
 
 /* Help overlay */
@@ -44,24 +54,43 @@ input[type=range]{width:120px}
 #help .card{background:#10121b;border:1px solid #2a2e3d;color:#e9ebff;border-radius:12px;padding:18px;max-width:720px}
 kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;border-radius:5px;padding:1px 5px;font-family:ui-monospace,Menlo,Consolas,monospace}
 
-/* Tiny badges */
-.badge{font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:999px;background:#fff}
+/* -------- Blueprint theme -------- */
+:root.blueprint { --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a; }
+body.blueprint {
+  background:
+    radial-gradient(1200px 800px at 20% -10%, #16407e66 0%, #0d2a55 60%, #0b2449 100%),
+    #0d2a55;
+}
+#canvas.blueprint {
+  background-image:
+    linear-gradient(#ffffff10 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff0f 1px, transparent 1px);
+  background-size: 32px 32px, 32px 32px;
+}
+body.blueprint .topbar, body.blueprint .status { background:#0f356d; color:#fff; border-color:#1e4d9a }
+body.blueprint .topbar .group{background:#0d2e5f;border-color:#1e4d9a}
+body.blueprint button{background:#10366f;color:#fff;border-color:#204c96}
+body.blueprint button:hover{background:#13407f}
+body.blueprint .tool{background:#10366f;color:#fff;border-color:#204c96}
+body.blueprint .tool:hover{background:#13407f}
+body.blueprint .tool.active{outline-color:var(--brand)}
+/* --------------------------------- */
 </style>
 </head>
 <body>
   <div class="topbar">
-    <div class="brand">Universe120 <span class="badge">Bubble Builder v0.5</span></div>
+    <div class="brand">Universe120</div>
     <div class="group">
-      <button id="newDoc">New</button>
-      <button id="clearAll">Clear</button>
-      <button id="undoBtn">Undo</button>
-      <button id="redoBtn">Redo</button>
+      <button id="newDoc" type="button">New</button>
+      <button id="clearAll" type="button">Clear</button>
+      <button id="undoBtn" type="button">Undo</button>
+      <button id="redoBtn" type="button">Redo</button>
     </div>
     <div class="group">
-      <button id="zoomIn">+</button>
-      <button id="zoomOut">−</button>
-      <button id="zoomFit">Fit</button>
-      <button id="zoomReset">100%</button>
+      <button id="zoomIn" type="button">+</button>
+      <button id="zoomOut" type="button">−</button>
+      <button id="zoomFit" type="button">Fit</button>
+      <button id="zoomReset" type="button">100%</button>
     </div>
     <div class="group">
       <label class="small">Grid</label><input id="gridScale" type="range" min="0.6" max="1.8" step="0.01" value="1.0">
@@ -84,44 +113,49 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
       </select>
     </div>
     <div class="group">
-      <button id="exportSVG">Export SVG</button>
-      <button id="exportPNG">Export PNG</button>
+      <label class="small">Theme</label>
+      <select id="theme">
+        <option value="light">Studio</option>
+        <option value="blueprint" selected>Blueprint</option>
+      </select>
     </div>
     <div class="group">
-      <button id="helpBtn">?</button>
+      <button id="exportSVG" type="button">Export SVG</button>
+      <button id="exportPNG" type="button">Export PNG</button>
     </div>
+    <div class="group"><button id="helpBtn" type="button">?</button></div>
   </div>
 
   <!-- Left toolbar -->
- <div class="toolbar" aria-label="Tools">
-  <button class="tool active" data-tool="select" title="Select (V)" aria-label="Select">
-    <span class="icon">🖱️</span><span class="label">Select</span>
-  </button>
-  <button class="tool" data-tool="pen" title="Pen / Polyline (P)" aria-label="Pen / Polyline">
-    <span class="icon">✏️</span><span class="label">Pen</span>
-  </button>
-  <button class="tool" data-tool="line" title="Line (L)" aria-label="Line">
-    <span class="icon">⎯</span><span class="label">Line</span>
-  </button>
-  <button class="tool" data-tool="arc" title="Arc (A)" aria-label="Arc">
-    <span class="icon">⌒</span><span class="label">Arc</span>
-  </button>
-  <button class="tool" data-tool="rect" title="Rectangle (R)" aria-label="Rectangle">
-    <span class="icon">▭</span><span class="label">Rect</span>
-  </button>
-  <button class="tool" data-tool="circ" title="Circle (O)" aria-label="Circle">
-    <span class="icon">◯</span><span class="label">Circle</span>
-  </button>
-  <button class="tool" data-tool="text" title="Text (T)" aria-label="Text">
-    <span class="icon">T</span><span class="label">Text</span>
-  </button>
-  <button class="tool" data-tool="dim" title="Dimension (D)" aria-label="Dimension">
-    <span class="icon">⇄</span><span class="label">Dim</span>
-  </button>
-  <button class="tool" data-tool="erase" title="Erase (E)" aria-label="Erase">
-    <span class="icon">⌫</span><span class="label">Erase</span>
-  </button>
-</div>
+  <div class="toolbar" aria-label="Tools">
+    <button type="button" class="tool active" data-tool="select" title="Select (V)" aria-label="Select">
+      <span class="icon">🖱️</span><span class="label">Select</span>
+    </button>
+    <button type="button" class="tool" data-tool="pen" title="Pen / Polyline (P)" aria-label="Pen / Polyline">
+      <span class="icon">✏️</span><span class="label">Pen</span>
+    </button>
+    <button type="button" class="tool" data-tool="line" title="Line (L)" aria-label="Line">
+      <span class="icon">⎯</span><span class="label">Line</span>
+    </button>
+    <button type="button" class="tool" data-tool="arc" title="Arc (A)" aria-label="Arc">
+      <span class="icon">⌒</span><span class="label">Arc</span>
+    </button>
+    <button type="button" class="tool" data-tool="rect" title="Rectangle (R)" aria-label="Rectangle">
+      <span class="icon">▭</span><span class="label">Rect</span>
+    </button>
+    <button type="button" class="tool" data-tool="circ" title="Circle (O)" aria-label="Circle">
+      <span class="icon">◯</span><span class="label">Circle</span>
+    </button>
+    <button type="button" class="tool" data-tool="text" title="Text (T)" aria-label="Text">
+      <span class="icon">T</span><span class="label">Text</span>
+    </button>
+    <button type="button" class="tool" data-tool="dim" title="Dimension (D)" aria-label="Dimension">
+      <span class="icon">⇄</span><span class="label">Dim</span>
+    </button>
+    <button type="button" class="tool" data-tool="erase" title="Erase (E)" aria-label="Erase">
+      <span class="icon">⌫</span><span class="label">Erase</span>
+    </button>
+  </div>
 
   <!-- Right properties -->
   <div class="panel" id="props">
@@ -129,9 +163,6 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
     <div class="row"><label class="small">Stroke</label><input id="strokeW" type="range" min="0.8" max="4" step="0.1" value="1.6"></div>
     <div class="row"><label class="small">Wall (px)</label><input id="wallThick" type="number" value="0" min="0" max="60" step="1"></div>
     <div class="row"><label class="small">Label</label><input id="labelText" type="text" placeholder="Room / Note"></div>
-    <div class="row"><label class="small">BG Image</label><input id="bgUpload" type="file" accept="image/*"></div>
-    <div class="row"><label class="small">BG Opacity</label><input id="bgAlpha" type="range" min="0" max="1" step="0.01" value="0.55"></div>
-    <div class="row"><label class="small">Calibrate</label><button id="calib">Pick 2 pts</button><input id="calibSteps" type="number" value="4" min="1" max="50" step="1" style="width:64px"></div>
   </div>
 
   <canvas id="canvas"></canvas>
@@ -152,63 +183,41 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
         <li><b>Zoom</b>: mouse wheel (zooms to cursor)</li>
         <li><b>Zoom Fit</b>: <kbd>Shift</kbd>+<kbd>1</kbd> • <b>Reset 100%</b>: <kbd>1</kbd></li>
         <li><b>Undo/Redo</b>: <kbd>Ctrl/Cmd</kbd>+<kbd>Z</kbd> / <kbd>Ctrl/Cmd</kbd>+<kbd>Y</kbd></li>
-        <li><b>End polyline</b>: <kbd>Enter</kbd> • <b>Cancel</b>: <kbd>Esc</kbd> • <b>Back one segment</b>: <kbd>Backspace</kbd></li>
-        <li><b>Snaps</b>: Intersections / Centers / Midpoints • <b>Angle Lock</b>: 0/90, 30/60/90, 45/90</li>
-        <li><b>Export</b>: SVG (vector) or PNG (screenshot)</li>
+        <li><b>End polyline</b>: <kbd>Enter</kbd> • <b>Back one</b>: <kbd>Backspace</kbd></li>
       </ul>
       <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
-        <button id="closeHelp" class="primary">Got it</button>
+        <button id="closeHelp" class="primary" type="button">Got it</button>
       </div>
     </div>
   </div>
 
 <script>
-/* ======= Setup ======= */
+/* ================= Setup ================= */
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d',{alpha:true});
 let DPR = Math.min(devicePixelRatio||1,2);
-function resize(){ const w=innerWidth, h=innerHeight-54-28; canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR); canvas.style.width=w+'px'; canvas.style.height=h+'px'; ctx.setTransform(DPR,0,0,DPR,0,0); }
+function resize(){ const w=innerWidth, h=innerHeight-56-28; canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR); canvas.style.width=w+'px'; canvas.style.height=h+'px'; ctx.setTransform(DPR,0,0,DPR,0,0); }
 addEventListener('resize', resize); resize();
 
-const state = {
-  tool:'select',
-  zoom:1, pan:{x:0,y:0},
-  gridScale:1.0, dotScale:1.0,
-  strokeW:1.6, wallThick:0,
-  snap:'intersections', angleLock:'thirty',
-  drawing:null, hover:null, dragging:false, panning:false,
-  shapes:[], // {type, ...}
-  selection:new Set(),
-  undo:[], redo:[],
-  bg:{img:null, alpha:0.55, offX:0, offY:0, scale:1, rot:0, calib:[]},
-};
-const Rbase=26; function grid() { const R=Rbase*state.gridScale; return {R,stepX:R, stepY:R*Math.sqrt(3)/2}; }
-
-/* ======= UI wiring ======= */
 function $(q){ return document.querySelector(q); }
 function all(q){ return [...document.querySelectorAll(q)]; }
 const stTool=$('#stTool'), stSnap=$('#stSnap'), stZoom=$('#stZoom'), stPos=$('#stPos');
 
-// Robust toolbar handling (icons/labels inside button are fine)
-const toolbarEl = document.querySelector('.toolbar');
+const state = {
+  tool:'select', zoom:1, pan:{x:0,y:0},
+  gridScale:1.0, dotScale:1.0,
+  strokeW:1.6, wallThick:0,
+  snap:'intersections', angleLock:'thirty',
+  drawing:null, hover:null,
+  shapes:[], selection:new Set(),
+  undo:[], redo:[],
+};
+const Rbase=26; function grid() { const R=Rbase*state.gridScale; return {R,stepX:R, stepY:R*Math.sqrt(3)/2}; }
 
-function setTool(name){
-  state.tool = name;
-  state.drawing = null; // exit current drawing mode (Pen/Line/etc.)
-  document.querySelectorAll('.tool').forEach(el=>{
-    el.classList.toggle('active', el.dataset.tool === name);
-  });
-  const titles = {select:'Select', pen:'Pen / Polyline', line:'Line', arc:'Arc', rect:'Rectangle', circ:'Circle', text:'Text', dim:'Dimension', erase:'Erase'};
-  stTool.textContent = 'Tool: ' + (titles[name] || name);
-}
+let lastMouse={x:canvas.width/DPR/2, y:canvas.height/DPR/2};
+let isSpace=false, mouseDown=false, panning=false;
 
-toolbarEl.addEventListener('click', (e)=>{
-  const btn = e.target.closest('.tool');
-  if(!btn) return;
-  e.preventDefault();
-  setTool(btn.dataset.tool);
-});
-
+/* ================= UI wiring ================= */
 $('#gridScale').addEventListener('input', e=>{ state.gridScale=+e.target.value; });
 $('#dotSize').addEventListener('input', e=>{ state.dotScale=+e.target.value; });
 $('#snapMode').addEventListener('change', e=>{ state.snap=e.target.value; stSnap.textContent='Snap: '+e.target.selectedOptions[0].textContent; });
@@ -219,7 +228,7 @@ $('#labelText').addEventListener('input', e=>{ state.labelDraft=e.target.value; 
 
 $('#zoomIn').onclick=()=>zoomAt(1.1, lastMouse);
 $('#zoomOut').onclick=()=>zoomAt(1/1.1, lastMouse);
-$('#zoomReset').onclick=()=>{ state.zoom=1; state.pan={x:0,y:0}; };
+$('#zoomReset').onclick=()=>{ state.zoom=1; state.pan={x:0,y:0}; stZoom.textContent='Zoom: 100%'; };
 $('#zoomFit').onclick=()=>zoomToFit();
 
 $('#newDoc').onclick=()=>{ pushUndo(); state.shapes.length=0; state.selection.clear(); };
@@ -232,15 +241,35 @@ $('#exportPNG').onclick=exportPNG;
 $('#helpBtn').onclick=()=>{ $('#help').style.display='flex'; };
 $('#closeHelp').onclick=()=>{ $('#help').style.display='none'; };
 
-$('#bgUpload').addEventListener('change', (e)=>{
-  const f=e.target.files[0]; if(!f) return;
-  const fr=new FileReader(); fr.onload=()=>{ const im=new Image(); im.onload=()=>{ state.bg.img=im; }; im.src=fr.result; }; fr.readAsDataURL(f);
-});
-$('#bgAlpha').addEventListener('input', e=>{ state.bg.alpha=+e.target.value; });
-$('#calib').addEventListener('click', ()=>{ alert('Calibration: click two points on photo that are N grid steps apart (set N).'); state.bg.calib=[]; calibMode=true; });
-let calibMode=false;
+/* Theme */
+const themeSel = document.getElementById('theme');
+function applyTheme(name){
+  document.documentElement.classList.toggle('blueprint', name==='blueprint');
+  document.body.classList.toggle('blueprint', name==='blueprint');
+  canvas.classList.toggle('blueprint', name==='blueprint');
+}
+themeSel?.addEventListener('change', e=>applyTheme(e.target.value));
+applyTheme(themeSel ? themeSel.value : 'blueprint');
 
-/* ======= Coordinate helpers ======= */
+/* Toolbar logic */
+const toolbarEl = document.querySelector('.toolbar');
+function setTool(name){
+  state.tool = name;
+  state.drawing = null;
+  document.querySelectorAll('.tool').forEach(el=>{
+    el.classList.toggle('active', el.dataset.tool === name);
+  });
+  const titles={select:'Select', pen:'Pen / Polyline', line:'Line', arc:'Arc', rect:'Rectangle', circ:'Circle', text:'Text', dim:'Dimension', erase:'Erase'};
+  stTool.textContent='Tool: '+(titles[name]||name);
+}
+toolbarEl.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.tool');
+  if(!btn) return;
+  e.preventDefault();
+  setTool(btn.dataset.tool);
+});
+
+/* ================= Coordinate helpers ================= */
 function toWorld(sx,sy){
   return { x:(sx - canvas.width/DPR/2 - state.pan.x)/state.zoom,
            y:(sy - canvas.height/DPR/2 - state.pan.y)/state.zoom };
@@ -249,196 +278,89 @@ function toScreen(x,y){
   return { x: canvas.width/DPR/2 + state.pan.x + x*state.zoom,
            y: canvas.height/DPR/2 + state.pan.y + y*state.zoom };
 }
-let lastMouse={x:canvas.width/DPR/2, y:canvas.height/DPR/2};
 
-/* ======= Grid & snapping ======= */
+/* ================= Grid & snapping ================= */
 function gridCentersNear(x,y,range=3){
   const {stepX,stepY}=grid();
   const rr=Math.round(y/stepY), cc=Math.round((x-(rr%2? stepX/2:0))/stepX);
   const pts=[];
-  for(let dr=-range; dr<=range; dr++){
+  for(let dr=-range; dr<=range; dr++)
     for(let dc=-range; dc<=range; dc++){
       const r=rr+dr, c=cc+dc, gx=c*stepX+(r%2? stepX/2:0), gy=r*stepY;
       pts.push({x:gx,y:gy,kind:'center'});
     }
-  }
   const mids=[];
-  for(let i=0;i<pts.length;i++){
+  for(let i=0;i<pts.length;i++)
     for(let j=i+1;j<pts.length;j++){
       const a=pts[i], b=pts[j];
       if(Math.hypot(a.x-b.x,a.y-b.y) < stepX*1.02) mids.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,kind:'mid'});
     }
-  }
   return pts.concat(mids);
 }
 function snapPoint(worldX,worldY, strong=false){
   if(state.snap==='free') return {x:worldX, y:worldY, kind:'free'};
-  const {stepX,stepY}=grid();
   const cand = gridCentersNear(worldX,worldY,strong?4:3);
   let best=null, bd=1e9;
   cand.forEach(p=>{
-    const dx=p.x-worldX, dy=p.y-worldY, d2=dx*dx+dy*dy;
+    const d2=(p.x-worldX)*(p.x-worldX)+(p.y-worldY)*(p.y-worldY);
     if(d2<bd){ bd=d2; best=p; }
   });
   return best||{x:worldX,y:worldY,kind:'free'};
 }
+
+/* Extra: snap to scene points for moving */
+function shapeAnchors(s){
+  const pts=[];
+  if(s.type==='seg'){ pts.push(s.a, s.b); }
+  if(s.type==='rect'){ pts.push(s.a, {x:s.b.x,y:s.a.y}, s.b, {x:s.a.x,y:s.b.y}); }
+  if(s.type==='arc'){ pts.push(
+    {x:s.c.x + s.r*Math.cos(s.a1), y:s.c.y + s.r*Math.sin(s.a1)},
+    {x:s.c.x + s.r*Math.cos(s.a2), y:s.c.y + s.r*Math.sin(s.a2)},
+    s.c
+  );}
+  if(s.type==='circ'){ pts.push(s.c); }
+  if(s.type==='dim'){ pts.push(s.a,s.b); }
+  if(s.type==='label'){ pts.push(s.p); }
+  return pts;
+}
+function sceneSnapCandidates(excludeIndex){ const pts=[]; state.shapes.forEach((s,i)=>{ if(i!==excludeIndex) pts.push(...shapeAnchors(s)); }); return pts; }
+function snapWorld(x,y,strong,excludeIndex){
+  if(state.snap==='free') return {x,y};
+  const gridPts = gridCentersNear(x,y,strong?4:3);
+  const objPts  = sceneSnapCandidates(excludeIndex);
+  let best={x,y}, bd=1e9;
+  function test(px,py){ const d2=(px-x)*(px-x)+(py-y)*(py-y); if(d2<bd){bd=d2; best={x:px,y:py};} }
+  gridPts.forEach(p=>test(p.x,p.y));
+  objPts.forEach(p=>test(p.x,p.y));
+  return best;
+}
+
+/* Angle lock */
 function applyAngleLock(a0,a1){
-  const mode = state.angleLock;
+  const mode=state.angleLock;
   if(mode==='off') return a1;
   const dx=a1.x-a0.x, dy=a1.y-a0.y, ang=Math.atan2(dy,dx);
   let snaps=[];
   if(mode==='ortho') snaps=[0,Math.PI/2,Math.PI,3*Math.PI/2];
   else if(mode==='thirty') snaps=[0,Math.PI/6,Math.PI/3,Math.PI/2,2*Math.PI/3,5*Math.PI/6,Math.PI,7*Math.PI/6,4*Math.PI/3,3*Math.PI/2,5*Math.PI/3,11*Math.PI/6];
   else if(mode==='fortyfive') snaps=[0,Math.PI/4,Math.PI/2,3*Math.PI/4,Math.PI,5*Math.PI/4,3*Math.PI/2,7*Math.PI/4];
-  let best=ang, bd=1e9; snaps.forEach(s=>{const d=Math.abs(((ang-s+Math.PI)%(2*Math.PI))-Math.PI); if(d<bd){bd=d;best=s;}});
+  let best=ang,bd=1e9; snaps.forEach(s=>{const d=Math.abs(((ang-s+Math.PI)%(2*Math.PI))-Math.PI); if(d<bd){bd=d;best=s;}});
   const len=Math.hypot(dx,dy);
   return {x:a0.x+Math.cos(best)*len, y:a0.y+Math.sin(best)*len};
 }
 
-/* ======= Interaction ======= */
-let isSpace=false, mouseDown=false;
-canvas.addEventListener('mousemove', (e)=>{
-  lastMouse={x:e.clientX,y:e.clientY};
-  const w = toWorld(e.clientX,e.clientY);
-  const snapped = snapPoint(w.x,w.y,false);
-  state.hover = {...snapped, screen: toScreen(snapped.x,snapped.y) };
-  stPos.textContent = `x:${snapped.x.toFixed(1)} y:${snapped.y.toFixed(1)}`;
-});
-canvas.addEventListener('mousedown', (e)=>{
-  if(e.button===1) return; // ignore wheel button
-  if(isSpace || e.button===2){ state.panning=true; mouseDown=true; return; }
-  mouseDown=true; pushUndo();
+/* ================= Drawing & selection ================= */
+function pushUndo(){ state.undo.push(JSON.stringify({shapes:state.shapes})); state.redo.length=0; }
+function undo(){ if(!state.undo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const prev=state.undo.pop(); state.redo.push(cur); state.shapes = JSON.parse(prev).shapes; }
+function redo(){ if(!state.redo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const next=state.redo.pop(); state.undo.push(cur); state.shapes = JSON.parse(next).shapes; }
 
-  // calibration click
-  if(calibMode && state.bg.img){
-    const p={x:e.clientX, y:e.clientY}; state.bg.calib.push(p);
-    if(state.bg.calib.length===2){
-      const N=Math.max(1, +$('#calibSteps').value||4);
-      const dx=state.bg.calib[1].x-state.bg.calib[0].x;
-      const dy=state.bg.calib[1].y-state.bg.calib[0].y;
-      const dist=Math.hypot(dx,dy); const target=N*grid().stepX*state.zoom;
-      const s = target/dist;
-      state.bg.scale *= s;
-      calibMode=false; state.bg.calib=[];
-      alert('Calibrated. Use Zoom/Space-pan to align visually if needed.');
-    }
-    return;
-  }
+function finishLine(B){ const A=state.drawing.A; const L=applyAngleLock(A,B); state.shapes.push({type:'seg', a:A, b:L, wall:state.wallThick||0}); state.drawing=null; }
+function finishArc(B){ const A=state.drawing.A; const C={x:(A.x+B.x)/2, y:(A.y+B.y)/2}; const r=Math.hypot(B.x-A.x,B.y-A.y)/2; const a1=Math.atan2(A.y-C.y,A.x-C.x), a2=Math.atan2(B.y-C.y,B.x-C.x); state.shapes.push({type:'arc', c:C, r, a1, a2}); state.drawing=null; }
+function finishRect(B){ const A=state.drawing.A; state.shapes.push({type:'rect', a:{x:Math.min(A.x,B.x), y:Math.min(A.y,B.y)}, b:{x:Math.max(A.x,B.x), y:Math.max(A.y,B.y)}, wall:state.wallThick||0}); state.drawing=null; }
+function finishCirc(B){ const A=state.drawing.A; const r=Math.hypot(B.x-A.x,B.y-A.y); state.shapes.push({type:'circ', c:A, r}); state.drawing=null; }
+function finishDim(B){ const A=state.drawing.A; const len=Math.hypot(B.x-A.x,B.y-A.y); state.shapes.push({type:'dim', a:A, b:B, text:`${len.toFixed(1)}`}); state.drawing=null; }
+function finalizePolyline(){ const pts=state.drawing.points; if(pts.length>=2){ for(let i=0;i<pts.length-1;i++){ state.shapes.push({type:'seg', a:pts[i], b:pts[i+1], wall:state.wallThick||0}); } } state.drawing=null; }
 
-  const w = toWorld(e.clientX,e.clientY);
-  const P = snapPoint(w.x,w.y,e.shiftKey);
-
-  const t=state.tool;
-  if(t==='select'){ /* (room for selection/marquee) */ }
-  else if(t==='line'){
-    state.drawing = state.drawing ? (finishLine(P)) : {type:'tempLine', A:P};
-  }
-  else if(t==='pen'){
-    if(!state.drawing) state.drawing={type:'tempPoly', points:[P]};
-    else {
-      const pts=state.drawing.points;
-      const A=pts[pts.length-1], B=P;
-      const L=applyAngleLock(A,B);
-      pts.push(L);
-    }
-  }
-  else if(t==='arc'){
-    state.drawing = state.drawing ? (finishArc(P)) : {type:'tempArc', A:P};
-  }
-  else if(t==='rect'){
-    state.drawing = state.drawing ? (finishRect(P)) : {type:'tempRect', A:P};
-  }
-  else if(t==='circ'){
-    state.drawing = state.drawing ? (finishCirc(P)) : {type:'tempCirc', A:P};
-  }
-  else if(t==='text'){
-    const txt = (state.labelDraft || prompt('Text:','Room') || 'Note');
-    state.shapes.push({type:'label', p:P, text:txt});
-  }
-  else if(t==='dim'){
-    state.drawing = state.drawing ? (finishDim(P)) : {type:'tempDim', A:P};
-  }
-  else if(t==='erase'){
-    eraseNearest(P);
-  }
-});
-addEventListener('mouseup', ()=>{ mouseDown=false; state.panning=false; });
-addEventListener('mousemove', e=>{
-  if(state.panning && mouseDown){
-    state.pan.x += e.movementX;
-    state.pan.y += e.movementY;
-  }
-});
-canvas.addEventListener('wheel', e=>{
-  e.preventDefault();
-  const factor = Math.exp(-e.deltaY*0.0018);
-  zoomAt(factor, {x:e.clientX,y:e.clientY});
-},{passive:false});
-addEventListener('contextmenu', e=>e.preventDefault());
-
-addEventListener('keydown', e=>{
-  if(e.code==='Space'){ isSpace=true; }
-  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){ e.preventDefault(); undo(); }
-  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){ e.preventDefault(); redo(); }
-  if(e.key==='1' && e.shiftKey){ zoomToFit(); }
-  else if(e.key==='1'){ state.zoom=1; state.pan={x:0,y:0}; }
-  if(e.key==='Escape'){ state.drawing=null; }
-  if(e.key==='Enter' && state.drawing?.type==='tempPoly'){ finalizePolyline(); }
-  if(e.key==='Backspace' && state.drawing?.type==='tempPoly'){ state.drawing.points.pop(); if(state.drawing.points.length<2) state.drawing=null; }
-  // tool shortcuts
-  const map={v:'select', p:'pen', l:'line', a:'arc', r:'rect', o:'circ', t:'text', d:'dim', e:'erase'};
-  const k=e.key.toLowerCase();
-  if(map[k]){ selectTool(map[k]); }
-});
-addEventListener('keyup', e=>{ if(e.code==='Space'){ isSpace=false; } });
-
-function selectTool(name){
-  state.tool=name;
-  all('.tool').forEach(x=>x.classList.toggle('active', x.dataset.tool===name));
-  const titles={select:'Select',pen:'Pen / Polyline',line:'Line',arc:'Arc',rect:'Rectangle',circ:'Circle',text:'Text',dim:'Dimension',erase:'Erase'};
-  stTool.textContent='Tool: '+(titles[name]||name);
-}
-
-/* ======= Shape creators ======= */
-function finishLine(B){
-  const A=state.drawing.A;
-  const L=applyAngleLock(A,B);
-  state.shapes.push({type:'seg', a:A, b:L, wall:state.wallThick||0});
-  state.drawing=null;
-}
-function finishArc(B){
-  const A=state.drawing.A;
-  const C={x:(A.x+B.x)/2, y:(A.y+B.y)/2};
-  const r=Math.hypot(B.x-A.x,B.y-A.y)/2;
-  const a1=Math.atan2(A.y-C.y,A.x-C.x), a2=Math.atan2(B.y-C.y,B.x-C.x);
-  state.shapes.push({type:'arc', c:C, r, a1, a2});
-  state.drawing=null;
-}
-function finishRect(B){
-  const A=state.drawing.A;
-  state.shapes.push({type:'rect', a:{x:Math.min(A.x,B.x), y:Math.min(A.y,B.y)}, b:{x:Math.max(A.x,B.x), y:Math.max(A.y,B.y)}, wall:state.wallThick||0});
-  state.drawing=null;
-}
-function finishCirc(B){
-  const A=state.drawing.A; const r=Math.hypot(B.x-A.x,B.y-A.y);
-  state.shapes.push({type:'circ', c:A, r});
-  state.drawing=null;
-}
-function finishDim(B){
-  const A=state.drawing.A;
-  const len=Math.hypot(B.x-A.x,B.y-A.y);
-  state.shapes.push({type:'dim', a:A, b:B, text:`${len.toFixed(1)}`});
-  state.drawing=null;
-}
-function finalizePolyline(){
-  const pts=state.drawing.points;
-  if(pts.length>=2){
-    for(let i=0;i<pts.length-1;i++){
-      state.shapes.push({type:'seg', a:pts[i], b:pts[i+1], wall:state.wallThick||0});
-    }
-  }
-  state.drawing=null;
-}
 function eraseNearest(P){
   let bi=-1, bd=1e9;
   state.shapes.forEach((d,i)=>{
@@ -449,18 +371,129 @@ function eraseNearest(P){
     else if(d.type==='circ'){ cx=d.c.x; cy=d.c.y; }
     else if(d.type==='label'){ cx=d.p.x; cy=d.p.y; }
     else if(d.type==='dim'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
-    const dx=P.x-cx, dy=P.y-cy, d2=dx*dx+dy*dy;
+    const d2=(P.x-cx)*(P.x-cx)+(P.y-cy)*(P.y-cy);
     if(d2<bd){ bd=d2; bi=i; }
   });
   if(bi>=0) state.shapes.splice(bi,1);
 }
 
-/* ======= Undo/Redo ======= */
-function pushUndo(){ state.undo.push(JSON.stringify({shapes:state.shapes})); state.redo.length=0; }
-function undo(){ if(!state.undo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const prev=state.undo.pop(); state.redo.push(cur); const snap=JSON.parse(prev); state.shapes = snap.shapes; }
-function redo(){ if(!state.redo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const next=state.redo.pop(); state.undo.push(cur); const snap=JSON.parse(next); state.shapes = snap.shapes; }
+/* Hit testing for selection */
+function distPointSeg(P,A,B){
+  const vx=B.x-A.x, vy=B.y-A.y;
+  const wx=P.x-A.x, wy=P.y-A.y;
+  const t=Math.max(0, Math.min(1, (vx*wx+vy*wy)/(vx*vx+vy*vy || 1)));
+  const dx=(A.x+t*vx)-P.x, dy=(A.y+t*vy)-P.y; return Math.hypot(dx,dy);
+}
+function hitTest(worldP, tol=10/state.zoom){
+  let best=-1, bd=1e9;
+  state.shapes.forEach((s,i)=>{
+    let d=1e9;
+    if(s.type==='seg'){ d=distPointSeg(worldP, s.a, s.b); }
+    else if(s.type==='rect'){
+      const minX=Math.min(s.a.x,s.b.x), maxX=Math.max(s.a.x,s.b.x);
+      const minY=Math.min(s.a.y,s.b.y), maxY=Math.max(s.a.y,s.b.y);
+      const nearX = Math.min(Math.abs(worldP.x-minX), Math.abs(worldP.x-maxX));
+      const nearY = Math.min(Math.abs(worldP.y-minY), Math.abs(worldP.y-maxY));
+      d = Math.min(nearX,nearY);
+    }
+    else if(s.type==='circ'){ d=Math.abs(Math.hypot(worldP.x-s.c.x,worldP.y-s.c.y)-s.r); }
+    else if(s.type==='arc'){ const R=Math.hypot(worldP.x-s.c.x,worldP.y-s.c.y); d=Math.abs(R-s.r); }
+    else if(s.type==='label'){ d=Math.hypot(worldP.x-s.p.x,worldP.y-s.p.y); }
+    else if(s.type==='dim'){ d=distPointSeg(worldP, s.a, s.b); }
+    if(d<bd){ bd=d; best=i; }
+  });
+  return (bd<=tol)? best : -1;
+}
 
-/* ======= Zoom helpers ======= */
+/* Drag selection state */
+let dragSel=null; // { index, refPt, startMouse, original }
+
+/* ================= Events ================= */
+canvas.addEventListener('mousemove', (e)=>{
+  lastMouse={x:e.clientX,y:e.clientY};
+  const w = toWorld(e.clientX,e.clientY);
+  const snapped = snapPoint(w.x,w.y,false);
+  state.hover = {...snapped, screen: toScreen(snapped.x,snapped.y) };
+  stPos.textContent = `x:${snapped.x.toFixed(1)} y:${snapped.y.toFixed(1)}`;
+
+  if(panning && mouseDown){ state.pan.x += e.movementX; state.pan.y += e.movementY; }
+
+  if(dragSel){
+    const now = toWorld(e.clientX,e.clientY);
+    const dx = now.x - dragSel.startMouse.x;
+    const dy = now.y - dragSel.startMouse.y;
+    const newRef = {x: dragSel.originalRef.x + dx, y: dragSel.originalRef.y + dy};
+    const snappedRef = snapWorld(newRef.x, newRef.y, e.shiftKey, dragSel.index);
+    const snapDx = snappedRef.x - dragSel.originalRef.x;
+    const snapDy = snappedRef.y - dragSel.originalRef.y;
+
+    const s0 = dragSel.original; const moved = JSON.parse(JSON.stringify(s0));
+    const shift = p=>{ p.x += snapDx; p.y += snapDy; };
+    if(moved.type==='seg'){ shift(moved.a); shift(moved.b); }
+    if(moved.type==='rect'){ shift(moved.a); shift(moved.b); }
+    if(moved.type==='arc'){ shift(moved.c); }
+    if(moved.type==='circ'){ shift(moved.c); }
+    if(moved.type==='dim'){ shift(moved.a); shift(moved.b); }
+    if(moved.type==='label'){ shift(moved.p); }
+    state.shapes[dragSel.index] = moved;
+  }
+});
+canvas.addEventListener('mousedown', (e)=>{
+  if(e.button===2) return; // ignore right click default
+  mouseDown=true;
+  if(isSpace){ panning=true; return; }
+
+  const w = toWorld(e.clientX,e.clientY);
+
+  // Selection start
+  if(state.tool==='select'){
+    const idx = hitTest(w);
+    if(idx>=0){
+      state.selection=new Set([idx]);
+      const anchors = shapeAnchors(state.shapes[idx]);
+      let ref=anchors[0], bd=1e9;
+      anchors.forEach(p=>{ const d2=(p.x-w.x)*(p.x-w.x)+(p.y-w.y)*(p.y-w.y); if(d2<bd){bd=d2; ref=p;}});
+      dragSel = {
+        index: idx,
+        original: JSON.parse(JSON.stringify(state.shapes[idx])),
+        originalRef: {x:ref.x, y:ref.y},
+        startMouse: w
+      };
+      return;
+    }
+  }
+
+  // Drawing tools
+  pushUndo();
+  const P = snapPoint(w.x,w.y,e.shiftKey);
+  const t=state.tool;
+  if(t==='line')      { state.drawing = state.drawing ? (finishLine(P)) : {type:'tempLine', A:P}; }
+  else if(t==='pen')  { if(!state.drawing) state.drawing={type:'tempPoly', points:[P]}; else { const pts=state.drawing.points; const A=pts[pts.length-1]; const L=applyAngleLock(A,P); pts.push(L);} }
+  else if(t==='arc')  { state.drawing = state.drawing ? (finishArc(P)) : {type:'tempArc', A:P}; }
+  else if(t==='rect') { state.drawing = state.drawing ? (finishRect(P)) : {type:'tempRect', A:P}; }
+  else if(t==='circ') { state.drawing = state.drawing ? (finishCirc(P)) : {type:'tempCirc', A:P}; }
+  else if(t==='text') { const txt=(state.labelDraft||prompt('Text:','Room')||'Note'); state.shapes.push({type:'label', p:P, text:txt}); }
+  else if(t==='dim')  { state.drawing = state.drawing ? (finishDim(P)) : {type:'tempDim', A:P}; }
+  else if(t==='erase'){ eraseNearest(P); }
+});
+addEventListener('mouseup', ()=>{ if(dragSel){ dragSel=null; } mouseDown=false; panning=false; });
+canvas.addEventListener('wheel', e=>{ e.preventDefault(); zoomAt(Math.exp(-e.deltaY*0.0018), {x:e.clientX,y:e.clientY}); }, {passive:false});
+addEventListener('contextmenu', e=>e.preventDefault());
+addEventListener('keydown', e=>{
+  if(e.code==='Space'){ isSpace=true; }
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){ e.preventDefault(); undo(); }
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){ e.preventDefault(); redo(); }
+  if(e.key==='1' && e.shiftKey){ zoomToFit(); }
+  else if(e.key==='1'){ state.zoom=1; state.pan={x:0,y:0}; stZoom.textContent='Zoom: 100%'; }
+  if(e.key==='Escape'){ state.drawing=null; }
+  if(e.key==='Enter' && state.drawing?.type==='tempPoly'){ finalizePolyline(); }
+  if(e.key==='Backspace' && state.drawing?.type==='tempPoly'){ state.drawing.points.pop(); if(state.drawing.points.length<2) state.drawing=null; }
+  const map={v:'select', p:'pen', l:'line', a:'arc', r:'rect', o:'circ', t:'text', d:'dim', e:'erase'};
+  const k=e.key.toLowerCase(); if(map[k]) setTool(map[k]);
+});
+addEventListener('keyup', e=>{ if(e.code==='Space'){ isSpace=false; } });
+
+/* ================= Zoom & export ================= */
 function zoomAt(factor, screenPoint){
   const before=state.zoom; const after=Math.max(0.25, Math.min(6, before*factor));
   if(after===before) return;
@@ -472,7 +505,7 @@ function zoomAt(factor, screenPoint){
   stZoom.textContent = `Zoom: ${(state.zoom*100).toFixed(0)}%`;
 }
 function zoomToFit(){
-  if(!state.shapes.length){ state.zoom=1; state.pan={x:0,y:0}; return; }
+  if(!state.shapes.length){ state.zoom=1; state.pan={x:0,y:0}; stZoom.textContent='Zoom: 100%'; return; }
   let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
   function include(x,y){ if(x<minX)minX=x; if(y<minY)minY=y; if(x>maxX)maxX=x; if(y>maxY)maxY=y; }
   state.shapes.forEach(s=>{
@@ -491,81 +524,45 @@ function zoomToFit(){
   stZoom.textContent = `Zoom: ${(state.zoom*100).toFixed(0)}%`;
 }
 
-/* ======= Export ======= */
 function exportSVG(){
   const w=canvas.width/DPR, h=canvas.height/DPR, sw=state.strokeW;
+  const isBP=document.body.classList.contains('blueprint');
+  const stroke=isBP?'#ffffff':'#111', gridStroke=isBP?'#ffffff22':'#00000018';
   const out=[];
-  out.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none" stroke="#111" stroke-width="${sw}">`);
-  // grid (optional: comment out if you want clean)
-  const G=grid(); const R=G.R, stepX=G.stepX, stepY=G.stepY;
-  out.push(`<g id="grid" stroke="#00000018" stroke-width="0.9">`);
+  out.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none" stroke="${stroke}" stroke-width="${sw}">`);
+  // grid circles (simple)
+  const G=grid(); const R=G.R*state.dotScale; const stepX=G.stepX, stepY=G.stepY;
+  out.push(`<g id="grid" stroke="${gridStroke}" stroke-width="${0.9}">`);
   for(let r=-30;r<60;r++){
     for(let c=-30;c<60;c++){
       const x=c*stepX+(r%2? stepX/2:0), y=r*stepY;
       const p=toScreen(x,y);
-      out.push(`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${(R*state.dotScale*state.zoom).toFixed(2)}"/>`);
+      out.push(`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${(R*state.zoom).toFixed(2)}"/>`);
     }
   }
   out.push(`</g><g id="draw">`);
   state.shapes.forEach(d=>{
-    if(d.type==='seg'){
-      const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y);
-      out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"/>`);
-      if(d.wall>0){
-        // outline for wall not exported (kept simple)
-      }
-    }
-    if(d.type==='rect'){
-      const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y);
-      out.push(`<rect x="${Math.min(a.x,b.x)}" y="${Math.min(a.y,b.y)}" width="${Math.abs(b.x-a.x)}" height="${Math.abs(b.y-a.y)}"/>`);
-    }
-    if(d.type==='arc'){
-      const c=toScreen(d.c.x,d.c.y);
-      const x1=c.x+d.r*state.zoom*Math.cos(d.a1), y1=c.y+d.r*state.zoom*Math.sin(d.a1);
-      const x2=c.x+d.r*state.zoom*Math.cos(d.a2), y2=c.y+d.r*state.zoom*Math.sin(d.a2);
-      out.push(`<path d="M ${x1} ${y1} A ${d.r*state.zoom} ${d.r*state.zoom} 0 0 1 ${x2} ${y2}"/>`);
-    }
-    if(d.type==='circ'){
-      const c=toScreen(d.c.x,d.c.y); out.push(`<circle cx="${c.x}" cy="${c.y}" r="${d.r*state.zoom}"/>`);
-    }
-    if(d.type==='label'){
-      const p=toScreen(d.p.x,d.p.y); out.push(`<text x="${p.x}" y="${p.y}" font-size="14" fill="#111" stroke="none">${(d.text||'Label')}</text>`);
-    }
-    if(d.type==='dim'){
-      const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y);
-      out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#cc0000"/>`);
-      const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
-      out.push(`<text x="${mx+4}" y="${my-4}" font-size="12" fill="#cc0000" stroke="none">${d.text||''}</text>`);
-    }
+    if(d.type==='seg'){ const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y); out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"/>`); }
+    if(d.type==='rect'){ const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y); out.push(`<rect x="${Math.min(a.x,b.x)}" y="${Math.min(a.y,b.y)}" width="${Math.abs(b.x-a.x)}" height="${Math.abs(b.y-a.y)}"/>`); }
+    if(d.type==='arc'){ const c=toScreen(d.c.x,d.c.y); const x1=c.x+d.r*state.zoom*Math.cos(d.a1), y1=c.y+d.r*state.zoom*Math.sin(d.a1); const x2=c.x+d.r*state.zoom*Math.cos(d.a2), y2=c.y+d.r*state.zoom*Math.sin(d.a2); out.push(`<path d="M ${x1} ${y1} A ${d.r*state.zoom} ${d.r*state.zoom} 0 0 1 ${x2} ${y2}"/>`); }
+    if(d.type==='circ'){ const c=toScreen(d.c.x,d.c.y); out.push(`<circle cx="${c.x}" cy="${c.y}" r="${d.r*state.zoom}"/>`); }
+    if(d.type==='label'){ const p=toScreen(d.p.x,d.p.y); out.push(`<text x="${p.x}" y="${p.y}" font-size="14" fill="${stroke}" stroke="none">${(d.text||'Label')}</text>`); }
+    if(d.type==='dim'){ const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y); out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#cc0000"/>`); const mx=(a.x+b.x)/2, my=(a.y+b.y)/2; out.push(`<text x="${mx+4}" y="${my-4}" font-size="12" fill="#cc0000" stroke="none">${d.text||''}</text>`); }
   });
   out.push(`</g></svg>`);
-  const blob = new Blob([out.join('\n')],{type:'image/svg+xml'});
-  const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='universe120.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
+  const blob = new Blob([out.join('\n')],{type:'image/svg+xml'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='universe120.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
-function exportPNG(){
-  const link=document.createElement('a');
-  link.download='universe120.png';
-  link.href=canvas.toDataURL('image/png');
-  link.click();
-}
+function exportPNG(){ const link=document.createElement('a'); link.download='universe120.png'; link.href=canvas.toDataURL('image/png'); link.click(); }
 
-/* ======= Render ======= */
+/* ================= Render ================= */
 function drawGrid(){
   const G=grid(); const R=G.R*state.dotScale; const stepX=G.stepX, stepY=G.stepY;
   const w=canvas.width/DPR, h=canvas.height/DPR;
-  // background image
-  if(state.bg.img){
-    ctx.save(); ctx.globalAlpha=state.bg.alpha;
-    const s=state.bg.scale||1, cx=w/2+state.bg.offX, cy=h/2+state.bg.offY;
-    ctx.translate(cx,cy); ctx.scale(s,s);
-    ctx.drawImage(state.bg.img, -state.bg.img.width/2, -state.bg.img.height/2);
-    ctx.restore();
-  }
-  // grid of circles (fixed to world)
   ctx.save();
   ctx.translate(w/2 + state.pan.x, h/2 + state.pan.y);
   ctx.scale(state.zoom, state.zoom);
-  ctx.lineWidth=0.9/state.zoom; ctx.strokeStyle='#00000018';
+  const isBP=document.body.classList.contains('blueprint');
+  ctx.lineWidth=0.9/state.zoom; ctx.strokeStyle = isBP ? '#ffffff22' : '#00000018';
   const cols=Math.ceil(w/(stepX*state.zoom))+4, rows=Math.ceil(h/(stepY*state.zoom))+4;
   const x0 = -((w/2 + state.pan.x)/state.zoom);
   const y0 = -((h/2 + state.pan.y)/state.zoom);
@@ -580,95 +577,47 @@ function drawGrid(){
 }
 function drawShapes(){
   ctx.save();
-  // draw all shapes in screen space (apply world->screen)
+  const isBP=document.body.classList.contains('blueprint');
   ctx.lineCap='round'; ctx.lineJoin='round';
-  ctx.lineWidth=state.strokeW; ctx.strokeStyle='#111'; ctx.fillStyle='#111';
+  ctx.lineWidth=state.strokeW; ctx.strokeStyle=isBP?'#fff':'#111'; ctx.fillStyle=isBP?'#fff':'#111';
   state.shapes.forEach(s=>{
-    if(s.type==='seg'){
-      const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y);
-      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
-      if(s.wall>0){
-        const nx=b.y-a.y, ny=-(b.x-a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L, t=s.wall/2;
-        ctx.beginPath(); ctx.moveTo(a.x+ux*t,a.y+uy*t); ctx.lineTo(b.x+ux*t,b.y+uy*t); ctx.lineTo(b.x-ux*t,b.y-uy*t); ctx.lineTo(a.x-ux*t,a.y-uy*t); ctx.closePath(); ctx.stroke();
-      }
-    }
-    if(s.type==='rect'){
-      const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y);
-      ctx.strokeRect(Math.min(a.x,b.x), Math.min(a.y,b.y), Math.abs(b.x-a.x), Math.abs(b.y-a.y));
-    }
-    if(s.type==='arc'){
-      const c=toScreen(s.c.x,s.c.y); ctx.beginPath();
-      ctx.arc(c.x,c.y, s.r*state.zoom, s.a1, s.a2); ctx.stroke();
-    }
-    if(s.type==='circ'){
-      const c=toScreen(s.c.x,s.c.y); ctx.beginPath(); ctx.arc(c.x,c.y, s.r*state.zoom, 0, Math.PI*2); ctx.stroke();
-    }
-    if(s.type==='label'){
-      const p=toScreen(s.p.x,s.p.y); ctx.font='14px system-ui'; ctx.fillText(s.text||'Label', p.x, p.y);
-    }
-    if(s.type==='dim'){
-      const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.strokeStyle='#cc0000';
-      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
-      ctx.fillStyle='#cc0000'; ctx.font='12px system-ui';
-      ctx.fillText(s.text||'', (a.x+b.x)/2+4, (a.y+b.y)/2-4);
-      ctx.strokeStyle='#111'; ctx.fillStyle='#111';
-    }
+    if(s.type==='seg'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); if(s.wall>0){ const nx=b.y-a.y, ny=-(b.x-a.x); const L=Math.hypot(nx,ny)||1; const ux=nx/L, uy=ny/L, t=s.wall/2; ctx.beginPath(); ctx.moveTo(a.x+ux*t,a.y+uy*t); ctx.lineTo(b.x+ux*t,b.y+uy*t); ctx.lineTo(b.x-ux*t,b.y-uy*t); ctx.lineTo(a.x-ux*t,a.y-uy*t); ctx.closePath(); ctx.stroke(); } }
+    if(s.type==='rect'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.strokeRect(Math.min(a.x,b.x), Math.min(a.y,b.y), Math.abs(b.x-a.x), Math.abs(b.y-a.y)); }
+    if(s.type==='arc'){ const c=toScreen(s.c.x,s.c.y); ctx.beginPath(); ctx.arc(c.x,c.y, s.r*state.zoom, s.a1, s.a2); ctx.stroke(); }
+    if(s.type==='circ'){ const c=toScreen(s.c.x,s.c.y); ctx.beginPath(); ctx.arc(c.x,c.y, s.r*state.zoom, 0, Math.PI*2); ctx.stroke(); }
+    if(s.type==='label'){ const p=toScreen(s.p.x,s.p.y); ctx.font='14px system-ui'; ctx.fillText(s.text||'Label', p.x, p.y); }
+    if(s.type==='dim'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.strokeStyle='#cc0000'; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); ctx.fillStyle='#cc0000'; ctx.font='12px system-ui'; ctx.fillText(s.text||'', (a.x+b.x)/2+4, (a.y+b.y)/2-4); ctx.strokeStyle=isBP?'#fff':'#111'; ctx.fillStyle=isBP?'#fff':'#111'; }
   });
-  // live shape preview
+
+  // live preview
+  ctx.setLineDash([6,6]); ctx.strokeStyle = isBP ? '#cbd5ff' : '#555';
+  const h=state.hover?.screen;
   if(state.drawing){
-    ctx.setLineDash([6,6]);
-    ctx.strokeStyle='#555';
-    const h=state.hover?.screen;
-    if(state.drawing.type==='tempLine' && h){
-      const A=toScreen(state.drawing.A.x,state.drawing.A.y);
-      ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(h.x,h.y); ctx.stroke();
-    }
-    if(state.drawing.type==='tempRect' && h){
-      const A=toScreen(state.drawing.A.x,state.drawing.A.y);
-      ctx.strokeRect(Math.min(A.x,h.x), Math.min(A.y,h.y), Math.abs(h.x-A.x), Math.abs(h.y-A.y));
-    }
-    if(state.drawing.type==='tempCirc' && h){
-      const A=toScreen(state.drawing.A.x,state.drawing.A.y); const r=Math.hypot(h.x-A.x,h.y-A.y);
-      ctx.beginPath(); ctx.arc(A.x,A.y,r,0,Math.PI*2); ctx.stroke();
-    }
-    if(state.drawing.type==='tempArc' && h){
-      const A=toScreen(state.drawing.A.x,state.drawing.A.y);
-      const C={x:(A.x+h.x)/2, y:(A.y+h.y)/2}, r=Math.hypot(h.x-A.x,h.y-A.y)/2;
-      const a1=Math.atan2(A.y-C.y, A.x-C.x), a2=Math.atan2(h.y-C.y, h.x-C.x);
-      ctx.beginPath(); ctx.arc(C.x,C.y,r,a1,a2); ctx.stroke();
-    }
-    if(state.drawing.type==='tempPoly' && h){
-      const pts=state.drawing.points; const A=pts[pts.length-1];
-      const L=applyAngleLock(A, state.hover);
-      const pA=toScreen(A.x,A.y), pL=toScreen(L.x,L.y);
-      ctx.beginPath(); ctx.moveTo(pA.x,pA.y); ctx.lineTo(pL.x,pL.y); ctx.stroke();
-    }
-    ctx.setLineDash([]);
-    ctx.strokeStyle='#111';
+    if(state.drawing.type==='tempLine' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(h.x,h.y); ctx.stroke(); }
+    if(state.drawing.type==='tempRect' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); ctx.strokeRect(Math.min(A.x,h.x), Math.min(A.y,h.y), Math.abs(h.x-A.x), Math.abs(h.y-A.y)); }
+    if(state.drawing.type==='tempCirc' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); const r=Math.hypot(h.x-A.x,h.y-A.y); ctx.beginPath(); ctx.arc(A.x,A.y,r,0,Math.PI*2); ctx.stroke(); }
+    if(state.drawing.type==='tempArc' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); const C={x:(A.x+h.x)/2, y:(A.y+h.y)/2}, r=Math.hypot(h.x-A.x,h.y-A.y)/2; const a1=Math.atan2(A.y-C.y, A.x-C.x), a2=Math.atan2(h.y-C.y, h.x-C.x); ctx.beginPath(); ctx.arc(C.x,C.y,r,a1,a2); ctx.stroke(); }
+    if(state.drawing.type==='tempPoly' && h){ const pts=state.drawing.points; const A=pts[pts.length-1]; const L=applyAngleLock(A, state.hover); const pA=toScreen(A.x,A.y), pL=toScreen(L.x,L.y); ctx.beginPath(); ctx.moveTo(pA.x,pA.y); ctx.lineTo(pL.x,pL.y); ctx.stroke(); }
   }
-  // hover snap dot
-  if(state.hover?.screen){
-    ctx.fillStyle='#222'; ctx.beginPath(); ctx.arc(state.hover.screen.x, state.hover.screen.y, 3.2, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle='#111';
+  ctx.setLineDash([]);
+
+  // snap dot
+  if(state.hover?.screen){ ctx.fillStyle=isBP?'#ffe36a':'#222'; ctx.beginPath(); ctx.arc(state.hover.screen.x, state.hover.screen.y, 3.2, 0, Math.PI*2); ctx.fill(); }
+
+  // selection box
+  if(state.selection && state.selection.size===1){
+    const i=[...state.selection][0], s=state.shapes[i];
+    let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
+    function include(x,y){minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);}
+    shapeAnchors(s).forEach(p=>include(p.x,p.y));
+    const pad=12/state.zoom; const a=toScreen(minX-pad,minY-pad), b=toScreen(maxX+pad,maxY+pad);
+    ctx.save(); ctx.setLineDash([6,6]); ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--brand')||'#ffe36a'; ctx.strokeRect(a.x,a.y, b.x-a.x, b.y-a.y); ctx.restore();
   }
+
   ctx.restore();
 }
-function frame(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  drawGrid(); drawShapes();
-  requestAnimationFrame(frame);
-}
+function frame(){ ctx.clearRect(0,0,canvas.width,canvas.height); drawGrid(); drawShapes(); requestAnimationFrame(frame); }
 requestAnimationFrame(frame);
-
-/* ======= Helpers done ======= */
 </script>
 </body>
 </html>
-
-<div class="group">
-  <label class="small">Theme</label>
-  <select id="theme">
-    <option value="light">Studio</option>
-    <option value="blueprint" selected>Blueprint</option>
-  </select>
-</div>
