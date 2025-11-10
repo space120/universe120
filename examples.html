@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Examples — Universe120</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ffcc; --border:#1e4d9a; --brand:#ffe36a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+
+/* NAV */
+.navbar{
+  position:fixed; inset:0 0 auto 0; height:56px; z-index:50;
+  display:flex; align-items:center; gap:12px;
+  background:#0f356d; color:#fff; border-bottom:1px solid var(--border);
+  padding:8px 12px;
+}
+.brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; text-decoration:none; color:#fff}
+.brand .mark{width:26px; height:26px; border-radius:6px; background:#123b79; display:inline-block; box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659}
+.navlinks{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap }
+.navlinks a{ text-decoration:none; color:#fff; border:1px solid #204c96; background:#10366f; padding:7px 12px; border-radius:10px; font-size:13px }
+.navlinks a:hover{ background:#13407f }
+.navlinks a.active{ outline:2px solid var(--brand) }
+
+/* Page */
+.page{padding:88px 20px 80px; max-width:1200px; margin:0 auto}
+.page h1{ font-size:2rem; margin:.5rem 0 1rem }
+.lead{font-size:1.05rem; color:#e7f0ff}
+.section{ margin:22px 0; background:#0f356d; border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.head{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; border-bottom:1px solid var(--border) }
+.head h2{ margin:0; font-size:1.1rem }
+.controls{ display:flex; gap:8px; flex-wrap:wrap }
+button, .btn{
+  appearance:none; border:1px solid #204c96; background:#10366f; color:#fff;
+  border-radius:10px; padding:8px 10px; font-size:13px; cursor:pointer
+}
+button:hover,.btn:hover{ background:#13407f }
+
+/* Stage areas */
+.stage{ position:relative; background:#0d2a55; }
+svg{ display:block; width:100%; height:62vh; background:#0d2a55 }
+.caption{ padding:10px 14px; font-size:.95rem; color:#dbe9ff }
+
+/* Badges */
+.badge{ display:inline-block; background:#123b79; border:1px solid #204c96; color:#cfe0ff; padding:2px 8px; border-radius:999px; font-size:12px; }
+
+/* Footer */
+.site-footer{ position:fixed; left:0; right:0; bottom:0; background:#0f356d; color:#fff;
+  border-top:1px solid var(--border); height:40px; display:flex; align-items:center; justify-content:center; }
+.site-footer a{ color:#ffe36a; text-decoration:none }
+</style>
+</head>
+<body>
+  <!-- NAV -->
+  <div class="navbar">
+    <a class="brand" href="index.html" aria-label="Universe120 Home">
+      <span class="mark" aria-hidden="true"></span>
+      <span>Universe120</span>
+    </a>
+    <div class="navlinks">
+      <a href="index.html">Home</a>
+      <a href="howto.html">How-to</a>
+      <a href="about.html">About</a>
+      <a class="active" href="examples.html">Examples</a>
+      <a href="feedback.html">Feedback</a>
+      <a href="mailto:120spaceproject@gmail.com">Email</a>
+    </div>
+  </div>
+
+  <main class="page">
+    <h1>Examples</h1>
+    <p class="lead">
+      These blueprint-style demos show how real plans would look <span class="badge">snapped</span>
+      onto the Universe120 bubble grid. They’re simplified outlines created with straight lines, arcs,
+      and circles—exportable as <b>SVG</b> or <b>PNG</b>.
+    </p>
+
+    <!-- Golden Gate Bridge -->
+    <section class="section" id="sec-ggb">
+      <div class="head">
+        <h2>Golden Gate Bridge — snapped truss & towers</h2>
+        <div class="controls">
+          <button data-act="toggle-grid" data-target="ggb">Toggle Grid</button>
+          <button data-act="toggle-overlay" data-target="ggb">Toggle Outline</button>
+          <button data-act="png" data-target="ggb">Export PNG</button>
+          <button data-act="svg" data-target="ggb">Export SVG</button>
+        </div>
+      </div>
+      <div class="stage">
+        <svg id="ggb" viewBox="0 0 1400 740" xmlns="http://www.w3.org/2000/svg" aria-label="Golden Gate Bridge demo">
+          <g class="grid"></g>
+          <g class="overlay" stroke="#ffffff" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Waterline (reference) -->
+            <path d="M60 520 H1340" stroke="#9cc3ff55" stroke-width="1.6"/>
+            <!-- Towers -->
+            <g class="towers">
+              <path d="M320 200 V520" />
+              <path d="M1080 200 V520" />
+              <!-- cross beams -->
+              <path d="M290 260 H350" />
+              <path d="M290 320 H350" />
+              <path d="M290 380 H350" />
+              <path d="M1050 260 H1110" />
+              <path d="M1050 320 H1110" />
+              <path d="M1050 380 H1110" />
+            </g>
+            <!-- Main cables (catenary-ish arc simplified) -->
+            <path d="M60 260 C 360 80, 1040 80, 1340 260" stroke="#ffffff" />
+            <!-- Suspenders (snapped) -->
+            <g class="hangers" opacity="0.85">
+              <!-- left span -->
+              <path d="M120 300 V520" />
+              <path d="M180 290 V520" />
+              <path d="M240 285 V520" />
+              <path d="M300 282 V520" />
+              <path d="M360 283 V520" />
+              <path d="M420 287 V520" />
+              <path d="M480 295 V520" />
+              <path d="M540 307 V520" />
+              <path d="M600 322 V520" />
+              <path d="M660 341 V520" />
+              <path d="M720 364 V520" />
+              <!-- right span -->
+              <path d="M780 364 V520" />
+              <path d="M840 341 V520" />
+              <path d="M900 322 V520" />
+              <path d="M960 307 V520" />
+              <path d="M1020 295 V520" />
+              <path d="M1080 287 V520" />
+              <path d="M1140 283 V520" />
+              <path d="M1200 282 V520" />
+              <path d="M1260 285 V520" />
+              <path d="M1320 290 V520" />
+            </g>
+            <!-- Deck -->
+            <path d="M60 520 H1340" />
+            <!-- Simple truss under deck -->
+            <g opacity="0.9">
+              <path d="M60 520 L140 560 L220 520 L300 560 L380 520 L460 560 L540 520 L620 560 L700 520 L780 560 L860 520 L940 560 L1020 520 L1100 560 L1180 520 L1260 560 L1340 520" />
+            </g>
+            <!-- Labels -->
+            <g fill="#ffe36a" stroke="none" font-family="system-ui, Segoe UI, Roboto, Arial" font-size="14">
+              <text x="318" y="192">Tower</text>
+              <text x="1068" y="192">Tower</text>
+              <text x="680" y="95">Main Cable</text>
+              <text x="670" y="540">Deck</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="caption">
+        Aligned to the bubble grid (hex-packed circles). The towers, suspenders, and deck lines “land” on intersections
+        like they’d been drawn with the Line + Angle Lock. Simplified for demo purposes.
+      </div>
+    </section>
+
+    <!-- Disney World (hub-and-spokes park plan, simplified) -->
+    <section class="section" id="sec-wdw">
+      <div class="head">
+        <h2>Disney World — hub & spokes + zones</h2>
+        <div class="controls">
+          <button data-act="toggle-grid" data-target="wdw">Toggle Grid</button>
+          <button data-act="toggle-overlay" data-target="wdw">Toggle Outline</button>
+          <button data-act="png" data-target="wdw">Export PNG</button>
+          <button data-act="svg" data-target="wdw">Export SVG</button>
+        </div>
+      </div>
+      <div class="stage">
+        <svg id="wdw" viewBox="0 0 1400 740" xmlns="http://www.w3.org/2000/svg" aria-label="Disney World demo">
+          <g class="grid"></g>
+          <g class="overlay" stroke="#ffffff" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Central hub (castle plaza) -->
+            <circle cx="700" cy="360" r="86" />
+            <!-- Spokes (paths) -->
+            <path d="M700 274 V100" />
+            <path d="M700 446 V620" />
+            <path d="M614 360 H440" />
+            <path d="M786 360 H960" />
+            <!-- Diagonals -->
+            <path d="M642 302 L520 180" />
+            <path d="M758 302 L880 180" />
+            <path d="M758 418 L880 540" />
+            <path d="M642 418 L520 540" />
+            <!-- Lands (simplified rounded polygons snapped to grid) -->
+            <path d="M440 120 L520 120 L600 200 L520 280 L440 200 Z" />
+            <path d="M800 200 L880 120 L960 120 L960 200 L880 280 Z" />
+            <path d="M440 440 L520 360 L600 440 L520 520 Z" />
+            <path d="M800 440 L880 360 L960 440 L880 520 Z" />
+            <!-- Railroad loop -->
+            <circle cx="700" cy="360" r="300" stroke="#9cc3ff88" stroke-dasharray="8 8" />
+            <!-- Labels -->
+            <g fill="#ffe36a" stroke="none" font-family="system-ui, Segoe UI, Roboto, Arial" font-size="14">
+              <text x="682" y="360">Hub</text>
+              <text x="694" y="118">Path</text>
+              <text x="1010" y="360">Path</text>
+              <text x="680" y="60">Entrance</text>
+              <text x="1030" y="140">Zone</text>
+              <text x="370" y="140">Zone</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="caption">
+        A simplified “hub and spokes” concept map snapped to the grid. In the app, an architect/teacher could upload a
+        plan, auto-align it to intersections, trace/edit, and export.
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <small>© <span id="year"></span> Universe120 • Beta •
+      <a href="mailto:120spaceproject@gmail.com">Contact</a>
+    </small>
+  </footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* -------- Bubble-grid renderer + export helpers ---------- */
+function drawBubbleGrid(svg, opts={}){
+  const g = svg.querySelector('.grid');
+  g.innerHTML = '';
+  const w = +svg.viewBox.baseVal.width;
+  const h = +svg.viewBox.baseVal.height;
+
+  const R = (opts.radius || 18);
+  const stepX = (opts.stepX || 26);
+  const stepY = (opts.stepY || (stepX * Math.sqrt(3)/2));
+  const stroke = opts.stroke || '#ffffff22';
+  const strokeWidth = opts.strokeWidth || 1;
+
+  // Draw circles in a hexagonal close packing
+  const cols = Math.ceil(w/stepX)+2;
+  const rows = Math.ceil(h/stepY)+2;
+  for(let r=-2;r<rows;r++){
+    for(let c=-2;c<cols;c++){
+      const cx = c*stepX + ((r%2) ? stepX/2 : 0);
+      const cy = r*stepY;
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', cx);
+      circle.setAttribute('cy', cy);
+      circle.setAttribute('r', R);
+      circle.setAttribute('fill','none');
+      circle.setAttribute('stroke', stroke);
+      circle.setAttribute('stroke-width', strokeWidth);
+      g.appendChild(circle);
+    }
+  }
+}
+
+function toggleLayer(svgId, cls){
+  const g = document.querySelector(`#${svgId} .${cls}`);
+  if(!g) return;
+  const cur = g.getAttribute('display');
+  g.setAttribute('display', (cur==='none') ? 'inline' : 'none');
+}
+
+function exportSVG(svgId){
+  const svg = document.getElementById(svgId);
+  const clone = svg.cloneNode(true);
+  // inline background
+  const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  rect.setAttribute('x','0'); rect.setAttribute('y','0');
+  rect.setAttribute('width', svg.viewBox.baseVal.width);
+  rect.setAttribute('height', svg.viewBox.baseVal.height);
+  rect.setAttribute('fill','#0d2a55');
+  clone.insertBefore(rect, clone.firstChild);
+
+  const ser = new XMLSerializer();
+  const blob = new Blob([ser.serializeToString(clone)], {type:'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = svgId + '.svg';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 1200);
+}
+
+function exportPNG(svgId){
+  const svg = document.getElementById(svgId);
+  const ser = new XMLSerializer();
+  const svgStr = ser.serializeToString(svg);
+  const img = new Image();
+  const w = svg.viewBox.baseVal.width;
+  const h = svg.viewBox.baseVal.height;
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+
+  // Background fill
+  ctx.fillStyle = '#0d2a55';
+  ctx.fillRect(0,0,w,h);
+
+  img.onload = ()=>{
+    ctx.drawImage(img,0,0);
+    const a = document.createElement('a');
+    a.download = svgId + '.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
+}
+
+/* Init both demo grids */
+['ggb','wdw'].forEach(id=>{
+  const svg = document.getElementById(id);
+  drawBubbleGrid(svg, { radius:18, stepX:26 });
+});
+
+/* Wire controls */
+document.querySelectorAll('.controls button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const act = btn.getAttribute('data-act');
+    const id  = btn.getAttribute('data-target');
+    if(act==='toggle-grid') toggleLayer(id,'grid');
+    if(act==='toggle-overlay') toggleLayer(id,'overlay');
+    if(act==='svg') exportSVG(id);
+    if(act==='png') exportPNG(id);
+  });
+});
+</script>
+</body>
+</html>
