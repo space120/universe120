@@ -8,28 +8,26 @@
 <style>
 :root{
   --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a;
-  --toolbar-bg:#10366f;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
-/* NAV */
+/* NAVBAR */
 .navbar{
-  position:fixed; inset:0 0 auto 0; height:56px; z-index:40;
-  display:flex; align-items:center; gap:12px;
+  position:fixed; inset:0 0 auto 0; height:56px; z-index:50;
+  display:flex; align-items:center; gap:12px; padding:8px 12px;
   background:#0f356d; color:#fff; border-bottom:1px solid var(--border);
-  padding:8px 12px;
 }
-.brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; text-decoration:none; color:#fff }
-.brand .mark{ width:26px; height:26px; border-radius:6px; background:#123b79; display:inline-block; box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659 }
+.brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; text-decoration:none; color:#fff}
+.brand .mark{width:26px; height:26px; border-radius:6px; background:#123b79; display:inline-block; box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659}
 .navlinks{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap }
 .navlinks a{ text-decoration:none; color:#fff; border:1px solid #204c96; background:#10366f; padding:7px 12px; border-radius:10px; font-size:13px }
 .navlinks a:hover{ background:#13407f }
 .navlinks a.active{ outline:2px solid var(--brand) }
 
-/* Top action bar */
+/* TOP ACTION BAR */
 .topbar{
-  position:fixed; left:0; right:0; top:56px; z-index:35;
+  position:fixed; left:0; right:0; top:56px; z-index:45;
   display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:8px 12px;
   background:#10366f; border-bottom:1px solid var(--border);
 }
@@ -42,45 +40,50 @@ button:hover,.btn:hover{ background:#13407f }
 input[type="text"],input[type="number"],select{ padding:6px 8px }
 input[type="range"]{ accent-color:var(--brand) }
 
-/* Right properties panel */
+/* RIGHT PROPERTIES PANEL */
 .panel{
-  position:fixed; right:12px; top:56px; transform:translateY(56px);
-  z-index:28; background:#0f356d; border:1px solid var(--border); border-radius:12px;
+  position:fixed; right:12px; top:56px;
+  z-index:40; background:#0f356d; border:1px solid var(--border); border-radius:12px;
   box-shadow:0 8px 24px rgba(0,0,0,.2); padding:10px 12px; min-width:260px; color:#eaf1ff
 }
 .panel h3{ margin:.3rem 0 .2rem; font-size:14px }
 .panel .row{ display:flex; align-items:center; gap:8px; margin:.35rem 0 }
 
-/* Tools flyout UNDER properties panel (right side) */
+/* TOOLS FLYOUT — will be placed just under .panel via JS hotfix */
 .tools-flyout{
-  position:fixed; right:12px; z-index:27;  /* sits just under the panel */
+  position:fixed; right:12px; z-index:39;
   background:#0f356d; border:1px solid var(--border); border-radius:12px;
   box-shadow:0 8px 24px rgba(0,0,0,.2);
-  width:260px; padding:8px; user-select:none; display:none;
+  width:210px; padding:8px; user-select:none;
 }
-.tools-flyout.open{ display:block; }
 .tools-header{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
 .tools-title{ font-size:13px; font-weight:700; color:#fff }
-.tools-grid{ display:grid; grid-template-columns:1fr 1fr; gap:6px }
-.toolBtn{ display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid #204c96; border-radius:10px; background:#10366f; color:#fff; font-size:13px; justify-content:flex-start }
+.tools-toggle{ font-size:12px; padding:4px 8px }
+.tools-grid{ display:none; grid-template-columns:1fr; gap:6px }
+.tools-grid.open{ display:grid }
+.toolBtn{
+  display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid #204c96; border-radius:10px; background:#10366f; color:#fff; font-size:13px;
+}
 .toolBtn .icon{ width:18px; text-align:center }
 .toolBtn.active{ outline:2px solid var(--brand) }
 
-/* Canvas & overlay & status */
+/* CANVAS & OVERLAY */
 #canvas{ position:fixed; left:0; right:0; top:56px; bottom:28px; display:block; width:100%; height:calc(100% - 84px) }
-#overlay{ position:fixed; left:0; right:0; top:56px; bottom:28px; pointer-events:none; }
+#overlay{ position:fixed; left:0; right:0; top:56px; bottom:28px; pointer-events:none; z-index:41; }
+
+/* STATUS BAR */
 .status{
   position:fixed; left:0; right:0; bottom:0; height:28px; z-index:30;
   display:flex; align-items:center; gap:16px; padding:0 10px;
   background:#0f356d; color:#fff; border-top:1px solid var(--border); font-size:12px
 }
 
-/* Help overlay */
+/* HELP MODAL */
 #help{position:fixed;inset:0;background:rgba(10,12,22,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:70}
 #help .card{background:#10121b;border:1px solid #2a2e3d;color:#e9ebff;border-radius:12px;padding:18px;max-width:720px}
 kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;border-radius:5px;padding:1px 5px;font-family:ui-monospace,Menlo,Consolas,monospace}
 
-/* Passcode lock */
+/* PASSCODE LOCK */
 #lockScreen{
   position:fixed; inset:0; background:#0d2a55; color:#fff; display:flex; align-items:center; justify-content:center; z-index:1000; flex-direction:column;
 }
@@ -92,14 +95,14 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
 #lockScreen button{ margin-top:10px; padding:10px 12px; font-size:16px }
 #lockMsg{ margin-top:10px; color:#ff8a8a; min-height:1.2em }
 
-/* Rotation handle */
+/* ROTATION HANDLE */
 .handle{
   position:absolute; width:12px; height:12px; border-radius:50%;
   background:#ffe36a; border:2px solid #0d2a55; box-shadow:0 0 0 1px #204c96;
   transform:translate(-50%,-50%); z-index:42; pointer-events:auto; cursor:grab;
 }
 
-/* Smart guide badge */
+/* SMART-GUIDE BADGES */
 .badge{
   position:absolute; padding:2px 6px; font-size:12px; color:#001327;
   background:rgba(255,227,106,.95); border-radius:6px; border:1px solid #e6c84f;
@@ -107,17 +110,9 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
   pointer-events:none;
 }
 .badge.alt{ background:rgba(124,255,124,.95); border-color:#57db57 }
-.badge.muted{ background:rgba(255,255,255,.85); border-color:#bcd3ff }
 
-/* Footer */
+/* Footer spacer (footer itself is in status bar) */
 .site-footer{ position:fixed; left:0; right:0; bottom:28px; height:0; }
-footer a{ color:#ffe36a; text-decoration:none }
-
-/* Small screens */
-@media (max-width: 980px){
-  .panel{ right:12px }
-  .tools-flyout{ right:12px; width:90vw; }
-}
 </style>
 </head>
 <body>
@@ -146,6 +141,7 @@ footer a{ color:#ffe36a; text-decoration:none }
   <div class="navlinks">
     <a href="index.html" class="active">Home</a>
     <a href="about.html">About</a>
+    <a href="mailto:120spaceproject@gmail.com">Email</a>
   </div>
 </div>
 
@@ -198,27 +194,27 @@ footer a{ color:#ffe36a; text-decoration:none }
   </div>
 
   <div class="group">
-    <button id="helpBtn" type="button">?</button>
+    <button id="helpBtn" class="btn" type="button">Help</button>
   </div>
 </div>
 
-<!-- PROPERTIES -->
-<div class="panel" id="props" style="top:56px; margin-top:56px;">
+<!-- RIGHT PROPERTIES -->
+<div class="panel" id="props">
   <h3>Properties</h3>
   <div class="row"><label class="small">Stroke</label><input id="strokeW" type="range" min="0.8" max="4" step="0.1" value="1.6"></div>
   <div class="row"><label class="small">Wall (px)</label><input id="wallThick" type="number" value="0" min="0" max="60" step="1"></div>
   <div class="row"><label class="small">Label</label><input id="labelText" type="text" placeholder="Room / Note"></div>
 </div>
 
-<!-- TOOLS DROPDOWN (auto-placed UNDER the panel) -->
+<!-- TOOLS FLYOUT (will sit right beneath #props) -->
 <div class="tools-flyout" id="toolsFlyout" aria-label="Tools">
   <div class="tools-header">
     <div class="tools-title">Tools</div>
-    <button id="toolsClose" class="btn" type="button">Close</button>
+    <button id="toolsToggle" class="tools-toggle" type="button">Open</button>
   </div>
   <div id="toolsGrid" class="tools-grid">
-    <button class="toolBtn" data-tool="select"><span class="icon">🖱️</span><span>Select</span></button>
-    <button class="toolBtn" data-tool="pen"><span class="icon">✏️</span><span>Polyline</span></button>
+    <button class="toolBtn" data-tool="select"><span class="icon">🖱️</span><span>Select / Move</span></button>
+    <button class="toolBtn" data-tool="pen"><span class="icon">✏️</span><span>Pen (Polyline)</span></button>
     <button class="toolBtn" data-tool="line"><span class="icon">⎯</span><span>Line</span></button>
     <button class="toolBtn" data-tool="rect"><span class="icon">▭</span><span>Rectangle</span></button>
     <button class="toolBtn" data-tool="arc"><span class="icon">⌒</span><span>Arc</span></button>
@@ -241,29 +237,25 @@ footer a{ color:#ffe36a; text-decoration:none }
   <div id="stPos">x:– y:–</div>
 </div>
 
-<!-- HELP MODAL -->
-<div id="help" style="display:none">
+<!-- HELP -->
+<div id="help">
   <div class="card">
     <h3>Quick help</h3>
     <ul>
+      <li><b>Passcode</b>: @@U120</li>
       <li><b>Pan</b>: hold <kbd>Space</kbd> and drag (or middle-mouse)</li>
       <li><b>Zoom</b>: mouse wheel (zooms to cursor)</li>
       <li><b>Zoom Fit</b>: <kbd>Shift</kbd>+<kbd>1</kbd> • <b>Reset 100%</b>: <kbd>1</kbd></li>
-      <li><b>Undo/Redo</b>: <kbd>Ctrl/Cmd</kbd>+<kbd>Z</kbd> / <kbd>Ctrl/Cmd</kbd>+<kbd>Y</kbd></li>
-      <li><b>Rotate</b>: drag the yellow handle</li>
-      <li><b>Smart Guides</b>: 0/30/45/60/90°, ≡ equal, ∥ parallel, ⊥ perpendicular</li>
+      <li><b>Undo/Redo</b>: <kbd>Ctrl/Cmd</kbd>+<kbd>Z</kbd> • <kbd>Ctrl/Cmd</kbd>+<kbd>Y</kbd></li>
+      <li><b>Finish polyline</b>: <kbd>Enter</kbd> • <b>Back one</b>: <kbd>Backspace</kbd></li>
+      <li><b>Rotate</b>: grab yellow dot above selection</li>
+      <li><b>Smart Guides</b>: 0/30/45/60/90°, equal (≡), parallel (∥), perpendicular (⊥)</li>
     </ul>
     <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
       <button id="closeHelp" class="btn" type="button">Got it</button>
     </div>
   </div>
 </div>
-
-<footer class="site-footer">
-  <small>© <span id="year"></span> Universe120 • Beta •
-    <a href="mailto:120spaceproject@gmail.com">Contact</a>
-  </small>
-</footer>
 
 <script>
 /* -------------------- PASSCODE -------------------- */
@@ -275,29 +267,27 @@ document.getElementById('accessCodeBtn').onclick=()=>{
   else{ document.getElementById('lockMsg').textContent='Incorrect code.'; }
 };
 document.getElementById('accessCodeInput').addEventListener('keydown',e=>{
-  if(e.key==='Enter')document.getElementById('accessCodeBtn').click();
+  if(e.key==='Enter') document.getElementById('accessCodeBtn').click();
 });
 
-/* -------------------- DOM -------------------- */
-const $ = q=>document.querySelector(q);
-const all = q=>[...document.querySelectorAll(q)];
-const canvas = document.getElementById('canvas');
-const overlay = document.getElementById('overlay');
-const ctx = canvas.getContext('2d',{alpha:true});
-let DPR = Math.min(devicePixelRatio||1,2);
+/* -------------------- DOM + CANVAS -------------------- */
+const $=q=>document.querySelector(q);
+const all=q=>[...document.querySelectorAll(q)];
+const canvas=document.getElementById('canvas');
+const overlay=document.getElementById('overlay');
+const ctx=canvas.getContext('2d',{alpha:true});
+let DPR=Math.min(devicePixelRatio||1,2);
 function resize(){
   const w=innerWidth, h=innerHeight-56-28;
   canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR);
   canvas.style.width=w+'px'; canvas.style.height=h+'px';
-  overlay.style.left=0; overlay.style.top='56px'; overlay.style.right=0; overlay.style.bottom='28px';
   ctx.setTransform(DPR,0,0,DPR,0,0);
-  positionToolsFlyout();
 }
 addEventListener('resize', resize); resize();
 
-/* -------------------- STATE -------------------- */
+/* -------------------- TOPBAR WIRING -------------------- */
 const stTool=$('#stTool'), stSnap=$('#stSnap'), stZoom=$('#stZoom'), stPos=$('#stPos');
-const state = {
+const state={
   tool:'select', zoom:1, pan:{x:0,y:0},
   gridScale:1.0, dotScale:1.0,
   strokeW:1.6, wallThick:0,
@@ -307,11 +297,10 @@ const state = {
   undo:[], redo:[],
   rotation:{active:false, startAng:0, center:null, base:[]}
 };
-const Rbase=26; function grid(){ const R=Rbase*state.gridScale; return {R,stepX:R, stepY:R*Math.sqrt(3)/2}; }
+const Rbase=26; function grid(){ const R=Rbase*state.gridScale; return {R, stepX:R, stepY:R*Math.sqrt(3)/2}; }
 let lastMouse={x:canvas.width/DPR/2, y:canvas.height/DPR/2};
-let mouseDown=false, panning=false, isSpace=false, middlePanning=false;
+let mouseDown=false, panning=false, middlePanning=false, isSpace=false;
 
-/* -------------------- TOPBAR WIRING -------------------- */
 $('#gridScale').addEventListener('input', e=>{ state.gridScale=+e.target.value; });
 $('#dotSize').addEventListener('input', e=>{ state.dotScale=+e.target.value; });
 $('#snapMode').addEventListener('change', e=>{ state.snap=e.target.value; stSnap.textContent='Snap: '+e.target.selectedOptions[0].textContent; });
@@ -335,39 +324,36 @@ $('#exportPNG').onclick=exportPNG;
 $('#helpBtn').onclick=()=>{ $('#help').style.display='flex'; };
 $('#closeHelp').onclick=()=>{ $('#help').style.display='none'; };
 
-/* -------------------- TOOLS FLYOUT UNDER PANEL -------------------- */
-const toolsFlyout = document.getElementById('toolsFlyout');
-const toolsGrid   = document.getElementById('toolsGrid');
-const toolsClose  = document.getElementById('toolsClose');
-
-function positionToolsFlyout(){
-  const panel = document.getElementById('props');
-  const rect = panel.getBoundingClientRect();
-  toolsFlyout.style.right = '12px';
-  toolsFlyout.style.top   = (rect.bottom + 10) + 'px';
-}
-function openTools(){ toolsFlyout.classList.add('open'); }
-function closeTools(){ toolsFlyout.classList.remove('open'); }
-
-positionToolsFlyout();
-openTools(); // keep it open by default so it's always visible under Properties
-
-toolsClose.addEventListener('click', closeTools);
-
-toolsGrid.addEventListener('click', (e)=>{
-  const btn = e.target.closest('.toolBtn'); if(!btn) return;
+/* -------------------- TOOLS FLYOUT -------------------- */
+const toolsToggle=$('#toolsToggle');
+const toolsGrid=$('#toolsGrid');
+toolsToggle.onclick=()=>{ const open=toolsGrid.classList.toggle('open'); toolsToggle.textContent=open?'Close':'Open'; };
+toolsGrid.addEventListener('click', e=>{
+  const btn=e.target.closest('.toolBtn'); if(!btn) return;
   setTool(btn.dataset.tool);
-  document.querySelectorAll('.toolBtn').forEach(b=>b.classList.toggle('active', b===btn));
+});
+function setTool(name){
+  state.tool=name; state.drawing=null;
+  const Nice={select:'Select / Move', pen:'Pen (Polyline)', line:'Line', rect:'Rectangle', arc:'Arc', circ:'Circle', text:'Text', dim:'Dimension', erase:'Erase'};
+  stTool.textContent='Tool: '+(Nice[name]||name);
+  all('.toolBtn').forEach(el=>el.classList.toggle('active', el.dataset.tool===name));
+}
+
+/* -------------------- HOTFIX: place tools under props safely -------------------- */
+function positionToolsFlyout(){
+  const panel=document.getElementById('props');
+  const fly=document.getElementById('toolsFlyout');
+  if(!panel||!fly) return;
+  const r=panel.getBoundingClientRect();
+  fly.style.right='12px';
+  fly.style.top=(r.bottom+10)+'px';
+}
+window.addEventListener('load', ()=>{
+  try{ positionToolsFlyout(); }catch(e){}
+  new ResizeObserver(()=>{ try{ positionToolsFlyout(); }catch(e){} }).observe(document.body);
 });
 
-/* -------------------- SET TOOL -------------------- */
-function setTool(name){
-  state.tool = name;
-  state.drawing = null;
-  stTool.textContent = 'Tool: ' + name[0].toUpperCase()+name.slice(1);
-}
-
-/* -------------------- COORDS -------------------- */
+/* -------------------- COORD TRANSFORMS -------------------- */
 function toWorld(sx,sy){
   return { x:(sx - canvas.width/DPR/2 - state.pan.x)/state.zoom,
            y:(sy - canvas.height/DPR/2 - state.pan.y)/state.zoom };
@@ -377,65 +363,59 @@ function toScreen(x,y){
            y: canvas.height/DPR/2 + state.pan.y + y*state.zoom };
 }
 
-/* -------------------- SMART GUIDES -------------------- */
-const GUIDE = { tolLenRatio: 0.015, tolAngRad: Math.PI/180*2, niceAngles:[0,Math.PI/6,Math.PI/4,Math.PI/3,Math.PI/2,2*Math.PI/3,3*Math.PI/4,Math.PI] };
+/* -------------------- SMART GUIDES (minimal badges) -------------------- */
+const GUIDE={ tolLenRatio:0.015, tolAngRad:Math.PI/180*2, niceAngles:[0,Math.PI/6,Math.PI/4,Math.PI/3,Math.PI/2,2*Math.PI/3,3*Math.PI/4,Math.PI] };
 function segLen(a,b){ return Math.hypot(b.x-a.x, b.y-a.y); }
 function segAng(a,b){ return Math.atan2(b.y-a.y, b.x-a.x); }
-let badgePool=[]; function clearBadges(){ badgePool.forEach(el=>el.remove()); badgePool.length=0; }
-function placeBadge(screenPt, text, variant='info'){
-  if(badgePool.length>=2) return;
-  const el = document.createElement('div');
-  el.className='badge'+(variant==='good'?' alt':(variant==='muted'?' muted':'' ));
-  el.style.left = screenPt.x+'px';
-  el.style.top  = (screenPt.y- (badgePool.length*18) )+'px';
-  el.textContent = text;
+let badges=[]; function clearBadges(){ badges.forEach(el=>el.remove()); badges.length=0; }
+function putBadge(screenPt, text, good=false){
+  if(badges.length>=2) return;
+  const el=document.createElement('div');
+  el.className='badge'+(good?' alt':'');
+  el.style.left=screenPt.x+'px';
+  el.style.top=(screenPt.y-(badges.length*18))+'px';
+  el.textContent=text;
   overlay.appendChild(el);
-  badgePool.push(el);
+  badges.push(el);
 }
 function nearLen(L1,L2,rel=GUIDE.tolLenRatio){ return Math.abs(L1-L2) <= Math.max(1e-6, rel*Math.max(L1,L2)); }
 function normAng(rad){ let x=rad%(2*Math.PI); if(x<0) x+=2*Math.PI; return x; }
-function minAngDelta(a,b){ const d=Math.abs(normAng(a)-normAng(b)); return Math.min(d, 2*Math.PI - d); }
+function minAngDelta(a,b){ const d=Math.abs(normAng(a)-normAng(b)); return Math.min(d, 2*Math.PI-d); }
 function nearAng(a,b,tol=GUIDE.tolAngRad){ return minAngDelta(a,b) <= tol; }
-function getPreviousEdgeForContext(){
-  if(state.drawing?.type === 'tempPoly' && state.drawing.points.length >= 2){
-    const pts = state.drawing.points;
-    return { A: pts[pts.length-2], B: pts[pts.length-1] };
+function lastEdge(){
+  if(state.drawing?.type==='tempPoly' && state.drawing.points.length>=2){
+    const pts=state.drawing.points; return {A:pts[pts.length-2], B:pts[pts.length-1]};
   }
   for(let i=state.shapes.length-1;i>=0;i--){
     const s=state.shapes[i];
-    if(s.type==='seg') return {A:s.a, B:s.b};
-    if(s.type==='rect') return {A:s.a, B:{x:s.b.x, y:s.a.y}};
+    if(s.type==='seg') return {A:s.a,B:s.b};
+    if(s.type==='rect') return {A:s.a,B:{x:s.b.x,y:s.a.y}};
   }
   return null;
 }
-function drawSmartGuidesHook(){
+function smartGuidePreview(){
   clearBadges();
   if(!state.drawing || !state.hover?.screen) return;
-  const h = state.hover;
-  const prevEdge = getPreviousEdgeForContext();
-  function annotate(A_world, B_world, cursor_screen){
-    const L  = segLen(A_world, B_world);
-    const ang= segAng(A_world, B_world);
-    placeBadge(cursor_screen, `${L.toFixed(1)}`, 'info');
-    for(const na of GUIDE.niceAngles){
-      if(nearAng(ang, na)){ placeBadge(cursor_screen, `${Math.round(na*180/Math.PI)}°`, 'good'); break; }
+  const h=state.hover, prev=lastEdge();
+  const annotate=(A,B,screen)=>{
+    const L=segLen(A,B), ang=segAng(A,B);
+    putBadge(screen, `${L.toFixed(1)}`);
+    for(const na of GUIDE.niceAngles){ if(nearAng(ang,na)){ putBadge(screen, `${Math.round(na*180/Math.PI)}°`, true); break; } }
+    if(prev){
+      const Lp=segLen(prev.A,prev.B), Ap=segAng(prev.A,prev.B);
+      if(nearLen(L,Lp)) putBadge(screen,'≡ equal',true);
+      else if(nearAng(ang,Ap)) putBadge(screen,'∥ parallel',true);
+      else if(nearAng(ang,Ap+Math.PI/2)) putBadge(screen,'⊥ perp',true);
     }
-    if(prevEdge){
-      const Lp=segLen(prevEdge.A, prevEdge.B), Ap=segAng(prevEdge.A, prevEdge.B);
-      if(nearLen(L,Lp)) placeBadge(cursor_screen, '≡ equal', 'good');
-      else if(nearAng(ang,Ap)) placeBadge(cursor_screen, '∥ parallel', 'good');
-      else if(nearAng(ang,Ap+Math.PI/2)) placeBadge(cursor_screen, '⊥ perp', 'good');
-    }
-  }
-  if(state.drawing.type==='tempLine'){ annotate(state.drawing.A, h, h.screen); }
+  };
+  if(state.drawing.type==='tempLine'){ annotate(state.drawing.A,h,h.screen); }
   else if(state.drawing.type==='tempPoly'){
     const pts=state.drawing.points; if(pts.length){
-      const A=pts[pts.length-1]; const L=applyAngleLock(A, h); const Lscr=toScreen(L.x,L.y); annotate(A, L, Lscr);
+      const A=pts[pts.length-1]; const L=applyAngleLock(A,h); annotate(A,L,toScreen(L.x,L.y));
     }
-  } else if(state.drawing.type==='tempRect'){
-    const A=state.drawing.A; const B=h;
-    const w=Math.abs(B.x-A.x), ht=Math.abs(B.y-A.y);
-    if(nearLen(w,ht)) placeBadge(toScreen((A.x+B.x)/2,(A.y+B.y)/2),'□ square','good');
+  }else if(state.drawing.type==='tempRect'){
+    const A=state.drawing.A, B=h; const w=Math.abs(B.x-A.x), ht=Math.abs(B.y-A.y);
+    if(Math.abs(w-ht) <= Math.max(1e-6, 0.015*Math.max(w,ht))) putBadge(toScreen((A.x+B.x)/2,(A.y+B.y)/2),'□ square',true);
   }
 }
 
@@ -457,45 +437,40 @@ function gridCentersNear(x,y,range=3){
     }
   return pts.concat(mids);
 }
-function snapPoint(worldX,worldY, strong=false){
+function snapPoint(worldX,worldY,strong=false){
   if(state.snap==='free') return {x:worldX, y:worldY, kind:'free'};
-  const cand = gridCentersNear(worldX,worldY,strong?4:3);
-  let best=null, bd=1e9;
-  cand.forEach(p=>{
-    const d2=(p.x-worldX)*(p.x-worldX)+(p.y-worldY)*(p.y-worldY);
-    if(d2<bd){ bd=d2; best=p; }
-  });
+  const cand=gridCentersNear(worldX,worldY,strong?4:3);
+  let best=null,bd=1e9;
+  cand.forEach(p=>{ const d2=(p.x-worldX)*(p.x-worldX)+(p.y-worldY)*(p.y-worldY); if(d2<bd){ bd=d2; best=p; }});
   return best||{x:worldX,y:worldY,kind:'free'};
 }
 function shapeAnchors(s){
   const pts=[];
-  if(s.type==='seg'){ pts.push(s.a, s.b); }
-  if(s.type==='rect'){ pts.push(s.a, {x:s.b.x,y:s.a.y}, s.b, {x:s.a.x,y:s.b.y}); }
+  if(s.type==='seg'){ pts.push(s.a,s.b); }
+  if(s.type==='rect'){ pts.push(s.a,{x:s.b.x,y:s.a.y},s.b,{x:s.a.x,y:s.b.y}); }
   if(s.type==='arc'){ pts.push(
-    {x:s.c.x + s.r*Math.cos(s.a1), y:s.c.y + s.r*Math.sin(s.a1)},
-    {x:s.c.x + s.r*Math.cos(s.a2), y:s.c.y + s.r*Math.sin(s.a2)},
-    s.c
-  );}
+    {x:s.c.x+s.r*Math.cos(s.a1), y:s.c.y+s.r*Math.sin(s.a1)},
+    {x:s.c.x+s.r*Math.cos(s.a2), y:s.c.y+s.r*Math.sin(s.a2)}, s.c); }
   if(s.type==='circ'){ pts.push(s.c); }
   if(s.type==='dim'){ pts.push(s.a,s.b); }
   if(s.type==='label'){ pts.push(s.p); }
   return pts;
 }
 function sceneSnapCandidates(excludeSet){
-  const pts=[]; state.shapes.forEach((s,i)=>{ if(!excludeSet?.has(i)) pts.push(...shapeAnchors(s)); }); return pts;
+  const pts=[]; state.shapes.forEach((s,i)=>{ if(!excludeSet?.has(i)) pts.push(...shapeAnchors(s)); });
+  return pts;
 }
 function snapWorld(x,y,strong,excludeSet){
   if(state.snap==='free') return {x,y};
-  const gridPts = gridCentersNear(x,y,strong?4:3);
-  const objPts  = sceneSnapCandidates(excludeSet);
+  const gridPts=gridCentersNear(x,y,strong?4:3);
+  const objPts=sceneSnapCandidates(excludeSet);
   let best={x,y}, bd=1e9;
   function test(px,py){ const d2=(px-x)*(px-x)+(py-y)*(py-y); if(d2<bd){ bd=d2; best={x:px,y:py}; } }
-  gridPts.forEach(p=>test(p.x,p.y));
-  objPts.forEach(p=>test(p.x,p.y));
+  gridPts.forEach(p=>test(p.x,p.y)); objPts.forEach(p=>test(p.x,p.y));
   return best;
 }
 
-/* Angle lock */
+/* -------------------- ANGLE LOCK -------------------- */
 function applyAngleLock(a0,a1){
   const mode=state.angleLock;
   if(mode==='off') return a1;
@@ -504,32 +479,30 @@ function applyAngleLock(a0,a1){
   if(mode==='ortho') snaps=[0,Math.PI/2,Math.PI,3*Math.PI/2];
   else if(mode==='thirty') snaps=[0,Math.PI/6,Math.PI/3,Math.PI/2,2*Math.PI/3,5*Math.PI/6,Math.PI,7*Math.PI/6,4*Math.PI/3,3*Math.PI/2,5*Math.PI/3,11*Math.PI/6];
   else if(mode==='fortyfive') snaps=[0,Math.PI/4,Math.PI/2,3*Math.PI/4,Math.PI,5*Math.PI/4,3*Math.PI/2,7*Math.PI/4];
-  let best=ang,bd=1e9; snaps.forEach(s=>{const d=Math.abs(((ang-s+Math.PI)%(2*Math.PI))-Math.PI); if(d<bd){bd=d;best=s;}});
+  let best=ang,bd=1e9; snaps.forEach(s=>{ const d=Math.abs(((ang-s+Math.PI)%(2*Math.PI))-Math.PI); if(d<bd){ bd=d; best=s; }});
   const len=Math.hypot(dx,dy);
   return {x:a0.x+Math.cos(best)*len, y:a0.y+Math.sin(best)*len};
 }
 
 /* -------------------- UNDO -------------------- */
 function pushUndo(){ state.undo.push(JSON.stringify({shapes:state.shapes})); state.redo.length=0; }
-function undo(){ if(!state.undo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const prev=state.undo.pop(); state.redo.push(cur); state.shapes = JSON.parse(prev).shapes; state.selection.clear(); }
-function redo(){ if(!state.redo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const next=state.redo.pop(); state.undo.push(cur); state.shapes = JSON.parse(next).shapes; state.selection.clear(); }
+function undo(){ if(!state.undo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const prev=state.undo.pop(); state.redo.push(cur); state.shapes=JSON.parse(prev).shapes; state.selection.clear(); }
+function redo(){ if(!state.redo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const next=state.redo.pop(); state.undo.push(cur); state.shapes=JSON.parse(next).shapes; state.selection.clear(); }
 
-/* -------------------- DRAW FINALIZERS -------------------- */
+/* -------------------- SHAPES / DRAW -------------------- */
 function finishLine(B){ const A=state.drawing.A; const L=applyAngleLock(A,B); state.shapes.push({type:'seg', a:A, b:L, wall:state.wallThick||0}); state.drawing=null; }
 function finishArc(B){ const A=state.drawing.A; const C={x:(A.x+B.x)/2, y:(A.y+B.y)/2}; const r=Math.hypot(B.x-A.x,B.y-A.y)/2; const a1=Math.atan2(A.y-C.y,A.x-C.x), a2=Math.atan2(B.y-C.y,B.x-C.x); state.shapes.push({type:'arc', c:C, r, a1, a2}); state.drawing=null; }
 function finishRect(B){ const A=state.drawing.A; state.shapes.push({type:'rect', a:{x:Math.min(A.x,B.x), y:Math.min(A.y,B.y)}, b:{x:Math.max(A.x,B.x), y:Math.max(A.y,B.y)}, wall:state.wallThick||0}); state.drawing=null; }
 function finishCirc(B){ const A=state.drawing.A; const r=Math.hypot(B.x-A.x,B.y-A.y); state.shapes.push({type:'circ', c:A, r}); state.drawing=null; }
 function finishDim(B){ const A=state.drawing.A; const len=Math.hypot(B.x-A.x,B.y-A.y); state.shapes.push({type:'dim', a:A, b:B, text:`${len.toFixed(1)}`}); state.drawing=null; }
 function finalizePolyline(){ const pts=state.drawing.points; if(pts.length>=2){ for(let i=0;i<pts.length-1;i++){ state.shapes.push({type:'seg', a:pts[i], b:pts[i+1], wall:state.wallThick||0}); } } state.drawing=null; }
-
 function eraseNearest(P){
   let bi=-1, bd=1e9;
   state.shapes.forEach((d,i)=>{
     let cx=0,cy=0;
     if(d.type==='seg'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
     else if(d.type==='rect'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
-    else if(d.type==='arc'){ cx=d.c.x; cy=d.c.y; }
-    else if(d.type==='circ'){ cx=d.c.x; cy=d.c.y; }
+    else if(d.type==='arc'||d.type==='circ'){ cx=d.c.x; cy=d.c.y; }
     else if(d.type==='label'){ cx=d.p.x; cy=d.p.y; }
     else if(d.type==='dim'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
     const d2=(P.x-cx)*(P.x-cx)+(P.y-cy)*(P.y-cy);
@@ -538,7 +511,7 @@ function eraseNearest(P){
   if(bi>=0) state.shapes.splice(bi,1);
 }
 
-/* -------------------- SELECTION -------------------- */
+/* -------------------- SELECTION / MOVE / ROTATE -------------------- */
 function distPointSeg(P,A,B){
   const vx=B.x-A.x, vy=B.y-A.y;
   const wx=P.x-A.x, wy=P.y-A.y;
@@ -549,18 +522,16 @@ function hitTest(worldP, tol=10/state.zoom){
   let best=-1, bd=1e9;
   state.shapes.forEach((s,i)=>{
     let d=1e9;
-    if(s.type==='seg'){ d=distPointSeg(worldP, s.a, s.b); }
+    if(s.type==='seg'||s.type==='dim'){ d=distPointSeg(worldP, s.a, s.b); }
     else if(s.type==='rect'){
       const minX=Math.min(s.a.x,s.b.x), maxX=Math.max(s.a.x,s.b.x);
       const minY=Math.min(s.a.y,s.b.y), maxY=Math.max(s.a.y,s.b.y);
-      const nearX = Math.min(Math.abs(worldP.x-minX), Math.abs(worldP.x-maxX));
-      const nearY = Math.min(Math.abs(worldP.y-minY), Math.abs(worldP.y-maxY));
-      d = Math.min(nearX,nearY);
-    }
-    else if(s.type==='circ'){ d=Math.abs(Math.hypot(worldP.x-s.c.x,worldP.y-s.c.y)-s.r); }
+      const nearX=Math.min(Math.abs(worldP.x-minX), Math.abs(worldP.x-maxX));
+      const nearY=Math.min(Math.abs(worldP.y-minY), Math.abs(worldP.y-maxY));
+      d=Math.min(nearX,nearY);
+    } else if(s.type==='circ'){ d=Math.abs(Math.hypot(worldP.x-s.c.x,worldP.y-s.c.y)-s.r); }
     else if(s.type==='arc'){ const R=Math.hypot(worldP.x-s.c.x,worldP.y-s.c.y); d=Math.abs(R-s.r); }
     else if(s.type==='label'){ d=Math.hypot(worldP.x-s.p.x,worldP.y-s.p.y); }
-    else if(s.type==='dim'){ d=distPointSeg(worldP, s.a, s.b); }
     if(d<bd){ bd=d; best=i; }
   });
   return (bd<=tol)? best : -1;
@@ -582,32 +553,32 @@ function centerOfSelection(){
 }
 
 /* Group / Ungroup */
-$('#groupBtn').onclick=()=>{ if(state.selection.size<2) return; const ids=[...state.selection]; ids.forEach(i=>state.shapes[i].gid = (state.shapes[i].gid||('g'+Date.now()))); };
-$('#ungroupBtn').onclick=()=>{ if(!state.selection.size) return; state.selection.forEach(i=>{ delete state.shapes[i].gid; }); };
+document.getElementById('groupBtn').onclick=()=>{ if(state.selection.size<2) return; const gid=Date.now(); state.selection.forEach(i=>{ state.shapes[i].gid=gid; }); };
+document.getElementById('ungroupBtn').onclick=()=>{ if(!state.selection.size) return; state.selection.forEach(i=>{ delete state.shapes[i].gid; }); };
 
-/* -------------------- EVENTS -------------------- */
+/* Events */
 let dragSel=null;
 canvas.addEventListener('mousemove', (e)=>{
   lastMouse={x:e.clientX,y:e.clientY};
-  const w = toWorld(e.clientX,e.clientY);
-  const snapped = snapPoint(w.x,w.y,false);
-  state.hover = {...snapped, screen: toScreen(snapped.x,snapped.y) };
-  stPos.textContent = `x:${snapped.x.toFixed(1)} y:${snapped.y.toFixed(1)}`;
+  const w=toWorld(e.clientX,e.clientY);
+  const snapped=snapPoint(w.x,w.y,false);
+  state.hover={...snapped, screen:toScreen(snapped.x,snapped.y)};
+  stPos.textContent=`x:${snapped.x.toFixed(1)} y:${snapped.y.toFixed(1)}`;
 
-  if(panning || middlePanning){ state.pan.x += e.movementX; state.pan.y += e.movementY; }
+  if(panning||middlePanning){ state.pan.x+=e.movementX; state.pan.y+=e.movementY; }
 
   if(dragSel && !state.rotation.active){
-    const now = toWorld(e.clientX,e.clientY);
-    const dx = now.x - dragSel.startMouse.x;
-    const dy = now.y - dragSel.startMouse.y;
-    const ref = {x: dragSel.ref.x + dx, y: dragSel.ref.y + dy};
-    const snappedRef = snapWorld(ref.x, ref.y, e.shiftKey, state.selection);
-    const snapDx = snappedRef.x - dragSel.ref0.x;
-    const snapDy = snappedRef.y - dragSel.ref0.y;
+    const now=toWorld(e.clientX,e.clientY);
+    const dx=now.x-dragSel.startMouse.x;
+    const dy=now.y-dragSel.startMouse.y;
+    const ref={x:dragSel.ref.x+dx, y:dragSel.ref.y+dy};
+    const snappedRef=snapWorld(ref.x,ref.y,e.shiftKey,state.selection);
+    const snapDx=snappedRef.x - dragSel.ref0.x;
+    const snapDy=snappedRef.y - dragSel.ref0.y;
     state.selection.forEach((idx)=>{
-      const base = dragSel.base.find(b=>b.i===idx).s;
-      const moved = JSON.parse(JSON.stringify(base));
-      const shift = p=>{ p.x += snapDx; p.y += snapDy; };
+      const base=dragSel.base.find(b=>b.i===idx).s;
+      const moved=JSON.parse(JSON.stringify(base));
+      const shift=p=>{ p.x+=snapDx; p.y+=snapDy; };
       if(moved.type==='seg'){ shift(moved.a); shift(moved.b); }
       if(moved.type==='rect'){ shift(moved.a); shift(moved.b); }
       if(moved.type==='arc'){ shift(moved.c); }
@@ -624,22 +595,18 @@ canvas.addEventListener('mousedown', (e)=>{
   mouseDown=true;
   if(isSpace){ panning=true; return; }
 
-  const w = toWorld(e.clientX,e.clientY);
-
+  const w=toWorld(e.clientX,e.clientY);
   if(state.tool==='select'){
-    const idx = hitTest(w);
+    const idx=hitTest(w);
     if(idx>=0){
-      if(e.shiftKey){
-        if(state.selection.has(idx)) state.selection.delete(idx); else state.selection.add(idx);
-      }else{
-        state.selection = new Set([idx]);
-      }
-      const anchors = shapeAnchors(state.shapes[idx]);
+      if(e.shiftKey){ if(state.selection.has(idx)) state.selection.delete(idx); else state.selection.add(idx); }
+      else{ state.selection=new Set([idx]); }
+      const anchors=shapeAnchors(state.shapes[idx]);
       let ref=anchors[0], bd=1e9;
       anchors.forEach(p=>{ const d2=(p.x-w.x)*(p.x-w.x)+(p.y-w.y)*(p.y-w.y); if(d2<bd){bd=d2; ref=p;}});
-      dragSel = {
-        ref: {x:w.x,y:w.y}, ref0:{x:ref.x,y:ref.y}, startMouse: w,
-        base: [...state.selection].map(i=>({i, s: JSON.parse(JSON.stringify(state.shapes[i])) }))
+      dragSel={
+        ref:{x:w.x,y:w.y}, ref0:{x:ref.x,y:ref.y}, startMouse:w,
+        base:[...state.selection].map(i=>({i, s:JSON.parse(JSON.stringify(state.shapes[i]))}))
       };
       return;
     }else{
@@ -649,7 +616,7 @@ canvas.addEventListener('mousedown', (e)=>{
 
   // start drawing
   pushUndo();
-  const P = snapPoint(w.x,w.y,e.shiftKey);
+  const P=snapPoint(w.x,w.y,e.shiftKey);
   const t=state.tool;
   if(t==='line'){ state.drawing = state.drawing ? (finishLine(P)) : {type:'tempLine', A:P}; }
   else if(t==='pen'){ if(!state.drawing) state.drawing={type:'tempPoly', points:[P]}; else { const pts=state.drawing.points; const A=pts[pts.length-1]; const L=applyAngleLock(A,P); pts.push(L);} }
@@ -676,47 +643,41 @@ addEventListener('keydown', e=>{
 });
 addEventListener('keyup', e=>{ if(e.code==='Space'){ isSpace=false; } });
 
-/* -------------------- ROTATION HANDLE -------------------- */
+/* ROTATION HANDLE */
 let handleEl=null;
 function ensureHandle(){
-  if(!state.selection.size) { if(handleEl){ handleEl.remove(); handleEl=null; } return; }
-  const c = centerOfSelection(); if(!c) return;
-  const topScreen = toScreen(c.box.minX + (c.box.maxX-c.box.minX)/2, c.box.minY) ;
-  const yOff = 24;
+  if(!state.selection.size){ if(handleEl){ handleEl.remove(); handleEl=null; } return; }
+  const c=centerOfSelection(); if(!c) return;
+  const topScreen=toScreen(c.box.minX+(c.box.maxX-c.box.minX)/2, c.box.minY);
+  const yOff=24;
   if(!handleEl){ handleEl=document.createElement('div'); handleEl.className='handle'; overlay.appendChild(handleEl); }
-  handleEl.style.left = topScreen.x+'px';
-  handleEl.style.top  = (topScreen.y - yOff)+'px';
-  handleEl.onmousedown = (e)=>{
+  handleEl.style.left=topScreen.x+'px';
+  handleEl.style.top=(topScreen.y - yOff)+'px';
+  handleEl.onmousedown=(e)=>{
     e.preventDefault();
     state.rotation.active=true;
-    state.rotation.center = {x:c.x,y:c.y};
-    state.rotation.startAng = Math.atan2( toWorld(e.clientX,e.clientY).y - c.y,
-                                          toWorld(e.clientX,e.clientY).x - c.x );
-    state.rotation.base = [...state.selection].map(i=>({i, s: JSON.parse(JSON.stringify(state.shapes[i])) }));
+    state.rotation.center={x:c.x,y:c.y};
+    state.rotation.startAng=Math.atan2(toWorld(e.clientX,e.clientY).y - c.y, toWorld(e.clientX,e.clientY).x - c.x);
+    state.rotation.base=[...state.selection].map(i=>({i, s:JSON.parse(JSON.stringify(state.shapes[i]))}));
   };
 }
 document.addEventListener('mousemove', (e)=>{
   if(!state.rotation.active) return;
   const cen=state.rotation.center;
-  const curAng = Math.atan2( toWorld(e.clientX,e.clientY).y - cen.y,
-                             toWorld(e.clientX,e.clientY).x - cen.x );
-  let dAng = curAng - state.rotation.startAng;
-
-  const nice=[0, Math.PI/6, Math.PI/4, Math.PI/3, Math.PI/2, 2*Math.PI/3, 3*Math.PI/4, Math.PI];
+  const curAng=Math.atan2(toWorld(e.clientX,e.clientY).y - cen.y, toWorld(e.clientX,e.clientY).x - cen.x);
+  let dAng=curAng - state.rotation.startAng;
+  const nice=[0,Math.PI/6,Math.PI/4,Math.PI/3,Math.PI/2,2*Math.PI/3,3*Math.PI/4,Math.PI];
   let best=dAng, bd=1e9;
   nice.concat(nice.map(a=>-a)).forEach(a=>{
-    const diff = Math.abs(((dAng-a+Math.PI)%(2*Math.PI))-Math.PI);
+    const diff=Math.abs(((dAng-a+Math.PI)%(2*Math.PI))-Math.PI);
     if(diff<bd){ bd=diff; best=a; }
   });
-  if(bd < Math.PI/180*6) dAng = best;
-
-  const sin=Math.sin(dAng), cos=Math.cos(dAng);
-  const cenW=state.rotation.center;
-  const rot = (p)=>({ x: cenW.x + (p.x - cenW.x)*cos - (p.y - cenW.y)*sin,
-                      y: cenW.y + (p.x - cenW.x)*sin + (p.y - cenW.y)*cos });
-
+  if(bd < Math.PI/180*6) dAng=best;
+  const sin=Math.sin(dAng), cos=Math.cos(dAng), cenW=cen;
+  const rot=p=>({ x: cenW.x + (p.x-cenW.x)*cos - (p.y-cenW.y)*sin,
+                  y: cenW.y + (p.x-cenW.x)*sin + (p.y-cenW.y)*cos });
   state.rotation.base.forEach(({i,s})=>{
-    const m = JSON.parse(JSON.stringify(s));
+    const m=JSON.parse(JSON.stringify(s));
     if(m.type==='seg'){ m.a=rot(m.a); m.b=rot(m.b); }
     if(m.type==='rect'){ m.a=rot(m.a); m.b=rot(m.b); }
     if(m.type==='arc'){ m.c=rot(m.c); }
@@ -728,16 +689,16 @@ document.addEventListener('mousemove', (e)=>{
 });
 document.addEventListener('mouseup', ()=>{ if(state.rotation.active){ state.rotation.active=false; } });
 
-/* -------------------- ZOOM / EXPORT -------------------- */
+/* ZOOM / EXPORT */
 function zoomAt(factor, screenPoint){
   const before=state.zoom; const after=Math.max(0.25, Math.min(6, before*factor));
   if(after===before) return;
-  const wx = (screenPoint.x - canvas.width/DPR/2 - state.pan.x)/before;
-  const wy = (screenPoint.y - canvas.height/DPR/2 - state.pan.y)/before;
-  state.zoom = after;
-  state.pan.x = screenPoint.x - canvas.width/DPR/2 - wx*after;
-  state.pan.y = screenPoint.y - canvas.height/DPR/2 - wy*after;
-  stZoom.textContent = `Zoom: ${(state.zoom*100).toFixed(0)}%`;
+  const wx=(screenPoint.x - canvas.width/DPR/2 - state.pan.x)/before;
+  const wy=(screenPoint.y - canvas.height/DPR/2 - state.pan.y)/before;
+  state.zoom=after;
+  state.pan.x=screenPoint.x - canvas.width/DPR/2 - wx*after;
+  state.pan.y=screenPoint.y - canvas.height/DPR/2 - wy*after;
+  stZoom.textContent=`Zoom: ${(state.zoom*100).toFixed(0)}%`;
 }
 function zoomToFit(){
   if(!state.shapes.length){ state.zoom=1; state.pan={x:0,y:0}; stZoom.textContent='Zoom: 100%'; return; }
@@ -753,18 +714,18 @@ function zoomToFit(){
   });
   const pad=40, w=canvas.width/DPR, h=canvas.height/DPR;
   const zw=(w-pad*2)/(maxX-minX || 1), zh=(h-pad*2)/(maxY-minY || 1);
-  state.zoom = Math.max(0.25, Math.min(6, Math.min(zw,zh)));
-  state.pan.x = -((minX+maxX)/2)*state.zoom;
-  state.pan.y = -((minY+maxY)/2)*state.zoom;
-  stZoom.textContent = `Zoom: ${(state.zoom*100).toFixed(0)}%`;
+  state.zoom=Math.max(0.25, Math.min(6, Math.min(zw,zh)));
+  state.pan.x=-((minX+maxX)/2)*state.zoom;
+  state.pan.y=-((minY+maxY)/2)*state.zoom;
+  stZoom.textContent=`Zoom: ${(state.zoom*100).toFixed(0)}%`;
 }
 function exportSVG(){
   const w=canvas.width/DPR, h=canvas.height/DPR, sw=state.strokeW;
-  const stroke='#ffffff', gridStroke='#ffffff22';
+  const stroke='#ffffff', gridStroke='#9ec5ff55'; // slightly brighter for visibility
   const out=[];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none" stroke="${stroke}" stroke-width="${sw}">`);
   const G=grid(); const R=G.R*state.dotScale; const stepX=G.stepX, stepY=G.stepY;
-  out.push(`<g id="grid" stroke="${gridStroke}" stroke-width="${0.9}">`);
+  out.push(`<g id="grid" stroke="${gridStroke}" stroke-width="0.9">`);
   for(let r=-30;r<60;r++){
     for(let c=-30;c<60;c++){
       const x=c*stepX+(r%2? stepX/2:0), y=r*stepY;
@@ -782,7 +743,8 @@ function exportSVG(){
     if(d.type==='dim'){ const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y); out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#cc0000"/>`); const mx=(a.x+b.x)/2, my=(a.y+b.y)/2; out.push(`<text x="${mx+4}" y="${my-4}" font-size="12" fill="#cc0000" stroke="none">${d.text||''}</text>`); }
   });
   out.push(`</g></svg>`);
-  const blob = new Blob([out.join('\n')],{type:'image/svg+xml'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='universe120.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
+  const blob=new Blob([out.join('\n')],{type:'image/svg+xml'}); const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='universe120.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
 function exportPNG(){ const link=document.createElement('a'); link.download='universe120.png'; link.href=canvas.toDataURL('image/png'); link.click(); }
 
@@ -793,11 +755,11 @@ function drawGrid(){
   ctx.save();
   ctx.translate(w/2 + state.pan.x, h/2 + state.pan.y);
   ctx.scale(state.zoom, state.zoom);
-  ctx.lineWidth=0.9/state.zoom; ctx.strokeStyle='#ffffff22';
+  ctx.lineWidth=0.9/state.zoom; ctx.strokeStyle='#9ec5ff55'; /* brighter blueprint rings */
   const cols=Math.ceil(w/(stepX*state.zoom))+4, rows=Math.ceil(h/(stepY*state.zoom))+4;
-  const x0 = -((w/2 + state.pan.x)/state.zoom);
-  const y0 = -((h/2 + state.pan.y)/state.zoom);
-  const cStart = Math.floor((x0 - 2*stepX)/stepX), rStart = Math.floor((y0 - 2*stepY)/stepY);
+  const x0= -((w/2 + state.pan.x)/state.zoom);
+  const y0= -((h/2 + state.pan.y)/state.zoom);
+  const cStart=Math.floor((x0 - 2*stepX)/stepX), rStart=Math.floor((y0 - 2*stepY)/stepY);
   for(let r=rStart;r<rStart+rows;r++){
     for(let c=cStart;c<cStart+cols;c++){
       const x=c*stepX+(r%2? stepX/2:0), y=r*stepY;
@@ -821,7 +783,7 @@ function drawShapes(){
   });
 
   // Preview temp
-  ctx.setLineDash([6,6]); ctx.strokeStyle = '#cbd5ff';
+  ctx.setLineDash([6,6]); ctx.strokeStyle='#cbd5ff';
   const h=state.hover?.screen;
   if(state.drawing){
     if(state.drawing.type==='tempLine' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(h.x,h.y); ctx.stroke(); }
@@ -846,13 +808,11 @@ function drawShapes(){
 
   ctx.restore();
 
-  drawSmartGuidesHook();
+  smartGuidePreview();
   ensureHandle();
 }
 function frame(){ ctx.clearRect(0,0,canvas.width,canvas.height); drawGrid(); drawShapes(); requestAnimationFrame(frame); }
 requestAnimationFrame(frame);
-
-document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
