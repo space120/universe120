@@ -6,20 +6,27 @@
 <title>About — Universe120</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <style>
-:root{ --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a; }
+:root{
+  --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a;
+}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
-/* NAVBAR */
-.navbar{position:fixed; inset:0 0 auto 0; height:56px; z-index:50; display:flex; align-items:center; gap:12px; background:#0f356d; border-bottom:1px solid var(--border); padding:8px 12px}
-.brand{display:flex; align-items:center; gap:10px; font-weight:800; color:#fff; text-decoration:none; letter-spacing:.2px}
-.brand .mark{width:26px;height:26px;border-radius:6px;background:#123b79;display:inline-block;box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659}
-.navlinks{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap}
-.navlinks a{color:#fff;text-decoration:none;border:1px solid #204c96;background:#10366f;padding:7px 12px;border-radius:10px;font-size:13px}
-.navlinks a:hover{background:#13407f}
-.navlinks a.active{outline:2px solid var(--brand)}
+/* NAV */
+.navbar{
+  position:fixed; inset:0 0 auto 0; height:56px; z-index:50;
+  display:flex; align-items:center; gap:12px;
+  background:#0f356d; color:#fff; border-bottom:1px solid var(--border);
+  padding:8px 12px;
+}
+.brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; text-decoration:none; color:#fff}
+.brand .mark{width:26px; height:26px; border-radius:6px; background:#123b79; display:inline-block; box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659}
+.navlinks{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap }
+.navlinks a{ text-decoration:none; color:#fff; border:1px solid #204c96; background:#10366f; padding:7px 12px; border-radius:10px; font-size:13px }
+.navlinks a:hover{ background:#13407f }
+.navlinks a.active{ outline:2px solid var(--brand) }
 
-/* PAGE */
+/* Page */
 .page{padding:88px 20px 80px; max-width:880px; margin:0 auto}
 .page h1{ font-size:2rem; margin:.5rem 0 1rem }
 .page h2{ margin:1.25rem 0 .5rem }
@@ -27,7 +34,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family
 .lead{font-size:1.1rem; color:#e7f0ff}
 a{ color:#ffe36a }
 
-/* FOOTER */
+/* Footer */
 .site-footer{ position:fixed; left:0; right:0; bottom:0; background:#0f356d; color:#fff;
   border-top:1px solid var(--border); height:40px; display:flex; align-items:center; justify-content:center; }
 .site-footer a{ color:#ffe36a; text-decoration:none }
@@ -41,9 +48,7 @@ a{ color:#ffe36a }
     </a>
     <div class="navlinks">
       <a href="index.html">Home</a>
-      <a href="howto.html">How-to</a>
       <a class="active" href="about.html">About</a>
-      <a href="feedback.html">Feedback</a>
       <a href="mailto:120spaceproject@gmail.com">Email</a>
     </div>
   </div>
@@ -55,40 +60,41 @@ a{ color:#ffe36a }
       <b>2D lines</b> to <b>3D shapes</b>—and how imagination helps us sense a <b>4th direction</b>.
     </p>
 
-    <section>
-      <h2>What it is</h2>
-      <p>
-        We start with a friendly <em>bubble grid</em> (overlapping circles that feel like graph paper). From there,
-        you can draw precisely with smart guides, snap to intersections, set angles, and export your work.
-        The goal is fast visual learning that’s accurate enough for classrooms and concept sketches.
-      </p>
+    <section id="whats-included" style="margin-top:1.25rem">
+      <h2>What’s Included (Today)</h2>
       <ul>
-        <li><b>2D Bubble Grid:</b> symmetry, intersections, equal lengths, parallels.</li>
-        <li><b>Smart Guides:</b> angle hints (0/30/45/60/90°), equal-length, parallel/perpendicular badges.</li>
-        <li><b>Export:</b> PNG for sharing, SVG for maker/laser workflows and classroom printables.</li>
+        <li><b>2D Bubble-Grid Editor</b> — precision tools + smart guides (angles, equal length, parallel/perpendicular).</li>
+        <li><b>Floors System</b> — add/select floors with per-floor height controls.</li>
+        <li><b>Opening Tool</b> — draw openings (red). If placed inside a room/rect, they become holes in 3D (also works for polygon loops when enclosed).</li>
+        <li><b>Live 3D Viewer</b> — Orbit controls, Iso/Top/Front presets, Wireframe toggle, adjustable wall height.</li>
+        <li><b>Export</b> — PNG/SVG for 2D; glTF for 3D pipelines.</li>
+        <li><b>Transform Tools</b> — move, rotate (handle with angle snap), select, group, ungroup.</li>
+        <li><b>Measurements</b> — the status bar shows length/angle for the current selection.</li>
       </ul>
+      <p><b>Notes / Roadmap</b>:</p>
+      <ul>
+        <li>Doors/windows use the <i>Opening</i> tool for now (rect holes). Next: named components (width/height/panes) + auto placement along walls.</li>
+        <li>Offsets & true wall thickness: this beta extrudes the outline directly. Next: polygon offset (inset/outset) to model double-line walls.</li>
+        <li>CSG library is staged for future boolean cuts; the current hole method is faster for rectangles.</li>
+      </ul>
+      <p class="lead" style="margin-top:.75rem">
+        Tip: Press <kbd>Space</kbd> to pan, use the mouse wheel to zoom, and <kbd>Shift</kbd>+<kbd>1</kbd> for Zoom-to-Fit.
+      </p>
     </section>
 
     <section>
       <h2>Who it’s for</h2>
-      <p>Curious minds ages 6–106. It’s kid-friendly, but powerful enough for teens, teachers, and architects doing rough concept work.</p>
+      <p>Curious minds ages 6–106. Kid-friendly, powerful enough for teens, teachers, and architects doing rough concept work.</p>
     </section>
 
     <section>
-      <h2>Accessibility & privacy</h2>
-      <p>
-        Universe120 runs completely in your browser. We don’t collect personal data or require sign-ups in the beta.
-        A high-contrast mode and keyboard-only controls are on the roadmap.
-      </p>
+      <h2>Privacy</h2>
+      <p>Universe120 runs entirely in your browser during the beta. No accounts, no data collection.</p>
     </section>
 
     <section>
       <h2>Contact</h2>
-      <p>
-        Questions, classroom ideas, or bug reports? Email
-        <a href="mailto:120spaceproject@gmail.com">120spaceproject@gmail.com</a>.
-        We love teacher and architect feedback during this beta.
-      </p>
+      <p>Questions or classroom ideas? Email <a href="mailto:120spaceproject@gmail.com">120spaceproject@gmail.com</a>. We love educator and architect feedback.</p>
     </section>
   </main>
 
