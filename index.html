@@ -3,33 +3,35 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-<title>Universe120 — Bubble Graph Builder</title>
+<title>Universe120 — Bubble Grid Builder</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <style>
 :root{
-  --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a; --toolbar:#10366f;
+  --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a;
+  --brand:#ffe36a; --toolbar:#10366f; --panelw:296px; --gutter:12px; --status:28px; --nav:56px; --top:48px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
 /* NAV */
 .navbar{
-  position:fixed; inset:0 0 auto 0; height:56px; z-index:60;
-  display:flex; align-items:center; gap:12px; padding:8px 12px;
-  background:#0f356d; color:#fff; border-bottom:1px solid var(--border);
+  position:fixed; inset:0 0 auto 0; height:var(--nav); z-index:60;
+  display:flex; align-items:center; gap:12px; padding:8px var(--gutter);
+  background:#0f356d; border-bottom:1px solid var(--border);
 }
-.brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; color:#fff; text-decoration:none}
+.brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; color:#fff; text-decoration:none }
 .brand .mark{ width:26px; height:26px; display:block }
 .navlinks{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap }
-.navlinks a{ text-decoration:none; color:#fff; border:1px solid #204c96; background:var(--toolbar); padding:7px 12px; border-radius:10px; font-size:13px }
+.navlinks a{ text-decoration:none; color:#fff; border:1px solid #204c96; background:var(--toolbar);
+  padding:7px 12px; border-radius:10px; font-size:13px }
 .navlinks a:hover{ background:#13407f }
 .navlinks a.active{ outline:2px solid var(--brand) }
 
-/* Top bar (stops before properties) */
+/* TOP BAR (stops before properties) */
 .topbar{
-  position:fixed; left:0; right:320px; top:56px; z-index:55;
-  display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:8px 12px;
-  background:var(--toolbar); border-bottom:1px solid var(--border);
+  position:fixed; left:0; right:calc(var(--panelw) + var(--gutter)*2); top:var(--nav); z-index:55;
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:8px var(--gutter);
+  background:var(--toolbar); border-bottom:1px solid var(--border); min-height:var(--top);
 }
 .group{display:flex; gap:6px; align-items:center; background:#0d2e5f; border:1px solid #1e4d9a; border-radius:10px; padding:4px 6px}
 label.small{font-size:12px; color:#eaf1ff}
@@ -40,19 +42,17 @@ button:hover,.btn:hover{ background:#13407f }
 input[type="text"],input[type="number"],select{ padding:6px 8px }
 input[type="range"]{ accent-color:var(--brand) }
 
-/* Right Properties panel */
+/* RIGHT PANEL (Properties + Tools dropdown) */
 .panel{
-  position:fixed; right:12px; top:56px; bottom:28px; width:296px; z-index:56;
-  background:#0f356d; border:1px solid var(--border); border-radius:12px;
+  position:fixed; right:var(--gutter); top:calc(var(--nav)); bottom:var(--status);
+  width:var(--panelw); z-index:56; background:#0f356d; border:1px solid var(--border); border-radius:12px;
   box-shadow:0 8px 24px rgba(0,0,0,.2); padding:10px 12px; color:#eaf1ff; overflow:auto
 }
 .panel h3{ margin:.3rem 0 .5rem; font-size:15px }
 .panel .row{ display:flex; align-items:center; gap:8px; margin:.35rem 0 }
-
-/* Tools dropdown under panel */
 .tools-under{ margin-top:10px }
 .tools-under .wide{ width:100% }
-.tools-grid{ display:none; margin-top:6px; display:grid; grid-template-columns:1fr; gap:6px }
+.tools-grid{ display:none; margin-top:6px; grid-template-columns:1fr; gap:6px }
 .tools-grid.open{ display:grid }
 .toolBtn{
   display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid #204c96; border-radius:10px; background:#10366f; color:#fff; font-size:13px
@@ -60,80 +60,55 @@ input[type="range"]{ accent-color:var(--brand) }
 .toolBtn .icon{ width:18px; text-align:center }
 .toolBtn.active{ outline:2px solid var(--brand) }
 
-/* Canvas + overlay */
+/* CANVAS + OVERLAY */
 #canvas{
-  position:fixed; left:12px; right:332px; top:104px; bottom:28px; display:block; width:auto; height:auto;
-  background:linear-gradient(180deg,#0e2f62,#0b2650);
+  position:fixed;
+  left:var(--gutter); right:calc(var(--panelw) + var(--gutter)*2);
+  top:calc(var(--nav) + var(--top)); bottom:var(--status);
+  display:block; background:linear-gradient(180deg,#0e2f62,#0b2650);
   border:1px solid #0f3b81; border-radius:12px;
 }
-#overlay{ position:fixed; left:12px; right:332px; top:104px; bottom:28px; pointer-events:none; z-index:54 }
+#overlay{ position:fixed; left:var(--gutter); right:calc(var(--panelw) + var(--gutter)*2);
+  top:calc(var(--nav) + var(--top)); bottom:var(--status); pointer-events:none; z-index:54 }
 .scale{
-  position:fixed; left:20px; bottom:36px; z-index:57; color:#cfe0ff; font-size:12px; background:#10366f; border:1px solid #1e4d9a; border-radius:8px; padding:4px 8px
+  position:fixed; left:calc(var(--gutter) + 8px); bottom:calc(var(--status) + 8px); z-index:57; color:#cfe0ff; font-size:12px;
+  background:#10366f; border:1px solid #1e4d9a; border-radius:8px; padding:4px 8px
 }
 
-/* Status bar */
+/* STATUS BAR */
 .status{
-  position:fixed; left:0; right:0; bottom:0; height:28px; z-index:58;
+  position:fixed; left:0; right:0; bottom:0; height:var(--status); z-index:58;
   display:flex; align-items:center; gap:16px; padding:0 10px;
-  background:#0f356d; color:#fff; border-top:1px solid var(--border); font-size:12px
+  background:#0f356d; border-top:1px solid var(--border); font-size:12px
 }
 .status > *{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
 
-/* Help modal */
+/* HELP MODAL */
 .modal{ position:fixed; inset:0; background:rgba(10,12,22,.55); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:80 }
 .modal.hidden{ display:none }
 .modal .card{ background:#10121b; border:1px solid #2a2e3d; color:#e9ebff; border-radius:12px; padding:18px; max-width:720px }
 kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;border-radius:5px;padding:1px 5px;font-family:ui-monospace,Menlo,Consolas,monospace}
 .right{ display:flex; gap:8px; justify-content:flex-end }
 
-/* 3D viewer drawer */
+/* 3D VIEWER */
 .viewer{
-  position:fixed; right:332px; top:104px; bottom:28px; width:420px; z-index:59;
-  background:#0f356d; border:1px solid var(--border); border-radius:12px; display:flex; flex-direction:column
+  position:fixed; right:calc(var(--panelw) + var(--gutter)*2); top:calc(var(--nav) + var(--top)); bottom:var(--status);
+  width:420px; z-index:59; background:#0f356d; border:1px solid var(--border); border-radius:12px; display:flex; flex-direction:column
 }
 .viewer.hidden{ display:none }
 .viewer-bar{ display:flex; align-items:center; gap:8px; padding:8px; border-bottom:1px solid var(--border); background:#10366f }
 .viewer .three{ flex:1; min-height:0 }
 
-/* Smart guide badges */
-.badge{
-  position:absolute; padding:2px 6px; font-size:12px; color:#001327;
-  background:rgba(255,227,106,.95); border-radius:6px; border:1px solid #e6c84f;
-  white-space:nowrap; user-select:none; z-index:70; transform:translate(-50%,-100%); pointer-events:none
-}
+/* SMART GUIDE BADGES */
+.badge{ position:absolute; padding:2px 6px; font-size:12px; color:#001327; background:rgba(255,227,106,.95);
+  border-radius:6px; border:1px solid #e6c84f; white-space:nowrap; user-select:none; z-index:70; transform:translate(-50%,-100%); pointer-events:none }
 .badge.alt{ background:rgba(124,255,124,.95); border-color:#57db57 }
-.badge.muted{ background:rgba(255,255,255,.85); border-color:#bcd3ff }
 
-/* Cursor snap dot – right at cursor tip */
-.cursor-dot{
-  position:absolute; width:6px; height:6px; border-radius:50%;
-  background:#ffe36a; box-shadow:0 0 0 1px #0a1c3b; z-index:75; pointer-events:none
-}
-
-/* Lock (disabled by default) */
-.lock{ position:fixed; inset:0; background:#0d2a55; color:#fff; display:flex; align-items:center; justify-content:center; z-index:1000 }
-.lock.hidden{ display:none }
-.lock .card{ background:#0f356d; border:1px solid var(--border); border-radius:12px; padding:18px; width:min(92vw,440px); box-shadow:0 12px 28px rgba(0,0,0,.25) }
-.lock input{ width:100%; margin-top:8px; background:#10366f; color:#fff; border:1px solid #204c96; border-radius:10px; padding:10px 12px; font-size:16px }
-.lock button{ margin-top:10px; padding:10px 12px; font-size:16px }
-.lock .lock-msg{ margin-top:10px; color:#ff8a8a; min-height:1.2em }
-.lock .mini{ margin-top:8px; font-size:12px; color:#cfe0ff }
-.lock a{ color:var(--brand) }
+/* SNAP DOT (right at cursor tip) */
+.cursor-dot{ position:absolute; width:6px; height:6px; border-radius:50%; background:#ffe36a; box-shadow:0 0 0 1px #0a1c3b; z-index:75; pointer-events:none }
 </style>
 </head>
 <body>
-  <!-- Lock (disabled) -->
-  <div id="lockScreen" class="lock hidden">
-    <div class="card">
-      <h2>Universe120 (Beta)</h2>
-      <p>Enter access code to continue.</p>
-      <input type="password" id="accessCodeInput" placeholder="Access code" />
-      <button id="accessCodeBtn">Enter</button>
-      <div id="lockMsg" class="lock-msg"></div>
-      <p class="mini">Send ideas/bugs: <a href="mailto:120spaceproject@gmail.com">120spaceproject@gmail.com</a></p>
-    </div>
-  </div>
-
   <!-- NAV -->
   <div class="navbar">
     <a class="brand" href="index.html" aria-label="Universe120 Home">
@@ -143,11 +118,12 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
     <div class="navlinks">
       <a class="active" href="index.html">Home</a>
       <a href="about.html">About</a>
+      <a href="feedback.html">Feedback</a>
     </div>
   </div>
 
   <!-- TOPBAR -->
-  <div class="topbar">
+  <div class="topbar" id="topbar">
     <div class="group">
       <button id="newDoc" type="button">New</button>
       <button id="clearAll" type="button">Clear</button>
@@ -163,10 +139,8 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
     </div>
 
     <div class="group">
-      <label class="small">Grid</label>
-      <input id="gridScale" type="range" min="0.6" max="1.8" step="0.01" value="1.0" />
-      <label class="small">Dots</label>
-      <input id="dotSize" type="range" min="0.5" max="1.8" step="0.05" value="1.0" />
+      <label class="small">Grid</label><input id="gridScale" type="range" min="0.6" max="1.8" step="0.01" value="1.0" />
+      <label class="small">Dots</label><input id="dotSize"  type="range" min="0.5" max="1.8" step="0.05" value="1.0" />
     </div>
 
     <div class="group">
@@ -197,7 +171,7 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
         <option value="km">km</option>
       </select>
       <label class="small">Scale</label>
-      <input id="unitScale" type="number" step="0.1" value="1" title="World units per grid step (e.g., 1 = 1ft per step when Units=ft)" />
+      <input id="unitScale" type="number" step="0.1" value="1" title="World units per grid step" />
     </div>
 
     <div class="group">
@@ -220,18 +194,9 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
   <!-- PROPERTIES + TOOLS -->
   <aside class="panel" id="props">
     <h3>Properties</h3>
-    <div class="row">
-      <label class="small">Stroke</label>
-      <input id="strokeW" type="range" min="0.8" max="4" step="0.1" value="1.6" />
-    </div>
-    <div class="row">
-      <label class="small">Wall (px)</label>
-      <input id="wallThick" type="number" value="0" min="0" max="60" step="1" />
-    </div>
-    <div class="row">
-      <label class="small">Label</label>
-      <input id="labelText" type="text" placeholder="Room / Note" />
-    </div>
+    <div class="row"><label class="small">Stroke</label><input id="strokeW" type="range" min="0.8" max="4" step="0.1" value="1.6" /></div>
+    <div class="row"><label class="small">Wall (px)</label><input id="wallThick" type="number" value="0" min="0" max="60" step="1" /></div>
+    <div class="row"><label class="small">Label</label><input id="labelText" type="text" placeholder="Room / Note" /></div>
 
     <div class="tools-under">
       <button id="toolsToggle" type="button" class="wide">Tools ▾</button>
@@ -242,7 +207,7 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
         <button class="toolBtn" data-tool="rect"><span class="icon">▭</span><span>Rectangle</span></button>
         <button class="toolBtn" data-tool="arc"><span class="icon">⌒</span><span>Arc</span></button>
         <button class="toolBtn" data-tool="circ"><span class="icon">◯</span><span>Circle</span></button>
-        <button class="toolBtn" data-tool="opening"><span class="icon">▯</span><span>Opening</span></button>
+        <button class="toolBtn" data-tool="opening"><span class="icon">▯</span><span>Opening (hole)</span></button>
         <button class="toolBtn" data-tool="text"><span class="icon">T</span><span>Text</span></button>
         <button class="toolBtn" data-tool="dim"><span class="icon">⇄</span><span>Dimension</span></button>
         <button class="toolBtn" data-tool="erase"><span class="icon">⌫</span><span>Erase</span></button>
@@ -250,16 +215,16 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
     </div>
   </aside>
 
-  <!-- CANVAS & OVERLAY -->
+  <!-- CANVAS AREA -->
   <canvas id="canvas"></canvas>
   <div id="overlay"></div>
   <div id="scaleBar" class="scale"></div>
 
-  <!-- 3D Drawer -->
+  <!-- 3D DRAWER -->
   <div id="viewer3d" class="viewer hidden" aria-hidden="true">
     <div class="viewer-bar">
       <strong>3D</strong>
-      <div class="spacer" style="flex:1"></div>
+      <div style="flex:1"></div>
       <label class="small">View</label>
       <select id="viewPreset">
         <option value="orbit" selected>Orbit</option>
@@ -295,34 +260,20 @@ kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;bord
         <li><b>Zoom</b>: mouse wheel (zooms to cursor)</li>
         <li><b>Zoom Fit</b>: <kbd>Shift</kbd>+<kbd>1</kbd> • <b>Reset</b>: <kbd>1</kbd></li>
         <li><b>Undo/Redo</b>: <kbd>Ctrl/Cmd</kbd>+<kbd>Z</kbd> / <kbd>Ctrl/Cmd</kbd>+<kbd>Y</kbd></li>
-        <li><b>Smart Guides</b>: 0/30/45/60/90°, equal (≡), parallel (∥), perpendicular (⊥)</li>
+        <li><b>Smart Guides</b>: 0/30/45/60/90°, ≡ equal, ∥ parallel, ⊥ perp</li>
       </ul>
-      <div class="right">
-        <button id="closeHelp" class="btn" type="button">Got it</button>
-      </div>
+      <div class="right"><button id="closeHelp" class="btn" type="button">Got it</button></div>
     </div>
   </div>
 
-  <!-- Three.js & helpers (CDNs) -->
+  <!-- Three.js (CDNs) -->
   <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
   <script src="https://unpkg.com/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://unpkg.com/three@0.160.0/examples/js/exporters/GLTFExporter.js"></script>
 
-  <!-- App JS -->
+  <!-- APP JS -->
   <script>
-/* ---------- Passcode (disabled) ---------- */
-const VALID_CODE = null; // set to "@@U120" to enable
-const lockEl = document.getElementById('lockScreen');
-(function initLock(){
-  if(!VALID_CODE){ lockEl.classList.add('hidden'); return; }
-  const btn = document.getElementById('accessCodeBtn');
-  const input = document.getElementById('accessCodeInput');
-  const msg = document.getElementById('lockMsg');
-  const go = ()=>{ const v=input.value.trim(); if(v===VALID_CODE){ lockEl.classList.add('hidden'); } else { msg.textContent='Incorrect code.'; } };
-  btn.onclick = go; input.addEventListener('keydown', e=>{ if(e.key==='Enter') go(); });
-})();
-
-/* ---------- DOM ---------- */
+/* ========== DOM & CANVAS SETUP ========== */
 const $ = (q)=>document.querySelector(q);
 const all = (q)=>[...document.querySelectorAll(q)];
 const canvas = $('#canvas');
@@ -331,29 +282,24 @@ const scaleBar = $('#scaleBar');
 const ctx = canvas.getContext('2d', {alpha:true});
 let DPR = Math.min(devicePixelRatio||1, 2);
 
-/* ---------- Layout ---------- */
 function resize(){
-  const w = innerWidth - 12 - 332;  // left pad + right panel
-  const h = innerHeight - 104 - 28; // top bar + status
+  const w = innerWidth - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--panelw')) + 12*2);
+  const h = innerHeight - (56 + 48 + 28);
   canvas.width = Math.round(w * DPR);
   canvas.height= Math.round(h * DPR);
   canvas.style.width = w+'px';
   canvas.style.height= h+'px';
-  overlay.style.left = '12px';
-  overlay.style.right= '332px';
-  overlay.style.top  = '104px';
-  overlay.style.bottom='28px';
   ctx.setTransform(DPR,0,0,DPR,0,0);
 }
 addEventListener('resize', resize);
 
-/* ---------- State ---------- */
-const stTool = $('#stTool'), stSnap = $('#stSnap'), stZoom = $('#stZoom'), stPos = $('#stPos');
+/* ========== STATE ========== */
+const stTool=$('#stTool'), stSnap=$('#stSnap'), stZoom=$('#stZoom'), stPos=$('#stPos');
 const state = {
   tool:'select', zoom:1, pan:{x:0,y:0},
   gridScale:1.0, dotScale:1.0,
   strokeW:1.6, wallThick:0,
-  unit:'ft', unitScale:1, // world units per grid step
+  unit:'ft', unitScale:1,
   snap:'intersections', angleLock:'thirty',
   drawing:null, hover:null,
   shapes:[], selection:new Set(),
@@ -364,7 +310,7 @@ const state = {
 const Rbase=26; function grid(){ const R=Rbase*state.gridScale; return {R,stepX:R, stepY:R*Math.sqrt(3)/2}; }
 let lastMouse={x:0,y:0}; let mouseDown=false, panning=false, middlePanning=false, isSpace=false;
 
-/* ---------- UI wiring ---------- */
+/* ========== UI WIRING ========== */
 $('#gridScale').addEventListener('input', e=>{ state.gridScale=+e.target.value; });
 $('#dotSize').addEventListener('input', e=>{ state.dotScale=+e.target.value; });
 $('#snapMode').addEventListener('change', e=>{ state.snap=e.target.value; stSnap.textContent='Snap: '+e.target.selectedOptions[0].textContent; });
@@ -389,14 +335,7 @@ $('#exportGLTF').onclick=exportGLTF;
 $('#helpBtn').onclick=()=>$('#help').classList.remove('hidden');
 $('#closeHelp').onclick=()=>$('#help').classList.add('hidden');
 
-$('#toggle3D').onclick=()=>{
-  $('#viewer3d').classList.toggle('hidden');
-  if(!$('#viewer3d').classList.contains('hidden')) build3D();
-};
-$('#close3d').onclick=()=>$('#viewer3d').classList.add('hidden');
-$('#rebuild3d').onclick=build3D;
-
-/* Tools dropdown under panel */
+/* Tools dropdown (under Properties) */
 const toolsToggle = $('#toolsToggle');
 const toolsGrid = $('#toolsGrid');
 toolsToggle.onclick = ()=>{
@@ -408,11 +347,10 @@ toolsGrid.addEventListener('click', e=>{
   setTool(btn.dataset.tool);
 });
 
-/* Grouping */
 $('#groupBtn').onclick=()=>{ if(state.selection.size<2) return; const gid=state.groupsCounter++; state.selection.forEach(i=>{ state.shapes[i].gid=gid; }); };
 $('#ungroupBtn').onclick=()=>{ if(!state.selection.size) return; state.selection.forEach(i=>{ delete state.shapes[i].gid; }); };
 
-/* ---------- Tools ---------- */
+/* ========== TOOLS ========== */
 function setTool(name){
   state.tool = name;
   state.drawing = null;
@@ -420,7 +358,7 @@ function setTool(name){
   all('.toolBtn').forEach(el=>el.classList.toggle('active', el.dataset.tool===name));
 }
 
-/* ---------- Coords ---------- */
+/* ========== COORDS ========== */
 function toWorld(sx,sy){
   return { x:(sx - canvas.width/DPR/2 - state.pan.x)/state.zoom,
            y:(sy - canvas.height/DPR/2 - state.pan.y)/state.zoom };
@@ -430,7 +368,7 @@ function toScreen(x,y){
            y: canvas.height/DPR/2 + state.pan.y + y*state.zoom };
 }
 
-/* ---------- Smart guides ---------- */
+/* ========== SMART GUIDES ========== */
 const GUIDE = { tolLenRatio:0.015, tolAngRad:Math.PI/180*2, nice:[0,Math.PI/6,Math.PI/4,Math.PI/3,Math.PI/2,2*Math.PI/3,3*Math.PI/4,Math.PI] };
 function segLen(a,b){ return Math.hypot(b.x-a.x, b.y-a.y); }
 function segAng(a,b){ return Math.atan2(b.y-a.y, b.x-a.x); }
@@ -438,23 +376,17 @@ function normAng(rad){ let x=rad%(2*Math.PI); if(x<0) x+=2*Math.PI; return x; }
 function minAngDelta(a,b){ const d=Math.abs(normAng(a)-normAng(b)); return Math.min(d, 2*Math.PI-d); }
 function nearAng(a,b,t=GUIDE.tolAngRad){ return minAngDelta(a,b) <= t; }
 function nearLen(L1,L2,rel=GUIDE.tolLenRatio){ return Math.abs(L1-L2) <= Math.max(1e-6, rel*Math.max(L1,L2)); }
-
-let badgePool=[];
-function clearBadges(){ badgePool.forEach(el=>el.remove()); badgePool.length=0; }
+let badgePool=[]; function clearBadges(){ badgePool.forEach(el=>el.remove()); badgePool.length=0; }
 function placeBadge(screenPt, text, variant='info'){
   if(badgePool.length>=2) return;
-  const el = document.createElement('div');
-  el.className = 'badge'+(variant==='good'?' alt':(variant==='muted'?' muted':'' ));
-  el.style.left = screenPt.x+'px';
-  el.style.top  = (screenPt.y- (badgePool.length*18) )+'px';
-  el.textContent = text;
-  overlay.appendChild(el);
-  badgePool.push(el);
+  const el=document.createElement('div');
+  el.className='badge'+(variant==='good'?' alt':'');
+  el.style.left=screenPt.x+'px'; el.style.top=(screenPt.y-(badgePool.length*18))+'px'; el.textContent=text;
+  overlay.appendChild(el); badgePool.push(el);
 }
 function getPrevEdge(){
   if(state.drawing?.type==='tempPoly' && state.drawing.points.length>=2){
-    const pts = state.drawing.points;
-    return {A:pts[pts.length-2], B:pts[pts.length-1]};
+    const pts=state.drawing.points; return {A:pts[pts.length-2],B:pts[pts.length-1]};
   }
   for(let i=state.shapes.length-1;i>=0;i--){
     const s=state.shapes[i];
@@ -464,12 +396,11 @@ function getPrevEdge(){
   return null;
 }
 function smartGuideHook(){
-  clearBadges();
-  if(!state.drawing || !state.hover?.screen) return;
+  clearBadges(); if(!state.drawing || !state.hover?.screen) return;
   const h=state.hover, prev=getPrevEdge();
   const annotate=(A,B,cursor)=>{
     const L=segLen(A,B), ang=segAng(A,B);
-    placeBadge(cursor, `${L.toFixed(1)}`, 'info');
+    placeBadge(cursor, `${L.toFixed(1)}`);
     for(const na of GUIDE.nice){ if(nearAng(ang,na)){ placeBadge(cursor, `${Math.round(na*180/Math.PI)}°`, 'good'); break; } }
     if(prev){
       const Lp=segLen(prev.A,prev.B), Ap=segAng(prev.A,prev.B);
@@ -484,13 +415,12 @@ function smartGuideHook(){
       const A=pts[pts.length-1]; const L=applyAngleLock(A,h); const Ls=toScreen(L.x,L.y); annotate(A,L,Ls);
     }
   } else if(state.drawing.type==='tempRect'){
-    const A=state.drawing.A, B=h;
-    const w=Math.abs(B.x-A.x), ht=Math.abs(B.y-A.y);
+    const A=state.drawing.A, B=h; const w=Math.abs(B.x-A.x), ht=Math.abs(B.y-A.y);
     if(nearLen(w,ht)) placeBadge(toScreen((A.x+B.x)/2,(A.y+B.y)/2),'□ square','good');
   }
 }
 
-/* ---------- Grid & snapping ---------- */
+/* ========== GRID & SNAPPING ========== */
 function gridCentersNear(x,y,range=3){
   const {stepX,stepY}=grid();
   const rr=Math.round(y/stepY), cc=Math.round((x-(rr%2? stepX/2:0))/stepX);
@@ -548,7 +478,7 @@ function snapWorld(x,y,strong,excludeSet){
   return best;
 }
 
-/* ---------- Angle lock ---------- */
+/* ========== ANGLE LOCK ========== */
 function applyAngleLock(a0,a1){
   const mode=state.angleLock;
   if(mode==='off') return a1;
@@ -562,25 +492,21 @@ function applyAngleLock(a0,a1){
   return {x:a0.x+Math.cos(best)*len, y:a0.y+Math.sin(best)*len};
 }
 
-/* ---------- Undo ---------- */
+/* ========== UNDO ========== */
 function pushUndo(){ state.undo.push(JSON.stringify({shapes:state.shapes})); state.redo.length=0; }
 function undo(){ if(!state.undo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const prev=state.undo.pop(); state.redo.push(cur); state.shapes = JSON.parse(prev).shapes; state.selection.clear(); }
 function redo(){ if(!state.redo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const next=state.redo.pop(); state.undo.push(cur); state.shapes = JSON.parse(next).shapes; state.selection.clear(); }
 
-/* ---------- Finishers ---------- */
+/* ========== FINISHERS ========== */
 function finishLine(B){ const A=state.drawing.A; const L=applyAngleLock(A,B); state.shapes.push({type:'seg', a:A, b:L, wall:state.wallThick||0}); state.drawing=null; }
 function finishArc(B){ const A=state.drawing.A; const C={x:(A.x+B.x)/2, y:(A.y+B.y)/2}; const r=Math.hypot(B.x-A.x,B.y-A.y)/2; const a1=Math.atan2(A.y-C.y,A.x-C.x), a2=Math.atan2(B.y-C.y,B.x-C.x); state.shapes.push({type:'arc', c:C, r, a1, a2}); state.drawing=null; }
 function finishRect(B){ const A=state.drawing.A; state.shapes.push({type:'rect', a:{x:Math.min(A.x,B.x), y:Math.min(A.y,B.y)}, b:{x:Math.max(A.x,B.x), y:Math.max(A.y,B.y)}, wall:state.wallThick||0}); state.drawing=null; }
+function finishOpening(B){ const A=state.drawing.A; state.shapes.push({type:'rect', a:{x:Math.min(A.x,B.x), y:Math.min(A.y,B.y)}, b:{x:Math.max(A.x,B.x), y:Math.max(A.y,B.y)}, opening:true}); state.drawing=null; }
 function finishCirc(B){ const A=state.drawing.A; const r=Math.hypot(B.x-A.x,B.y-A.y); state.shapes.push({type:'circ', c:A, r}); state.drawing=null; }
 function finishDim(B){ const A=state.drawing.A; const len=Math.hypot(B.x-A.x,B.y-A.y); state.shapes.push({type:'dim', a:A, b:B, text:`${len.toFixed(1)}`}); state.drawing=null; }
 function finalizePolyline(){ const pts=state.drawing.points; if(pts.length>=2){ for(let i=0;i<pts.length-1;i++){ state.shapes.push({type:'seg', a:pts[i], b:pts[i+1], wall:state.wallThick||0}); } } state.drawing=null; }
-function finishOpening(B){
-  const A=state.drawing.A;
-  const rect = {type:'rect', a:{x:Math.min(A.x,B.x), y:Math.min(A.y,B.y)}, b:{x:Math.max(A.x,B.x), y:Math.max(A.y,B.y)}, opening:true};
-  state.shapes.push(rect); state.drawing=null;
-}
 
-/* ---------- Erase ---------- */
+/* ========== ERASE ========== */
 function eraseNearest(P){
   let bi=-1, bd=1e9;
   state.shapes.forEach((d,i)=>{
@@ -597,7 +523,7 @@ function eraseNearest(P){
   if(bi>=0) state.shapes.splice(bi,1);
 }
 
-/* ---------- Hit test + selection ---------- */
+/* ========== HIT TEST / SELECT ========== */
 function distPointSeg(P,A,B){
   const vx=B.x-A.x, vy=B.y-A.y;
   const wx=P.x-A.x, wy=P.y-A.y;
@@ -640,15 +566,12 @@ function centerOfSelection(){
   return { x:(minX+maxX)/2, y:(minY+maxY)/2, box:{minX,minY,maxX,maxY} };
 }
 
-/* ---------- Events ---------- */
+/* ========== EVENTS ========== */
 let dragSel=null;
-let cursorDot = document.createElement('div');
-cursorDot.className = 'cursor-dot';
-overlay.appendChild(cursorDot);
+let cursorDot=document.createElement('div'); cursorDot.className='cursor-dot'; overlay.appendChild(cursorDot);
 
 canvas.addEventListener('mousemove', (e)=>{
   lastMouse={x:e.clientX,y:e.clientY};
-  // Yellow dot right at cursor tip
   cursorDot.style.left = (e.clientX)+'px';
   cursorDot.style.top  = (e.clientY-1)+'px';
 
@@ -681,7 +604,6 @@ canvas.addEventListener('mousemove', (e)=>{
     });
   }
 });
-
 canvas.addEventListener('mousedown', (e)=>{
   if(e.button===1){ middlePanning=true; return; }
   if(e.button===2) return;
@@ -741,7 +663,7 @@ addEventListener('keydown', e=>{
 });
 addEventListener('keyup', e=>{ if(e.code==='Space'){ isSpace=false; } });
 
-/* ---------- Zoom / Export ---------- */
+/* ========== ZOOM / FIT ========== */
 function zoomAt(factor, screenPoint){
   const before=state.zoom; const after=Math.max(0.25, Math.min(6, before*factor));
   if(after===before) return;
@@ -772,13 +694,28 @@ function zoomToFit(){
   stZoom.textContent = `Zoom: ${(state.zoom*100).toFixed(0)}%`;
 }
 
-/* ---------- Exports ---------- */
+/* ========== SCALE BAR ========== */
+function drawScale(){
+  const {stepX} = grid();
+  const unit = state.unit;
+  const uPerStep = state.unitScale;
+  const pxPerStep = stepX * state.zoom;
+  let steps = 1;
+  if(pxPerStep<40) steps=2;
+  if(pxPerStep<20) steps=5;
+  if(pxPerStep<10) steps=10;
+  const pixels = Math.max(12, (pxPerStep * steps)|0);
+  const label = `${(uPerStep*steps).toFixed(2)} ${unit}`;
+  scaleBar.innerHTML = `<div style="width:${pixels}px;height:6px;background:#cfe0ff;border-radius:4px;margin-bottom:2px"></div><div>${label}</div>`;
+}
+
+/* ========== EXPORTS ========== */
+function exportPNG(){ const a=document.createElement('a'); a.download='universe120.png'; a.href=canvas.toDataURL('image/png'); a.click(); }
 function exportSVG(){
   const w=canvas.width/DPR, h=canvas.height/DPR, sw=state.strokeW;
-  const stroke='#ffffff', gridStroke='#ffffff22';
-  const out=[];
+  const stroke='#ffffff', gridStroke='#ffffff22', out=[];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none" stroke="${stroke}" stroke-width="${sw}">`);
-  const G=grid(); const R=G.R*state.dotScale; const stepX=G.stepX, stepY=G.stepY;
+  const G=grid(), R=G.R*state.dotScale, stepX=G.stepX, stepY=G.stepY;
   out.push(`<g id="grid" stroke="${gridStroke}" stroke-width="0.9">`);
   const cols=Math.ceil(w/(stepX*state.zoom))+4, rows=Math.ceil(h/(stepY*state.zoom))+4;
   const x0 = -((w/2 + state.pan.x)/state.zoom);
@@ -801,11 +738,11 @@ function exportSVG(){
     if(d.type==='dim'){ const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y); out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#cc0000"/>`); const mx=(a.x+b.x)/2, my=(a.y+b.y)/2; out.push(`<text x="${mx+4}" y="${my-4}" font-size="12" fill="#cc0000" stroke="none">${d.text||''}</text>`); }
   });
   out.push(`</g></svg>`);
-  const blob = new Blob([out.join('\n')],{type:'image/svg+xml'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='universe120.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
+  const blob = new Blob([out.join('\n')],{type:'image/svg+xml'}); const url = URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='universe120.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
-function exportPNG(){ const link=document.createElement('a'); link.download='universe120.png'; link.href=canvas.toDataURL('image/png'); link.click(); }
 
-/* ---------- 3D build & glTF ---------- */
+/* ========== 3D BUILD & GLTF ========== */
 let three = null;
 function ensureThree(){
   if(three) return three;
@@ -829,13 +766,13 @@ function ensureThree(){
 }
 function build3D(){
   const {scene} = ensureThree();
-  // remove previous meshes
+  // remove previous
   for(let i=scene.children.length-1;i>=0;i--){
     const o=scene.children[i]; if(o.userData?.u120) scene.remove(o);
   }
   const wallH = Math.max(0.1, +($('#wallHeight').value||10));
   const wire = $('#wireframe').checked;
-  // Collect rect rooms + openings
+
   const solids = [], holesFor=[];
   state.shapes.forEach((s,i)=>{
     if(s.type==='rect' && !s.opening){
@@ -855,11 +792,14 @@ function build3D(){
       }
     }
   });
+
   const {stepX, stepY} = grid();
   const uStep = state.unitScale;
   const sx = x=> (x/stepX)*uStep;
   const sy = y=> (y/stepY)*uStep;
+
   const mat = new THREE.MeshStandardMaterial({color:0xe9edf7, metalness:0.05, roughness:0.9, wireframe:wire});
+
   solids.forEach(room=>{
     const shape = new THREE.Shape();
     shape.moveTo(sx(room.minX), 0);
@@ -878,8 +818,7 @@ function build3D(){
     });
     const geom = new THREE.ExtrudeGeometry(shape, {depth:wallH, bevelEnabled:false});
     geom.rotateX(-Math.PI/2);
-    const mesh = new THREE.Mesh(geom, mat);
-    mesh.userData.u120 = true;
+    const mesh = new THREE.Mesh(geom, mat); mesh.userData.u120 = true;
     scene.add(mesh);
   });
 }
@@ -897,7 +836,7 @@ function exportGLTF(){
   });
 }
 
-/* ---------- Draw ---------- */
+/* ========== DRAWING ========== */
 function drawGrid(){
   const G=grid(); const R=G.R*state.dotScale; const stepX=G.stepX, stepY=G.stepY;
   const w=canvas.width/DPR, h=canvas.height/DPR;
@@ -917,19 +856,6 @@ function drawGrid(){
   }
   ctx.restore();
 }
-function drawScale(){
-  const {stepX} = grid();
-  const unit = state.unit;
-  const uPerStep = state.unitScale;
-  const pxPerStep = stepX * state.zoom;
-  let steps = 1;
-  if(pxPerStep<40) steps=2;
-  if(pxPerStep<20) steps=5;
-  if(pxPerStep<10) steps=10;
-  const pixels = Math.max(12, (pxPerStep * steps)|0);
-  const label = `${(uPerStep*steps).toFixed(2)} ${unit}`;
-  scaleBar.innerHTML = `<div style="width:${pixels}px;height:6px;background:#cfe0ff;border-radius:4px;margin-bottom:2px"></div><div>${label}</div>`;
-}
 function drawShapes(){
   ctx.save();
   ctx.lineCap='round'; ctx.lineJoin='round';
@@ -947,6 +873,7 @@ function drawShapes(){
     if(s.type==='label'){ const p=toScreen(s.p.x,s.p.y); ctx.font='14px system-ui'; ctx.fillText(s.text||'Label', p.x, p.y); }
     if(s.type==='dim'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.strokeStyle='#cc0000'; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); ctx.fillStyle='#cc0000'; ctx.font='12px system-ui'; ctx.fillText(s.text||'', (a.x+b.x)/2+4, (a.y+b.y)/2-4); ctx.strokeStyle='#fff'; ctx.fillStyle='#fff'; }
   });
+
   // Previews
   ctx.setLineDash([6,6]); ctx.strokeStyle = '#cbd5ff';
   const h=state.hover?.screen;
@@ -959,6 +886,7 @@ function drawShapes(){
     if(state.drawing.type==='tempPoly' && h){ const pts=state.drawing.points; const A=pts[pts.length-1]; const L=applyAngleLock(A, state.hover); const pA=toScreen(A.x,A.y), pL=toScreen(L.x,L.y); ctx.beginPath(); ctx.moveTo(pA.x,pA.y); ctx.lineTo(pL.x,pL.y); ctx.stroke(); }
   }
   ctx.setLineDash([]);
+
   // Selection box
   if(state.selection && state.selection.size){
     let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
@@ -971,14 +899,18 @@ function drawShapes(){
   smartGuideHook(); drawScale();
 }
 
-/* ---------- Main loop ---------- */
+/* ========== MAIN LOOP ========== */
 function frame(){ ctx.clearRect(0,0,canvas.width,canvas.height); drawGrid(); drawShapes(); requestAnimationFrame(frame); }
 
-/* ---------- Export PNG helper ---------- */
-function exportPNG(){ const link=document.createElement('a'); link.download='universe120.png'; link.href=canvas.toDataURL('image/png'); link.click(); }
-
-/* ---------- Init ---------- */
-function init(){ resize(); setTool('select'); stZoom.textContent='Zoom: 100%'; requestAnimationFrame(frame); }
+/* ========== INIT ========== */
+function init(){
+  resize();
+  setTool('select');
+  stZoom.textContent='Zoom: 100%';
+  // cursor dot follow overlay area
+  const dot=document.createElement('div'); dot.className='cursor-dot';
+  requestAnimationFrame(frame);
+}
 init();
   </script>
 </body>
