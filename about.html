@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,15 +10,20 @@
 :root{ --bg:#0d2a55; --card:#0f356d; --ink:#fff; --border:#1e4d9a; --brand:#ffe36a; --toolbar:#10366f; }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+
+/* NAV */
 .navbar{ position:fixed; inset:0 0 auto 0; height:56px; z-index:60; display:flex; align-items:center; gap:12px; padding:8px 12px; background:#0f356d; color:#fff; border-bottom:1px solid var(--border) }
 .brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; color:#fff; text-decoration:none}
 .brand .mark{ width:26px; height:26px; display:block }
 .navlinks{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap }
 .navlinks a{ text-decoration:none; color:#fff; border:1px solid #204c96; background:var(--toolbar); padding:7px 12px; border-radius:10px; font-size:13px }
 .navlinks a.active{ outline:2px solid var(--brand) }
-main{ padding:96px 20px 80px; max-width:900px; margin:0 auto; color:#eaf1ff }
+
+/* PAGE */
+main{ padding:96px 20px 80px; max-width:920px; margin:0 auto; color:#eaf1ff }
 .lead{ font-size:1.1rem; color:#e7f0ff }
-a{ color:#ffe36a }
+code,kbd{ background:#122445; padding:.1rem .35rem; border-radius:6px; border:1px solid #243f7f }
+a{ color:#ffe36a; text-decoration:none }
 </style>
 </head>
 <body>
@@ -29,25 +35,42 @@ a{ color:#ffe36a }
     <div class="navlinks">
       <a href="index.html">Home</a>
       <a class="active" href="about.html">About</a>
+      <a href="feedback.html">Feedback</a>
     </div>
   </div>
 
   <main>
     <h1>About Universe120</h1>
     <p class="lead">
-      Draw on a bubble-grid with smart snap/angles, place openings, then preview simple 3D walls and export PNG/SVG/glTF.
-      Runs fully in your browser during beta.
+      A precise, friendly blueprint playground: draw on a bubble grid with smart snapping, then preview simple 3D walls—right in your browser.
     </p>
-    <h2>What’s included</h2>
+
+    <h2>What you can do today</h2>
     <ul>
-      <li>2D bubble-grid editor with tools + smart guides</li>
-      <li>“Opening” rectangles become holes when extruded</li>
-      <li>3D viewer (orbit & presets, wall height, wireframe)</li>
-      <li>Export: PNG/SVG (2D) and glTF (3D)</li>
-      <li>Move/rotate/select/group/ungroup</li>
-      <li>Units selector + scale bar</li>
+      <li>2D editor: Select/Move/Rotate/Group, Line, Pen (polyline), Rectangle, Circle, Arc, Text, Dimension, Erase</li>
+      <li>Smart guides: 0/30/45/60/90° plus equal (≡), parallel (∥), perpendicular (⊥) hints</li>
+      <li><b>Openings</b>: draw red rectangles inside a room → they become holes in 3D</li>
+      <li>Units & scale bar: choose ft/in/cm/m/etc. and set units per grid step</li>
+      <li>3D Viewer: orbit & view presets, wall height, wireframe, glTF export</li>
+      <li>2D export: PNG and SVG for sharing or laser/maker workflows</li>
     </ul>
-    <p>Beta feedback: <a href="mailto:120spaceproject@gmail.com">120spaceproject@gmail.com</a></p>
+
+    <h2>Quick how-to</h2>
+    <ol>
+      <li>Use the <b>Tools ▾</b> panel under Properties to pick a tool.</li>
+      <li>Hold <kbd>Space</kbd> and drag to pan. Use the mouse wheel to zoom.</li>
+      <li>Use <b>Opening</b> tool (red) inside a room rectangle to cut window/door holes.</li>
+      <li>Click <b>3D Viewer</b>, set Wall height, then <b>Rebuild</b>.</li>
+      <li>Export with <b>Export PNG/SVG/glTF</b> on the top bar.</li>
+    </ol>
+
+    <h2>Notes</h2>
+    <p>
+      This beta extrudes room outlines directly. Next steps include named door/window components,
+      true wall thickness via offsets, and more editing conveniences.
+    </p>
+
+    <p>Questions or ideas? <a href="mailto:120spaceproject@gmail.com">120spaceproject@gmail.com</a></p>
   </main>
 </body>
 </html>
