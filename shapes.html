@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Shapes & Lessons — Universe120</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<style>
+:root{ --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a; }
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+
+/* NAV */
+.navbar{position:fixed; inset:0 0 auto 0; height:56px; z-index:50; display:flex; align-items:center; gap:12px; background:#0f356d; color:#fff; border-bottom:1px solid var(--border); padding:8px 12px}
+.brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; text-decoration:none; color:#fff}
+.brand .mark{width:26px; height:26px; border-radius:6px; background:#123b79; display:inline-block; box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659}
+.navlinks{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap }
+.navlinks a{ text-decoration:none; color:#fff; border:1px solid #204c96; background:#10366f; padding:7px 12px; border-radius:10px; font-size:13px }
+.navlinks a:hover{ background:#13407f }
+.navlinks a.active{ outline:2px solid var(--brand) }
+
+/* Page */
+.page{padding:88px 20px 80px; max-width:960px; margin:0 auto}
+.page h1{ font-size:2rem; margin:.5rem 0 1rem }
+.page h2{ margin:1.4rem 0 .6rem }
+.page h3{ margin:1.1rem 0 .4rem }
+.page p, .page li{ line-height:1.65 }
+.lead{font-size:1.1rem; color:#e7f0ff}
+a{ color:#ffe36a }
+
+/* Lesson cards */
+.cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; }
+.card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px; }
+.card h3{ margin:.25rem 0 .5rem; font-size:1.05rem }
+.step{ display:flex; gap:10px; align-items:flex-start; margin:.55rem 0 }
+.step .num{ background:var(--brand); color:#001327; border-radius:8px; font-weight:700; font-size:.9rem; padding:2px 8px; min-width:28px; text-align:center }
+.step p{ margin:.2rem 0 }
+
+/* Simple inline “gridy” art */
+.demo{
+  border:1px dashed #294d8f; border-radius:12px; padding:10px; background:#0b2a55;
+}
+.demo svg{ width:100%; height:auto; display:block }
+.demo .cap{ font-size:.85rem; color:#cfe0ff; margin-top:6px }
+
+/* Footer */
+.site-footer{ position:fixed; left:0; right:0; bottom:0; background:#0f356d; color:#fff;
+  border-top:1px solid var(--border); height:40px; display:flex; align-items:center; justify-content:center; }
+.site-footer a{ color:#ffe36a; text-decoration:none }
+
+/* Passcode gate */
+#lockScreen{ position:fixed; inset:0; background:#0d2a55; color:#fff; display:flex; align-items:center; justify-content:center; z-index:1000; flex-direction:column; }
+#lockScreen .card{ background:#0f356d; border:1px solid var(--border); border-radius:12px; padding:18px; width:min(92vw,440px); box-shadow:0 12px 28px rgba(0,0,0,.25); }
+#lockScreen input{ width:100%; margin-top:8px; background:#10366f; color:#fff; border:1px solid #204c96; border-radius:10px; padding:10px 12px; font-size:16px }
+#lockScreen button{ margin-top:10px; padding:10px 12px; font-size:16px }
+#lockMsg{ margin-top:10px; color:#ff8a8a; min-height:1.2em }
+kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;border-radius:5px;padding:1px 5px;font-family:ui-monospace,Menlo,Consolas,monospace}
+</style>
+</head>
+<body>
+
+<!-- PASSCODE (same code @@U120) -->
+<div id="lockScreen">
+  <div class="card">
+    <h2 style="margin:.2rem 0 .5rem">Universe120 Beta</h2>
+    <p style="margin:0 0 .5rem">Enter access code to continue.</p>
+    <input type="password" id="accessCodeInput" placeholder="Access code">
+    <button id="accessCodeBtn">Enter</button>
+    <div id="lockMsg"></div>
+    <p style="margin-top:12px; font-size:12px; color:#cfe0ff">
+      Open beta — send ideas or bugs to
+      <a style="color:#ffe36a" href="mailto:120spaceproject@gmail.com">120spaceproject@gmail.com</a>.
+    </p>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="navbar">
+  <a class="brand" href="index.html" aria-label="Universe120 Home">
+    <span class="mark" aria-hidden="true"></span><span>Universe120</span>
+  </a>
+  <div class="navlinks">
+    <a href="index.html">Home</a>
+    <a class="active" href="shapes.html">Shapes & Lessons</a>
+    <a href="about.html">About</a>
+    <a href="mailto:120spaceproject@gmail.com">Email</a>
+  </div>
+</div>
+
+<main class="page">
+  <h1>Shapes & Lessons</h1>
+  <p class="lead">
+    Learn how to build 2D sketches on the bubble grid and turn them into 3D (and glimpse 4D ideas) with Universe120’s builder.
+  </p>
+
+  <h2>Before You Start</h2>
+  <ul>
+    <li>Open <b>Universe120 Home</b> (top-left), set <b>Units</b> (cm/in/ft/mi), tune <b>Grid</b> & <b>Dots</b>.</li>
+    <li>Use <b>Pen / Line / Rectangle / Circle</b> to outline your shape on the bubble grid. Snap/Angle guides help you align to 0/30/45/60/90° and intersections.</li>
+    <li>Set <b>Wall height</b> (in your chosen units). Click <b>Build 3D</b> to see the result in the viewer.</li>
+    <li>Export 2D (<b>PNG/SVG</b>) or 3D (<b>glTF</b>) anytime.</li>
+  </ul>
+
+  <h2>Core 3D Shapes (Step-by-Step)</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>1) Cube / Rectangular Prism</h3>
+      <div class="demo">
+        <svg viewBox="0 0 220 160">
+          <defs><radialGradient id="g" cx="0.3" cy="0.3" r="1"><stop offset="0" stop-color="#fff" stop-opacity=".25"/><stop offset="1" stop-color="#ffffff00"/></radialGradient></defs>
+          <rect x="1" y="1" width="218" height="158" rx="12" fill="#0b2a55" stroke="#294d8f"/>
+          <!-- fake bubble dots -->
+          <g stroke="#ffffff22" fill="none">
+            <script type="application/ecmascript"><![CDATA[
+              // (inline dots for illustration only)
+            ]]></script>
+          </g>
+          <rect x="60" y="40" width="80" height="60" fill="none" stroke="#fff" stroke-width="2"/>
+        </svg>
+        <div class="cap">Draw a rectangle; Build 3D → set wall height to make a box.</div>
+      </div>
+      <div class="step"><div class="num">1</div><p>Select <b>Rectangle</b> and draw a box on the grid.</p></div>
+      <div class="step"><div class="num">2</div><p>Use <b>Dimension</b> if you want exact size (e.g., 300 cm × 300 cm).</p></div>
+      <div class="step"><div class="num">3</div><p>Set <b>Wall height</b> (e.g., 300 cm). Click <b>Build 3D</b>.</p></div>
+    </div>
+
+    <div class="card">
+      <h3>2) Cylinder (Pillar / Tower)</h3>
+      <div class="demo">
+        <svg viewBox="0 0 220 160">
+          <rect x="1" y="1" width="218" height="158" rx="12" fill="#0b2a55" stroke="#294d8f"/>
+          <circle cx="110" cy="80" r="40" fill="none" stroke="#fff" stroke-width="2"/>
+        </svg>
+        <div class="cap">Draw a circle; Build 3D extrudes it upward.</div>
+      </div>
+      <div class="step"><div class="num">1</div><p>Select <b>Circle</b> and pick center + radius (snap to grid).</p></div>
+      <div class="step"><div class="num">2</div><p>Set <b>Wall height</b> to desired pillar height; <b>Build 3D</b>.</p></div>
+    </div>
+
+    <div class="card">
+      <h3>3) Extruded Irregular Room</h3>
+      <div class="demo">
+        <svg viewBox="0 0 220 160">
+          <rect x="1" y="1" width="218" height="158" rx="12" fill="#0b2a55" stroke="#294d8f"/>
+          <polyline points="40,110 60,40 110,40 150,70 140,120 60,120 40,110"
+                    fill="none" stroke="#fff" stroke-width="2"/>
+        </svg>
+        <div class="cap">Use <b>Pen</b> to trace a closed loop. Build 3D extrudes it.</div>
+      </div>
+      <div class="step"><div class="num">1</div><p>Pick <b>Pen</b>. Click around to lay vertices; <b>Enter</b> to finish.</p></div>
+      <div class="step"><div class="num">2</div><p>Keep angles clean with 30/60/90° lock if you like.</p></div>
+      <div class="step"><div class="num">3</div><p><b>Build 3D</b> to extrude the footprint.</p></div>
+    </div>
+
+    <div class="card">
+      <h3>4) Openings (Doors / Windows)</h3>
+      <div class="demo">
+        <svg viewBox="0 0 220 160">
+          <rect x="1" y="1" width="218" height="158" rx="12" fill="#0b2a55" stroke="#294d8f"/>
+          <rect x="40" y="30" width="140" height="90" fill="none" stroke="#fff" stroke-width="2"/>
+          <rect x="100" y="55" width="30" height="40" fill="none" stroke="#ff6464" stroke-width="2"/>
+        </svg>
+        <div class="cap">Red rectangles fully inside a room become holes in 3D.</div>
+      </div>
+      <div class="step"><div class="num">1</div><p>Draw a <b>room</b> with <b>Rectangle</b> (white stroke).</p></div>
+      <div class="step"><div class="num">2</div><p>Switch to <b>Rectangle</b> again and draw an <b>Opening</b> (use red stroke via “Wall (px)=0” and keep it inside the room). In the main app, any rect fully inside a room is treated as a hole when you <b>Build 3D</b>.</p></div>
+      <div class="step"><div class="num">3</div><p>Click <b>Build 3D</b> — the opening cuts through.</p></div>
+    </div>
+
+    <div class="card">
+      <h3>5) Cone (Intro)</h3>
+      <div class="demo">
+        <svg viewBox="0 0 220 160">
+          <rect x="1" y="1" width="218" height="158" rx="12" fill="#0b2a55" stroke="#294d8f"/>
+          <circle cx="110" cy="110" r="40" fill="none" stroke="#fff" stroke-width="2"/>
+          <line x1="110" y1="30" x2="110" y2="110" stroke="#ffe36a" stroke-width="2"/>
+        </svg>
+        <div class="cap">Circle + guide line. (Future: “Lathe” tool will spin the profile.)</div>
+      </div>
+      <div class="step"><div class="num">1</div><p>Draw a base <b>Circle</b>.</p></div>
+      <div class="step"><div class="num">2</div><p>Use <b>Line</b> for a center axis up from the circle.</p></div>
+      <div class="step"><div class="num">3</div><p>(Coming soon) Use <b>Lathe</b> to spin a triangle profile around the axis to make a cone.</p></div>
+    </div>
+
+    <div class="card">
+      <h3>6) Sphere (Intro)</h3>
+      <div class="demo">
+        <svg viewBox="0 0 220 160">
+          <rect x="1" y="1" width="218" height="158" rx="12" fill="#0b2a55" stroke="#294d8f"/>
+          <circle cx="110" cy="80" r="40" fill="none" stroke="#fff" stroke-width="2"/>
+          <ellipse cx="110" cy="80" rx="40" ry="12" fill="none" stroke="#cfe0ff" stroke-width="1.5"/>
+        </svg>
+        <div class="cap">Draw a circle + an equator; (future) “Lathe” spins semicircle to a sphere.</div>
+      </div>
+      <div class="step"><div class="num">1</div><p>Draw a <b>Circle</b> and a light <b>ellipse</b> for the equator.</p></div>
+      <div class="step"><div class="num">2</div><p>(Coming soon) Use <b>Lathe</b> on a half-circle profile to generate a sphere.</p></div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:1.6rem">4D — Think in Cross-Sections</h2>
+  <p>
+    We can’t “see” 4D directly, but we can learn by slices. A <b>tesseract</b> (4D cube) can be understood
+    by how 3D “slices” change as a 4D hyperplane moves through it — like how a 2D slice through a sphere looks like a circle that grows then shrinks.
+  </p>
+  <div class="card">
+    <h3>Build a Tesseract Projection (Concept)</h3>
+    <div class="step"><div class="num">1</div><p>In 2D, draw a small square inside a larger square. Connect corresponding corners (that’s the classic 3D projection of a cube).</p></div>
+    <div class="step"><div class="num">2</div><p>For 4D, repeat: draw a cube inside a larger cube; connect corresponding corners — that wireframe is a tesseract projection.</p></div>
+    <div class="step"><div class="num">3</div><p>Use <b>Pen</b> + <b>Angle locks</b> to keep clean parallels. Label faces with <b>Text</b> (Front, Back, Inner, Outer).</p></div>
+    <div class="step"><div class="num">4</div><p>(Future) “Slice mode” will scrub a 3D slice through the 4D form to show how shapes morph over a 4th axis.</p></div>
+  </div>
+
+  <h2 style="margin-top:1.6rem">Tips</h2>
+  <ul>
+    <li><b>Hold Space</b> to pan; <b>mouse wheel</b> to zoom; <b>Shift+1</b> to Fit; <b>1</b> to reset 100%.</li>
+    <li>Use <b>Angle Lock</b> at 30/60/90° for isometric feels on the bubble grid.</li>
+    <li>Snap range too “sticky”? Tune <b>Snap Range</b> in the Home top bar. Hold <b>Alt</b> to temporarily disable snap.</li>
+    <li>Openings = any <b>Rectangle fully inside</b> a room rectangle (becomes a hole in 3D).</li>
+  </ul>
+</main>
+
+<footer class="site-footer">
+  <small>© <span id="year"></span> Universe120 • Beta • <a href="mailto:120spaceproject@gmail.com">Contact</a></small>
+</footer>
+
+<script>
+/* PASSCODE */
+const VALID_CODE="@@U120";
+const lockEl=document.getElementById('lockScreen');
+document.getElementById('accessCodeBtn').onclick=()=>{
+  const v=document.getElementById('accessCodeInput').value.trim();
+  if(v===VALID_CODE) lockEl.style.display='none';
+  else document.getElementById('lockMsg').textContent='Incorrect code.';
+};
+document.getElementById('accessCodeInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter')document.getElementById('accessCodeBtn').click();
+});
+document.getElementById('year').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>
