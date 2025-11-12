@@ -1,108 +1,232 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>About — Universe120</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <style>
 :root{
-  --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a;
+  --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#cfe0ff; --border:#1e4d9a; --brand:#ffe36a;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
-/* NAV */
+/* NAVBAR */
 .navbar{
-  position:fixed; inset:0 0 auto 0; height:56px; z-index:50;
-  display:flex; align-items:center; gap:12px;
-  background:#0f356d; color:#fff; border-bottom:1px solid var(--border);
-  padding:8px 12px;
+  position:fixed; inset:0 0 auto 0; height:56px; z-index:70;
+  display:flex; align-items:center; gap:12px; padding:8px 12px;
+  background:#0f356d; border-bottom:1px solid var(--border);
 }
-.brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; text-decoration:none; color:#fff}
-.brand .mark{width:26px; height:26px; border-radius:6px; background:#123b79; display:inline-block; box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659}
-.navlinks{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap }
+.brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; color:#fff; text-decoration:none}
+.brand img{width:26px; height:26px; display:block}
+.navlinks{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap}
 .navlinks a{ text-decoration:none; color:#fff; border:1px solid #204c96; background:#10366f; padding:7px 12px; border-radius:10px; font-size:13px }
 .navlinks a:hover{ background:#13407f }
 .navlinks a.active{ outline:2px solid var(--brand) }
 
-/* Page */
-.page{padding:88px 20px 80px; max-width:880px; margin:0 auto}
+/* PAGE */
+.page{padding:88px 20px 80px; max-width:1100px; margin:0 auto; display:grid; grid-template-columns: 1.1fr 1fr; gap:16px}
 .page h1{ font-size:2rem; margin:.5rem 0 1rem }
 .page h2{ margin:1.25rem 0 .5rem }
-.page p, .page li{ line-height:1.65 }
+.page p, .page li{ line-height:1.7 }
 .lead{font-size:1.1rem; color:#e7f0ff}
 a{ color:#ffe36a }
 
-/* Footer */
-.site-footer{ position:fixed; left:0; right:0; bottom:0; background:#0f356d; color:#fff;
-  border-top:1px solid var(--border); height:40px; display:flex; align-items:center; justify-content:center; }
-.site-footer a{ color:#ffe36a; text-decoration:none }
+/* PANELS */
+.panel{
+  background:#0f356d; border:1px solid var(--border); border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.2); padding:16px; color:#eaf1ff
+}
+.panel h3{ margin:.3rem 0 .6rem; font-size:16px }
+.panel .row{ display:flex; align-items:center; gap:8px; margin:.5rem 0 }
+
+/* 3D viewer */
+.viewer{ padding:0; overflow:hidden }
+.viewer header{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 12px; border-bottom:1px solid var(--border) }
+.viewer .body{ position:relative; height:420px; background:#0b2a55 }
+#threeMount{ position:relative; width:100%; height:100% }
+.viewer .bar{ display:flex; flex-wrap:wrap; gap:8px; padding:10px 12px; border-top:1px solid var(--border) }
+
+button,.btn,select,input[type="number"]{
+  appearance:none; border:1px solid #204c96; background:#10366f; color:#fff; border-radius:10px; padding:8px 10px; font-size:13px; cursor:pointer
+}
+button:hover,.btn:hover{ background:#13407f }
+input[type="number"]{ width:88px }
+
+/* STATUS */
+.status{
+  position:fixed; left:0; right:0; bottom:0; height:44px; z-index:65;
+  display:flex; align-items:center; gap:16px; padding:0 10px;
+  background:#0f356d; color:#fff; border-top:1px solid --var(border); font-size:12px
+}
+
+/* Small screens */
+@media (max-width: 980px){
+  .page{ grid-template-columns: 1fr; }
+  .viewer .body{ height:340px }
+}
 </style>
 </head>
 <body>
+  <!-- NAV -->
   <div class="navbar">
     <a class="brand" href="index.html" aria-label="Universe120 Home">
-      <span class="mark" aria-hidden="true"></span>
+      <img src="assets/logo.svg" alt="U120">
       <span>Universe120</span>
     </a>
     <div class="navlinks">
       <a href="index.html">Home</a>
+      <a href="4d.html">4D</a>
       <a class="active" href="about.html">About</a>
       <a href="mailto:120spaceproject@gmail.com">Email</a>
     </div>
   </div>
 
   <main class="page">
-    <h1>About Universe120</h1>
-    <p class="lead">
-      Universe120 is a blueprint-style drawing playground where people learn how our world grows from
-      <b>2D lines</b> to <b>3D shapes</b>—and how imagination helps us sense a <b>4th direction</b>.
-    </p>
-
-    <section id="whats-included" style="margin-top:1.25rem">
-      <h2>What’s Included (Today)</h2>
-      <ul>
-        <li><b>2D Bubble-Grid Editor</b> — precision tools + smart guides (angles, equal length, parallel/perpendicular).</li>
-        <li><b>Floors System</b> — add/select floors with per-floor height controls.</li>
-        <li><b>Opening Tool</b> — draw openings (red). If placed inside a room/rect, they become holes in 3D (also works for polygon loops when enclosed).</li>
-        <li><b>Live 3D Viewer</b> — Orbit controls, Iso/Top/Front presets, Wireframe toggle, adjustable wall height.</li>
-        <li><b>Export</b> — PNG/SVG for 2D; glTF for 3D pipelines.</li>
-        <li><b>Transform Tools</b> — move, rotate (handle with angle snap), select, group, ungroup.</li>
-        <li><b>Measurements</b> — the status bar shows length/angle for the current selection.</li>
-      </ul>
-      <p><b>Notes / Roadmap</b>:</p>
-      <ul>
-        <li>Doors/windows use the <i>Opening</i> tool for now (rect holes). Next: named components (width/height/panes) + auto placement along walls.</li>
-        <li>Offsets & true wall thickness: this beta extrudes the outline directly. Next: polygon offset (inset/outset) to model double-line walls.</li>
-        <li>CSG library is staged for future boolean cuts; the current hole method is faster for rectangles.</li>
-      </ul>
-      <p class="lead" style="margin-top:.75rem">
-        Tip: Press <kbd>Space</kbd> to pan, use the mouse wheel to zoom, and <kbd>Shift</kbd>+<kbd>1</kbd> for Zoom-to-Fit.
+    <!-- Left: copy -->
+    <section class="panel">
+      <h1>About Universe120</h1>
+      <p class="lead">
+        Universe120 is a blueprint-style drawing playground where you learn how our world grows from <b>2D lines</b>
+        to <b>3D structure</b>—and how imagination helps us sense a <b>4D direction</b>.
       </p>
+
+      <h2>What it does</h2>
+      <ul>
+        <li><b>2D Bubble Grid:</b> draw with snap-to-intersections, midpoints, equal-length & angle badges (0/30/45/60/90°).</li>
+        <li><b>Floors & Openings:</b> outline rooms, add “Openings” (red) for doors/windows, set per-floor heights.</li>
+        <li><b>Live 3D:</b> extrude walls instantly, orbit in 3D, toggle wireframe, export to glTF.</li>
+        <li><b>Classroom Friendly:</b> measurements, labels, PNG/SVG export for worksheets and laser/maker flows.</li>
+      </ul>
+
+      <h2>Privacy & Access</h2>
+      <p>Runs entirely in your browser during beta—no sign-in or tracking. Ideas & bugs: <a href="mailto:120spaceproject@gmail.com">120spaceproject@gmail.com</a></p>
+
+      <h2>Roadmap</h2>
+      <ul>
+        <li>Named doors/windows with width/height/pane types & snapping to walls.</li>
+        <li>True wall thickness via polygon offset (inset/outset) before 3D extrude.</li>
+        <li>Boolean openings (arcs & custom shapes) via CSG.</li>
+        <li>Lesson packs for 3D/4D thinking, classrooms, and studio prompts.</li>
+      </ul>
     </section>
 
-    <section>
-      <h2>Who it’s for</h2>
-      <p>Curious minds ages 6–106. Kid-friendly, powerful enough for teens, teachers, and architects doing rough concept work.</p>
-    </section>
-
-    <section>
-      <h2>Privacy</h2>
-      <p>Universe120 runs entirely in your browser during the beta. No accounts, no data collection.</p>
-    </section>
-
-    <section>
-      <h2>Contact</h2>
-      <p>Questions or classroom ideas? Email <a href="mailto:120spaceproject@gmail.com">120spaceproject@gmail.com</a>. We love educator and architect feedback.</p>
+    <!-- Right: embedded 3D viewer -->
+    <section class="panel viewer" aria-label="3D demo viewer">
+      <header>
+        <h3 style="margin:0">3D Viewer — Demo</h3>
+        <div class="row" style="gap:10px">
+          <button id="loadDemo" class="btn">Load Demo Floor</button>
+          <label class="row" style="gap:6px"><span>Height</span><input id="demoHeight" type="number" value="300" min="50" step="10"></label>
+        </div>
+      </header>
+      <div class="body">
+        <div id="threeMount"></div>
+      </div>
+      <div class="bar">
+        <button id="viewIso">Iso</button>
+        <button id="viewTop">Top</button>
+        <button id="viewFront">Front</button>
+        <label class="row" style="gap:6px"><span>Wireframe</span><input type="checkbox" id="wireChk"></label>
+        <button id="exportGLTF" class="btn">Export glTF</button>
+      </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <small>© <span id="year"></span> Universe120 • Beta •
-      <a href="mailto:120spaceproject@gmail.com">Contact</a>
-    </small>
-  </footer>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script type="module">
+    import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
+    import { OrbitControls } from "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+    import { GLTFExporter } from "https://unpkg.com/three@0.160.0/examples/jsm/exporters/GLTFExporter.js";
+
+    const $ = q=>document.querySelector(q);
+    let renderer, scene, camera, controls, root, wallGroup;
+
+    function initThree(){
+      root = $('#threeMount');
+      renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+      renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+      renderer.setClearColor(0x0b2a55, 1);
+      root.appendChild(renderer.domElement);
+
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(55, 1, 0.1, 5000);
+      camera.position.set(420, 340, 420);
+
+      const amb = new THREE.AmbientLight(0xffffff, 0.7); scene.add(amb);
+      const dir = new THREE.DirectionalLight(0xffffff, 0.9); dir.position.set(400,600,300); scene.add(dir);
+
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+
+      wallGroup = new THREE.Group();
+      scene.add(wallGroup);
+
+      window.addEventListener('resize', resize);
+      resize();
+      animate();
+    }
+
+    function resize(){
+      const r = root.getBoundingClientRect();
+      renderer.setSize(r.width, r.height);
+      camera.aspect = r.width / r.height;
+      camera.updateProjectionMatrix();
+    }
+    function animate(){ requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera); }
+
+    function buildDemo(){
+      wallGroup.clear();
+
+      const height = +$('#demoHeight').value || 300;
+
+      // Demo room: 800 x 500 rectangle
+      const room = [
+        {x:-400, y:-250},
+        {x: 400, y:-250},
+        {x: 400, y: 250},
+        {x:-400, y: 250}
+      ];
+
+      // Openings: door + window
+      const openings = [
+        // door on bottom wall
+        [{x:-60, y:-250},{x: 60, y:-250},{x: 60, y:-200},{x:-60, y:-200}],
+        // window on right wall
+        [{x:350, y:-40},{x:400, y:-40},{x:400, y:40},{x:350, y:40}]
+      ];
+
+      const shape = new THREE.Shape(room.map(p=>new THREE.Vector2(p.x,p.y)));
+      openings.forEach(holePts=>{
+        const hole = new THREE.Path(holePts.map(p=>new THREE.Vector2(p.x,p.y)));
+        shape.holes.push(hole);
+      });
+
+      const geom = new THREE.ExtrudeGeometry(shape, { depth: height, bevelEnabled:false });
+      geom.rotateX(Math.PI/2);
+      const mat = new THREE.MeshStandardMaterial({color:0x99b8ff, metalness:0.1, roughness:0.6, wireframe: $('#wireChk').checked});
+      const mesh = new THREE.Mesh(geom, mat);
+      wallGroup.add(mesh);
+    }
+
+    $('#loadDemo').onclick = buildDemo;
+    $('#wireChk').addEventListener('change', ()=>{
+      wallGroup.traverse(o=>{ if(o.isMesh){ o.material.wireframe = $('#wireChk').checked; o.material.needsUpdate=true; }});
+    });
+    $('#viewIso').onclick = ()=>{ camera.position.set(420,340,420); camera.lookAt(0,0,0); };
+    $('#viewTop').onclick = ()=>{ camera.position.set(0,650,0.01); camera.lookAt(0,0,0); };
+    $('#viewFront').onclick = ()=>{ camera.position.set(0,220,650); camera.lookAt(0,0,0); };
+    $('#exportGLTF').onclick = ()=>{
+      const exporter = new GLTFExporter();
+      exporter.parse( wallGroup, (gltf)=>{
+        const blob = new Blob([JSON.stringify(gltf)], {type:'model/gltf+json'});
+        const url = URL.createObjectURL(blob);
+        const a=document.createElement('a'); a.href=url; a.download='u120-demo-floor.gltf'; a.click();
+        setTimeout(()=>URL.revokeObjectURL(url),1500);
+      }, { binary:false });
+    };
+
+    initThree();
+  </script>
 </body>
 </html>
