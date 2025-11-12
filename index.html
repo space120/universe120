@@ -1,14 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
 <title>Universe120 — Bubble Graph Builder</title>
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <style>
 :root{
-  --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a;
-  --toolbar:#10366f;
+  --bg:#0d2a55; --card:#0f356d; --ink:#fff; --muted:#d8e7ff99; --border:#1e4d9a; --brand:#ffe36a; --toolbar:#10366f;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
@@ -16,20 +15,19 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family
 /* NAV */
 .navbar{
   position:fixed; inset:0 0 auto 0; height:56px; z-index:60;
-  display:flex; align-items:center; gap:12px;
+  display:flex; align-items:center; gap:12px; padding:8px 12px;
   background:#0f356d; color:#fff; border-bottom:1px solid var(--border);
-  padding:8px 12px;
 }
-.brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; text-decoration:none; color:#fff}
-.brand .mark{width:26px; height:26px; border-radius:6px; background:#123b79; display:inline-block; box-shadow:inset 0 0 0 2px #204c96, 0 0 0 1px #092659}
+.brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px; color:#fff; text-decoration:none}
+.brand .mark{ width:26px; height:26px; display:block }
 .navlinks{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap }
-.navlinks a{ text-decoration:none; color:#fff; border:1px solid #204c96; background:#10366f; padding:7px 12px; border-radius:10px; font-size:13px }
+.navlinks a{ text-decoration:none; color:#fff; border:1px solid #204c96; background:var(--toolbar); padding:7px 12px; border-radius:10px; font-size:13px }
 .navlinks a:hover{ background:#13407f }
 .navlinks a.active{ outline:2px solid var(--brand) }
 
-/* Top action bar */
+/* Top bar (stops before properties) */
 .topbar{
-  position:fixed; left:0; right:0; top:56px; z-index:55;
+  position:fixed; left:0; right:320px; top:56px; z-index:55;
   display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:8px 12px;
   background:var(--toolbar); border-bottom:1px solid var(--border);
 }
@@ -42,323 +40,331 @@ button:hover,.btn:hover{ background:#13407f }
 input[type="text"],input[type="number"],select{ padding:6px 8px }
 input[type="range"]{ accent-color:var(--brand) }
 
-/* Tools flyout (left) */
-.tools-flyout{
-  position:fixed; left:12px; top:120px; z-index:50;
+/* Right Properties panel */
+.panel{
+  position:fixed; right:12px; top:56px; bottom:28px; width:296px; z-index:56;
   background:#0f356d; border:1px solid var(--border); border-radius:12px;
-  box-shadow:0 8px 24px rgba(0,0,0,.2);
-  width:210px; padding:8px; user-select:none;
+  box-shadow:0 8px 24px rgba(0,0,0,.2); padding:10px 12px; color:#eaf1ff; overflow:auto
 }
-.tools-header{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
-.tools-title{ font-size:13px; font-weight:700; color:#fff }
-.tools-toggle{ font-size:12px; padding:4px 8px }
-.tools-grid{ display:none; grid-template-columns:1fr; gap:6px }
+.panel h3{ margin:.3rem 0 .5rem; font-size:15px }
+.panel .row{ display:flex; align-items:center; gap:8px; margin:.35rem 0 }
+
+/* Tools dropdown under panel */
+.tools-under{ margin-top:10px }
+.tools-under .wide{ width:100% }
+.tools-grid{ display:none; margin-top:6px; display:grid; grid-template-columns:1fr; gap:6px }
 .tools-grid.open{ display:grid }
 .toolBtn{
-  display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid #204c96; border-radius:10px; background:#10366f; color:#fff; font-size:13px;
+  display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid #204c96; border-radius:10px; background:#10366f; color:#fff; font-size:13px
 }
 .toolBtn .icon{ width:18px; text-align:center }
 .toolBtn.active{ outline:2px solid var(--brand) }
 
-/* Properties (right) */
-.panel{
-  position:fixed; right:12px; top:120px;
-  z-index:45; background:#0f356d; border:1px solid var(--border); border-radius:12px;
-  box-shadow:0 8px 24px rgba(0,0,0,.2); padding:10px 12px; min-width:260px; color:#eaf1ff
+/* Canvas + overlay */
+#canvas{
+  position:fixed; left:12px; right:332px; top:104px; bottom:28px; display:block; width:auto; height:auto;
+  background:linear-gradient(180deg,#0e2f62,#0b2650);
+  border:1px solid #0f3b81; border-radius:12px;
 }
-.panel h3{ margin:.3rem 0 .4rem; font-size:14px }
-.panel .row{ display:flex; align-items:center; gap:8px; margin:.35rem 0 }
+#overlay{ position:fixed; left:12px; right:332px; top:104px; bottom:28px; pointer-events:none; z-index:54 }
+.scale{
+  position:fixed; left:20px; bottom:36px; z-index:57; color:#cfe0ff; font-size:12px; background:#10366f; border:1px solid #1e4d9a; border-radius:8px; padding:4px 8px
+}
 
-/* Canvas & overlays */
-#canvas{ position:fixed; left:0; right:0; top:104px; bottom:28px; display:block; width:100%; height:calc(100% - 132px) }
-#overlay{ position:fixed; left:0; right:0; top:104px; bottom:28px; pointer-events:none; z-index:40; }
+/* Status bar */
 .status{
-  position:fixed; left:0; right:0; bottom:0; height:28px; z-index:55;
+  position:fixed; left:0; right:0; bottom:0; height:28px; z-index:58;
   display:flex; align-items:center; gap:16px; padding:0 10px;
   background:#0f356d; color:#fff; border-top:1px solid var(--border); font-size:12px
 }
+.status > *{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
 
-/* Scale bar */
-.scalebar{
-  position:absolute; left:12px; bottom:6px; background:#0f356d; border:1px solid var(--border); color:#fff;
-  padding:2px 8px; border-radius:8px; font-size:12px; display:flex; gap:8px; align-items:center; pointer-events:auto;
-}
-
-/* Help */
-#help{position:fixed;inset:0;background:rgba(10,12,22,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:70}
-#help .card{background:#10121b;border:1px solid #2a2e3d;color:#e9ebff;border-radius:12px;padding:18px;max-width:720px}
+/* Help modal */
+.modal{ position:fixed; inset:0; background:rgba(10,12,22,.55); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:80 }
+.modal.hidden{ display:none }
+.modal .card{ background:#10121b; border:1px solid #2a2e3d; color:#e9ebff; border-radius:12px; padding:18px; max-width:720px }
 kbd{background:#22283a;border:1px solid #394055;border-bottom-color:#2a2f42;border-radius:5px;padding:1px 5px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.right{ display:flex; gap:8px; justify-content:flex-end }
 
-/* Rotation handle */
-.handle{
-  position:absolute; width:12px; height:12px; border-radius:50%;
-  background:#ffe36a; border:2px solid #0d2a55; box-shadow:0 0 0 1px #204c96;
-  transform:translate(-50%,-50%); z-index:42; pointer-events:auto; cursor:grab;
+/* 3D viewer drawer */
+.viewer{
+  position:fixed; right:332px; top:104px; bottom:28px; width:420px; z-index:59;
+  background:#0f356d; border:1px solid var(--border); border-radius:12px; display:flex; flex-direction:column
 }
+.viewer.hidden{ display:none }
+.viewer-bar{ display:flex; align-items:center; gap:8px; padding:8px; border-bottom:1px solid var(--border); background:#10366f }
+.viewer .three{ flex:1; min-height:0 }
 
-/* Smart guide badge */
+/* Smart guide badges */
 .badge{
   position:absolute; padding:2px 6px; font-size:12px; color:#001327;
   background:rgba(255,227,106,.95); border-radius:6px; border:1px solid #e6c84f;
-  white-space:nowrap; user-select:none; z-index:41; transform:translate(-50%,-100%);
-  pointer-events:none;
+  white-space:nowrap; user-select:none; z-index:70; transform:translate(-50%,-100%); pointer-events:none
 }
 .badge.alt{ background:rgba(124,255,124,.95); border-color:#57db57 }
 .badge.muted{ background:rgba(255,255,255,.85); border-color:#bcd3ff }
 
-/* 3D modal */
-#viewer3d{
-  position:fixed; inset:0; background:rgba(6,12,22,.7); display:none; align-items:center; justify-content:center; z-index:90;
-}
-#viewer3d .card{
-  width:min(92vw,1100px); height:min(90vh,720px); background:#0f356d; border:1px solid var(--border); border-radius:12px; overflow:hidden; display:flex; flex-direction:column;
-}
-#viewer3d header{ display:flex; align-items:center; gap:10px; padding:8px; background:#10366f; border-bottom:1px solid var(--border) }
-#viewer3d .stage{ flex:1; position:relative; background:#081a33 }
-#viewer3d .stage canvas{ width:100%; height:100% }
-#viewer3d .controls{
-  position:absolute; right:10px; top:10px; display:flex; flex-direction:column; gap:6px; background:#0f356d; border:1px solid var(--border); border-radius:10px; padding:8px
+/* Cursor snap dot – right at cursor tip */
+.cursor-dot{
+  position:absolute; width:6px; height:6px; border-radius:50%;
+  background:#ffe36a; box-shadow:0 0 0 1px #0a1c3b; z-index:75; pointer-events:none
 }
 
-/* Footer (year) */
-.site-footer{ position:fixed; left:0; right:0; bottom:28px; height:0; }
-footer a{ color:#ffe36a; text-decoration:none }
-
-/* Small screens */
-@media (max-width: 980px){
-  .tools-flyout{ left:12px; top:120px }
-  .panel{ right:12px }
-}
+/* Lock (disabled by default) */
+.lock{ position:fixed; inset:0; background:#0d2a55; color:#fff; display:flex; align-items:center; justify-content:center; z-index:1000 }
+.lock.hidden{ display:none }
+.lock .card{ background:#0f356d; border:1px solid var(--border); border-radius:12px; padding:18px; width:min(92vw,440px); box-shadow:0 12px 28px rgba(0,0,0,.25) }
+.lock input{ width:100%; margin-top:8px; background:#10366f; color:#fff; border:1px solid #204c96; border-radius:10px; padding:10px 12px; font-size:16px }
+.lock button{ margin-top:10px; padding:10px 12px; font-size:16px }
+.lock .lock-msg{ margin-top:10px; color:#ff8a8a; min-height:1.2em }
+.lock .mini{ margin-top:8px; font-size:12px; color:#cfe0ff }
+.lock a{ color:var(--brand) }
 </style>
 </head>
 <body>
-
-<!-- NAV -->
-<div class="navbar">
-  <a class="brand" href="index.html" aria-label="Universe120 Home">
-    <span class="mark" aria-hidden="true"></span>
-    <span>Universe120</span>
-  </a>
-  <div class="navlinks">
-    <a href="index.html" class="active">Home</a>
-    <a href="about.html">About</a>
-  </div>
-</div>
-
-<!-- TOPBAR -->
-<div class="topbar" id="topbar">
-  <div class="group">
-    <button id="newDoc" type="button">New</button>
-    <button id="clearAll" type="button">Clear</button>
-    <button id="undoBtn" type="button">Undo</button>
-    <button id="redoBtn" type="button">Redo</button>
-  </div>
-
-  <div class="group">
-    <button id="zoomIn" type="button">+</button>
-    <button id="zoomOut" type="button">−</button>
-    <button id="zoomFit" type="button">Fit</button>
-    <button id="zoomReset" type="button">100%</button>
-  </div>
-
-  <div class="group">
-    <label class="small">Grid</label><input id="gridScale" type="range" min="0.6" max="1.8" step="0.01" value="1.0">
-    <label class="small">Dots</label><input id="dotSize" type="range" min="0.5" max="1.8" step="0.05" value="1.0">
-  </div>
-
-  <div class="group">
-    <label class="small">Snap</label>
-    <select id="snapMode">
-      <option value="intersections" selected>Intersections</option>
-      <option value="centers">Centers</option>
-      <option value="midpoints">Midpoints</option>
-      <option value="free">Free</option>
-    </select>
-    <label class="small">Angle</label>
-    <select id="angleLock">
-      <option value="off">Off</option>
-      <option value="ortho">0/90°</option>
-      <option value="thirty" selected>30/60/90°</option>
-      <option value="fortyfive">45/90°</option>
-    </select>
-  </div>
-
-  <div class="group">
-    <label class="small">Units</label>
-    <select id="unitMode">
-      <option value="ft" selected>feet/inches</option>
-      <option value="m">meters</option>
-      <option value="cm">centimeters</option>
-    </select>
-    <label class="small">Scale</label>
-    <input id="unitsPerGrid" type="number" step="0.01" value="1.0" style="width:80px" title="World units per bubble radius (grid scale)">
-  </div>
-
-  <div class="group">
-    <button id="groupBtn" type="button">Group</button>
-    <button id="ungroupBtn" type="button">Ungroup</button>
-  </div>
-
-  <div class="group">
-    <button id="exportSVG" type="button">Export SVG</button>
-    <button id="exportPNG" type="button">Export PNG</button>
-    <button id="exportGLTF" type="button">Export glTF</button>
-  </div>
-
-  <div class="group">
-    <button id="build3D" type="button">Build 3D</button>
-    <button id="helpBtn" type="button">Help</button>
-  </div>
-</div>
-
-<!-- TOOLS PALETTE (left) -->
-<div class="tools-flyout" id="toolsFlyout" aria-label="Tools">
-  <div class="tools-header">
-    <div class="tools-title">Tools</div>
-    <button id="toolsToggle" class="tools-toggle" type="button">Open</button>
-  </div>
-  <div id="toolsGrid" class="tools-grid">
-    <button class="toolBtn" data-tool="select"><span class="icon">🖱️</span><span>Select</span></button>
-    <button class="toolBtn" data-tool="pen"><span class="icon">✏️</span><span>Pen (Polyline)</span></button>
-    <button class="toolBtn" data-tool="line"><span class="icon">⎯</span><span>Line</span></button>
-    <button class="toolBtn" data-tool="rect"><span class="icon">▭</span><span>Rectangle</span></button>
-    <button class="toolBtn" data-tool="arc"><span class="icon">⌒</span><span>Arc</span></button>
-    <button class="toolBtn" data-tool="circ"><span class="icon">◯</span><span>Circle</span></button>
-    <button class="toolBtn" data-tool="open"><span class="icon" style="color:#ff7a7a">▭</span><span>Opening</span></button>
-    <button class="toolBtn" data-tool="text"><span class="icon">T</span><span>Text</span></button>
-    <button class="toolBtn" data-tool="dim"><span class="icon">⇄</span><span>Dimension</span></button>
-    <button class="toolBtn" data-tool="erase"><span class="icon">⌫</span><span>Erase</span></button>
-  </div>
-</div>
-
-<!-- PROPERTIES (right) -->
-<div class="panel" id="props">
-  <h3>Properties</h3>
-  <div class="row"><label class="small">Stroke</label><input id="strokeW" type="range" min="0.8" max="4" step="0.1" value="1.6"></div>
-  <div class="row"><label class="small">Wall (px)</label><input id="wallThick" type="number" value="0" min="0" max="60" step="1"></div>
-  <div class="row"><label class="small">Label</label><input id="labelText" type="text" placeholder="Room / Note"></div>
-  <hr style="border:0;border-top:1px solid #1e4d9a;opacity:.4;margin:8px 0">
-  <div class="row">
-    <label class="small">Floor</label>
-    <select id="floorSelect"></select>
-    <button id="addFloor" type="button" title="Add floor">+ Floor</button>
-  </div>
-  <div class="row">
-    <label class="small">Floor Height</label>
-    <input id="floorHeight" type="number" step="0.1" value="10" style="width:80px">
-  </div>
-</div>
-
-<!-- CANVAS & OVERLAY -->
-<canvas id="canvas"></canvas>
-<div id="overlay"></div>
-
-<!-- SCALE BAR (inside overlay area) -->
-<div class="scalebar" id="scalebar" style="display:none">
-  <span id="scaleLabel">1.00 ft / R</span>
-</div>
-
-<!-- STATUS -->
-<div class="status">
-  <div id="stTool">Tool: Select</div>
-  <div id="stSnap">Snap: Intersections</div>
-  <div id="stZoom">Zoom: 100%</div>
-  <div id="stPos">x:– y:–</div>
-  <div id="stLen">len:–</div>
-</div>
-
-<!-- HELP -->
-<div id="help">
-  <div class="card">
-    <h3>Quick help</h3>
-    <ul>
-      <li><b>Pan</b>: hold <kbd>Space</kbd> and drag (or middle-mouse)</li>
-      <li><b>Zoom</b>: mouse wheel (zooms to cursor)</li>
-      <li><b>Zoom Fit</b>: <kbd>Shift</kbd>+<kbd>1</kbd> • <b>Reset 100%</b>: <kbd>1</kbd></li>
-      <li><b>Undo/Redo</b>: <kbd>Ctrl/Cmd</kbd>+<kbd>Z</kbd> / <kbd>Ctrl/Cmd</kbd>+<kbd>Y</kbd></li>
-      <li><b>Multi-select</b>: Shift-click shapes • <b>Rotate</b>: drag yellow handle</li>
-      <li><b>Smart Guides</b>: 0/30/45/60/90°, equal (≡), parallel (∥), perpendicular (⊥)</li>
-      <li><b>3D</b>: Draw rectangles for rooms. Draw red “Opening” rectangles inside rooms → <b>Build 3D</b>.</li>
-    </ul>
-    <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
-      <button id="closeHelp" class="btn" type="button">Got it</button>
+  <!-- Lock (disabled) -->
+  <div id="lockScreen" class="lock hidden">
+    <div class="card">
+      <h2>Universe120 (Beta)</h2>
+      <p>Enter access code to continue.</p>
+      <input type="password" id="accessCodeInput" placeholder="Access code" />
+      <button id="accessCodeBtn">Enter</button>
+      <div id="lockMsg" class="lock-msg"></div>
+      <p class="mini">Send ideas/bugs: <a href="mailto:120spaceproject@gmail.com">120spaceproject@gmail.com</a></p>
     </div>
   </div>
-</div>
 
-<!-- 3D VIEWER -->
-<div id="viewer3d">
-  <div class="card">
-    <header>
-      <div style="font-weight:700">3D Viewer</div>
-      <div style="margin-left:auto;display:flex;gap:8px">
-        <button id="presetIso">Iso</button>
-        <button id="presetTop">Top</button>
-        <button id="presetFront">Front</button>
-        <button id="toggleWire">Wire</button>
-        <button id="close3d">Close</button>
+  <!-- NAV -->
+  <div class="navbar">
+    <a class="brand" href="index.html" aria-label="Universe120 Home">
+      <img class="mark" src="assets/logo.svg" alt="" />
+      <span>Universe120</span>
+    </a>
+    <div class="navlinks">
+      <a class="active" href="index.html">Home</a>
+      <a href="about.html">About</a>
+    </div>
+  </div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="group">
+      <button id="newDoc" type="button">New</button>
+      <button id="clearAll" type="button">Clear</button>
+      <button id="undoBtn" type="button">Undo</button>
+      <button id="redoBtn" type="button">Redo</button>
+    </div>
+
+    <div class="group">
+      <button id="zoomIn" type="button">+</button>
+      <button id="zoomOut" type="button">−</button>
+      <button id="zoomFit" type="button">Fit</button>
+      <button id="zoomReset" type="button">100%</button>
+    </div>
+
+    <div class="group">
+      <label class="small">Grid</label>
+      <input id="gridScale" type="range" min="0.6" max="1.8" step="0.01" value="1.0" />
+      <label class="small">Dots</label>
+      <input id="dotSize" type="range" min="0.5" max="1.8" step="0.05" value="1.0" />
+    </div>
+
+    <div class="group">
+      <label class="small">Snap</label>
+      <select id="snapMode">
+        <option value="intersections" selected>Intersections</option>
+        <option value="centers">Centers</option>
+        <option value="midpoints">Midpoints</option>
+        <option value="free">Free</option>
+      </select>
+      <label class="small">Angle</label>
+      <select id="angleLock">
+        <option value="off">Off</option>
+        <option value="ortho">0/90°</option>
+        <option value="thirty" selected>30/60/90°</option>
+        <option value="fortyfive">45/90°</option>
+      </select>
+    </div>
+
+    <div class="group">
+      <label class="small">Units</label>
+      <select id="unitSelect">
+        <option value="px">px</option>
+        <option value="in">in</option>
+        <option value="ft" selected>ft</option>
+        <option value="cm">cm</option>
+        <option value="m">m</option>
+        <option value="km">km</option>
+      </select>
+      <label class="small">Scale</label>
+      <input id="unitScale" type="number" step="0.1" value="1" title="World units per grid step (e.g., 1 = 1ft per step when Units=ft)" />
+    </div>
+
+    <div class="group">
+      <button id="groupBtn" type="button">Group</button>
+      <button id="ungroupBtn" type="button">Ungroup</button>
+    </div>
+
+    <div class="group">
+      <button id="exportSVG" type="button">Export SVG</button>
+      <button id="exportPNG" type="button">Export PNG</button>
+      <button id="exportGLTF" type="button">Export glTF</button>
+    </div>
+
+    <div class="group">
+      <button id="toggle3D" type="button">3D Viewer</button>
+      <button id="helpBtn" type="button">?</button>
+    </div>
+  </div>
+
+  <!-- PROPERTIES + TOOLS -->
+  <aside class="panel" id="props">
+    <h3>Properties</h3>
+    <div class="row">
+      <label class="small">Stroke</label>
+      <input id="strokeW" type="range" min="0.8" max="4" step="0.1" value="1.6" />
+    </div>
+    <div class="row">
+      <label class="small">Wall (px)</label>
+      <input id="wallThick" type="number" value="0" min="0" max="60" step="1" />
+    </div>
+    <div class="row">
+      <label class="small">Label</label>
+      <input id="labelText" type="text" placeholder="Room / Note" />
+    </div>
+
+    <div class="tools-under">
+      <button id="toolsToggle" type="button" class="wide">Tools ▾</button>
+      <div id="toolsGrid" class="tools-grid">
+        <button class="toolBtn" data-tool="select"><span class="icon">🖱️</span><span>Select</span></button>
+        <button class="toolBtn" data-tool="pen"><span class="icon">✏️</span><span>Pen (Polyline)</span></button>
+        <button class="toolBtn" data-tool="line"><span class="icon">⎯</span><span>Line</span></button>
+        <button class="toolBtn" data-tool="rect"><span class="icon">▭</span><span>Rectangle</span></button>
+        <button class="toolBtn" data-tool="arc"><span class="icon">⌒</span><span>Arc</span></button>
+        <button class="toolBtn" data-tool="circ"><span class="icon">◯</span><span>Circle</span></button>
+        <button class="toolBtn" data-tool="opening"><span class="icon">▯</span><span>Opening</span></button>
+        <button class="toolBtn" data-tool="text"><span class="icon">T</span><span>Text</span></button>
+        <button class="toolBtn" data-tool="dim"><span class="icon">⇄</span><span>Dimension</span></button>
+        <button class="toolBtn" data-tool="erase"><span class="icon">⌫</span><span>Erase</span></button>
       </div>
-    </header>
-    <div class="stage" id="stage3d">
-      <div class="controls">
-        <label class="small">Wall Height</label>
-        <input id="wallHeight3d" type="number" step="0.5" value="10">
-        <button id="exportGLTF3d">Export glTF</button>
+    </div>
+  </aside>
+
+  <!-- CANVAS & OVERLAY -->
+  <canvas id="canvas"></canvas>
+  <div id="overlay"></div>
+  <div id="scaleBar" class="scale"></div>
+
+  <!-- 3D Drawer -->
+  <div id="viewer3d" class="viewer hidden" aria-hidden="true">
+    <div class="viewer-bar">
+      <strong>3D</strong>
+      <div class="spacer" style="flex:1"></div>
+      <label class="small">View</label>
+      <select id="viewPreset">
+        <option value="orbit" selected>Orbit</option>
+        <option value="iso">Iso</option>
+        <option value="top">Top</option>
+        <option value="front">Front</option>
+      </select>
+      <label class="small">Walls</label>
+      <input id="wallHeight" type="number" value="10" step="0.5" />
+      <label class="small">Wire</label>
+      <input id="wireframe" type="checkbox" />
+      <button id="rebuild3d" type="button">Rebuild</button>
+      <button id="close3d" type="button">Close</button>
+    </div>
+    <div id="threeMount" class="three"></div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status">
+    <div id="stTool">Tool: Select</div>
+    <div id="stSnap">Snap: Intersections</div>
+    <div id="stZoom">Zoom: 100%</div>
+    <div id="stPos">x:– y:–</div>
+    <div id="stLen"></div>
+  </div>
+
+  <!-- HELP -->
+  <div id="help" class="modal hidden">
+    <div class="card">
+      <h3>Quick help</h3>
+      <ul>
+        <li><b>Pan</b>: hold <kbd>Space</kbd> and drag (or middle-mouse)</li>
+        <li><b>Zoom</b>: mouse wheel (zooms to cursor)</li>
+        <li><b>Zoom Fit</b>: <kbd>Shift</kbd>+<kbd>1</kbd> • <b>Reset</b>: <kbd>1</kbd></li>
+        <li><b>Undo/Redo</b>: <kbd>Ctrl/Cmd</kbd>+<kbd>Z</kbd> / <kbd>Ctrl/Cmd</kbd>+<kbd>Y</kbd></li>
+        <li><b>Smart Guides</b>: 0/30/45/60/90°, equal (≡), parallel (∥), perpendicular (⊥)</li>
+      </ul>
+      <div class="right">
+        <button id="closeHelp" class="btn" type="button">Got it</button>
       </div>
     </div>
   </div>
-</div>
 
-<footer class="site-footer">
-  <small>© <span id="year"></span> Universe120 • Beta</small>
-</footer>
+  <!-- Three.js & helpers (CDNs) -->
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://unpkg.com/three@0.160.0/examples/js/exporters/GLTFExporter.js"></script>
 
-<!-- External libs (CDN) -->
-<script src="https://cdn.jsdelivr.net/npm/rbush@3.0.1/rbush.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/earcut@2.2.4/dist/earcut.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/exporters/GLTFExporter.js"></script>
+  <!-- App JS -->
+  <script>
+/* ---------- Passcode (disabled) ---------- */
+const VALID_CODE = null; // set to "@@U120" to enable
+const lockEl = document.getElementById('lockScreen');
+(function initLock(){
+  if(!VALID_CODE){ lockEl.classList.add('hidden'); return; }
+  const btn = document.getElementById('accessCodeBtn');
+  const input = document.getElementById('accessCodeInput');
+  const msg = document.getElementById('lockMsg');
+  const go = ()=>{ const v=input.value.trim(); if(v===VALID_CODE){ lockEl.classList.add('hidden'); } else { msg.textContent='Incorrect code.'; } };
+  btn.onclick = go; input.addEventListener('keydown', e=>{ if(e.key==='Enter') go(); });
+})();
 
-<script>
-/* ========= DOM, Canvas, Globals ========= */
-const $ = q=>document.querySelector(q);
-const all = q=>[...document.querySelectorAll(q)];
+/* ---------- DOM ---------- */
+const $ = (q)=>document.querySelector(q);
+const all = (q)=>[...document.querySelectorAll(q)];
+const canvas = $('#canvas');
+const overlay = $('#overlay');
+const scaleBar = $('#scaleBar');
+const ctx = canvas.getContext('2d', {alpha:true});
+let DPR = Math.min(devicePixelRatio||1, 2);
 
-document.getElementById('year').textContent = new Date().getFullYear();
-
-const canvas = document.getElementById('canvas');
-const overlay = document.getElementById('overlay');
-const ctx = canvas.getContext('2d',{alpha:true});
-let DPR = Math.min(devicePixelRatio||1,2);
+/* ---------- Layout ---------- */
 function resize(){
-  const w=innerWidth, h=innerHeight-104-28;
-  canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR);
-  canvas.style.width=w+'px'; canvas.style.height=h+'px';
-  overlay.style.left=0; overlay.style.top='104px'; overlay.style.right=0; overlay.style.bottom='28px';
-  document.getElementById('scalebar').style.display='block';
+  const w = innerWidth - 12 - 332;  // left pad + right panel
+  const h = innerHeight - 104 - 28; // top bar + status
+  canvas.width = Math.round(w * DPR);
+  canvas.height= Math.round(h * DPR);
+  canvas.style.width = w+'px';
+  canvas.style.height= h+'px';
+  overlay.style.left = '12px';
+  overlay.style.right= '332px';
+  overlay.style.top  = '104px';
+  overlay.style.bottom='28px';
   ctx.setTransform(DPR,0,0,DPR,0,0);
 }
-addEventListener('resize', resize); resize();
+addEventListener('resize', resize);
 
-const stTool=$('#stTool'), stSnap=$('#stSnap'), stZoom=$('#stZoom'), stPos=$('#stPos'), stLen=$('#stLen');
-
+/* ---------- State ---------- */
+const stTool = $('#stTool'), stSnap = $('#stSnap'), stZoom = $('#stZoom'), stPos = $('#stPos');
 const state = {
   tool:'select', zoom:1, pan:{x:0,y:0},
   gridScale:1.0, dotScale:1.0,
   strokeW:1.6, wallThick:0,
+  unit:'ft', unitScale:1, // world units per grid step
   snap:'intersections', angleLock:'thirty',
   drawing:null, hover:null,
   shapes:[], selection:new Set(),
   groupsCounter:1,
   undo:[], redo:[],
-  rotation:{active:false, startAng:0, center:null, base:[]},
-  floors:[{name:'Floor 1', height:10, shapes:[]}],
-  floorIndex:0,
-  units:'ft', unitsPerGrid:1.0 // world units per bubble radius
+  rotation:{active:false, startAng:0, center:null, base:[]}
 };
 const Rbase=26; function grid(){ const R=Rbase*state.gridScale; return {R,stepX:R, stepY:R*Math.sqrt(3)/2}; }
+let lastMouse={x:0,y:0}; let mouseDown=false, panning=false, middlePanning=false, isSpace=false;
 
-/* ========= UI Wiring ========= */
+/* ---------- UI wiring ---------- */
 $('#gridScale').addEventListener('input', e=>{ state.gridScale=+e.target.value; });
 $('#dotSize').addEventListener('input', e=>{ state.dotScale=+e.target.value; });
 $('#snapMode').addEventListener('change', e=>{ state.snap=e.target.value; stSnap.textContent='Snap: '+e.target.selectedOptions[0].textContent; });
@@ -367,35 +373,46 @@ $('#strokeW').addEventListener('input', e=>{ state.strokeW=+e.target.value; });
 $('#wallThick').addEventListener('input', e=>{ state.wallThick=+e.target.value; });
 $('#labelText').addEventListener('input', e=>{ state.labelDraft=e.target.value; });
 
-$('#unitMode').addEventListener('change', e=>{ state.units=e.target.value; updateScaleLabel(); });
-$('#unitsPerGrid').addEventListener('input', e=>{ state.unitsPerGrid=+e.target.value||1; updateScaleLabel(); });
-
 $('#zoomIn').onclick=()=>zoomAt(1.1, lastMouse);
 $('#zoomOut').onclick=()=>zoomAt(1/1.1, lastMouse);
 $('#zoomReset').onclick=()=>{ state.zoom=1; state.pan={x:0,y:0}; stZoom.textContent='Zoom: 100%'; };
 $('#zoomFit').onclick=()=>zoomToFit();
 
-$('#newDoc').onclick=()=>{ pushUndo(); curFloor().shapes.length=0; state.selection.clear(); };
-$('#clearAll').onclick=()=>{ pushUndo(); curFloor().shapes.length=0; state.selection.clear(); };
-$('#undoBtn').onclick=undo; $('#redoBtn').onclick=redo;
+$('#newDoc').onclick=()=>{ pushUndo(); state.shapes.length=0; state.selection.clear(); };
+$('#clearAll').onclick=()=>{ pushUndo(); state.shapes.length=0; state.selection.clear(); };
 
+$('#undoBtn').onclick=undo; $('#redoBtn').onclick=redo;
 $('#exportSVG').onclick=exportSVG;
 $('#exportPNG').onclick=exportPNG;
-$('#exportGLTF').onclick=()=>open3D(true);
+$('#exportGLTF').onclick=exportGLTF;
 
-$('#helpBtn').onclick=()=>{ $('#help').style.display='flex'; };
-$('#closeHelp').onclick=()=>{ $('#help').style.display='none'; };
+$('#helpBtn').onclick=()=>$('#help').classList.remove('hidden');
+$('#closeHelp').onclick=()=>$('#help').classList.add('hidden');
 
+$('#toggle3D').onclick=()=>{
+  $('#viewer3d').classList.toggle('hidden');
+  if(!$('#viewer3d').classList.contains('hidden')) build3D();
+};
+$('#close3d').onclick=()=>$('#viewer3d').classList.add('hidden');
+$('#rebuild3d').onclick=build3D;
+
+/* Tools dropdown under panel */
 const toolsToggle = $('#toolsToggle');
 const toolsGrid = $('#toolsGrid');
 toolsToggle.onclick = ()=>{
-  const open = toolsGrid.classList.toggle('open');
-  toolsToggle.textContent = open ? 'Close' : 'Open';
+  toolsGrid.classList.toggle('open');
+  toolsToggle.textContent = toolsGrid.classList.contains('open') ? 'Tools ▴' : 'Tools ▾';
 };
 toolsGrid.addEventListener('click', e=>{
   const btn=e.target.closest('.toolBtn'); if(!btn) return;
   setTool(btn.dataset.tool);
 });
+
+/* Grouping */
+$('#groupBtn').onclick=()=>{ if(state.selection.size<2) return; const gid=state.groupsCounter++; state.selection.forEach(i=>{ state.shapes[i].gid=gid; }); };
+$('#ungroupBtn').onclick=()=>{ if(!state.selection.size) return; state.selection.forEach(i=>{ delete state.shapes[i].gid; }); };
+
+/* ---------- Tools ---------- */
 function setTool(name){
   state.tool = name;
   state.drawing = null;
@@ -403,40 +420,7 @@ function setTool(name){
   all('.toolBtn').forEach(el=>el.classList.toggle('active', el.dataset.tool===name));
 }
 
-/* Floors */
-const floorSelect = $('#floorSelect');
-const floorHeight = $('#floorHeight');
-function refreshFloors(){
-  floorSelect.innerHTML='';
-  state.floors.forEach((f,i)=>{
-    const opt=document.createElement('option');
-    opt.value=i; opt.textContent=`${f.name}`;
-    floorSelect.appendChild(opt);
-  });
-  floorSelect.value=String(state.floorIndex);
-  floorHeight.value = curFloor().height;
-}
-$('#addFloor').onclick=()=>{
-  const n=state.floors.length+1;
-  state.floors.push({name:'Floor '+n, height:10, shapes:[]});
-  state.floorIndex=state.floors.length-1; refreshFloors();
-};
-floorSelect.onchange=()=>{ state.floorIndex=+floorSelect.value; };
-floorHeight.oninput=()=>{ curFloor().height=+floorHeight.value||10; };
-function curFloor(){ return state.floors[state.floorIndex]; }
-refreshFloors();
-
-/* Status scalebar label */
-function updateScaleLabel(){
-  const unit=state.units;
-  const label = unit==='ft' ? `${state.unitsPerGrid.toFixed(2)} ft / R`
-               : unit==='m' ? `${state.unitsPerGrid.toFixed(2)} m / R`
-               : `${state.unitsPerGrid.toFixed(2)} cm / R`;
-  document.getElementById('scaleLabel').textContent = label;
-}
-updateScaleLabel();
-
-/* ========= Coords & Helpers ========= */
+/* ---------- Coords ---------- */
 function toWorld(sx,sy){
   return { x:(sx - canvas.width/DPR/2 - state.pan.x)/state.zoom,
            y:(sy - canvas.height/DPR/2 - state.pan.y)/state.zoom };
@@ -445,92 +429,68 @@ function toScreen(x,y){
   return { x: canvas.width/DPR/2 + state.pan.x + x*state.zoom,
            y: canvas.height/DPR/2 + state.pan.y + y*state.zoom };
 }
-let lastMouse={x:canvas.width/DPR/2, y:canvas.height/DPR/2};
-let mouseDown=false, panning=false, isSpace=false, middlePanning=false;
 
-/* ========= Smart Guides (badges) ========= */
-const GUIDE = { tolLenRatio: 0.015, tolAngRad: Math.PI/180*2, niceAngles:[0,Math.PI/6,Math.PI/4,Math.PI/3,Math.PI/2,2*Math.PI/3,3*Math.PI/4,Math.PI] };
+/* ---------- Smart guides ---------- */
+const GUIDE = { tolLenRatio:0.015, tolAngRad:Math.PI/180*2, nice:[0,Math.PI/6,Math.PI/4,Math.PI/3,Math.PI/2,2*Math.PI/3,3*Math.PI/4,Math.PI] };
 function segLen(a,b){ return Math.hypot(b.x-a.x, b.y-a.y); }
 function segAng(a,b){ return Math.atan2(b.y-a.y, b.x-a.x); }
-let badgePool=[]; function clearBadges(){ badgePool.forEach(el=>el.remove()); badgePool.length=0; }
+function normAng(rad){ let x=rad%(2*Math.PI); if(x<0) x+=2*Math.PI; return x; }
+function minAngDelta(a,b){ const d=Math.abs(normAng(a)-normAng(b)); return Math.min(d, 2*Math.PI-d); }
+function nearAng(a,b,t=GUIDE.tolAngRad){ return minAngDelta(a,b) <= t; }
+function nearLen(L1,L2,rel=GUIDE.tolLenRatio){ return Math.abs(L1-L2) <= Math.max(1e-6, rel*Math.max(L1,L2)); }
+
+let badgePool=[];
+function clearBadges(){ badgePool.forEach(el=>el.remove()); badgePool.length=0; }
 function placeBadge(screenPt, text, variant='info'){
   if(badgePool.length>=2) return;
   const el = document.createElement('div');
-  el.className='badge'+(variant==='good'?' alt':(variant==='muted'?' muted':'' ));
-  el.style.left = (screenPt.x)+'px';
-  el.style.top  = (screenPt.y- (badgePool.length*18) - 12)+'px';
+  el.className = 'badge'+(variant==='good'?' alt':(variant==='muted'?' muted':'' ));
+  el.style.left = screenPt.x+'px';
+  el.style.top  = (screenPt.y- (badgePool.length*18) )+'px';
   el.textContent = text;
   overlay.appendChild(el);
   badgePool.push(el);
 }
-function nearLen(L1,L2,rel=GUIDE.tolLenRatio){ return Math.abs(L1-L2) <= Math.max(1e-6, rel*Math.max(L1,L2)); }
-function normAng(rad){ let x=rad%(2*Math.PI); if(x<0) x+=2*Math.PI; return x; }
-function minAngDelta(a,b){ const d=Math.abs(normAng(a)-normAng(b)); return Math.min(d, 2*Math.PI - d); }
-function nearAng(a,b,tol=GUIDE.tolAngRad){ return minAngDelta(a,b) <= tol; }
-function getPreviousEdgeForContext(){
-  if(state.drawing?.type === 'tempPoly' && state.drawing.points.length >= 2){
+function getPrevEdge(){
+  if(state.drawing?.type==='tempPoly' && state.drawing.points.length>=2){
     const pts = state.drawing.points;
-    return { A: pts[pts.length-2], B: pts[pts.length-1] };
+    return {A:pts[pts.length-2], B:pts[pts.length-1]};
   }
-  for(let i=curFloor().shapes.length-1;i>=0;i--){
-    const s=curFloor().shapes[i];
-    if(s.type==='seg') return {A:s.a, B:s.b};
-    if(s.type==='rect') return {A:s.a, B:{x:s.b.x, y:s.a.y}};
+  for(let i=state.shapes.length-1;i>=0;i--){
+    const s=state.shapes[i];
+    if(s.type==='seg') return {A:s.a,B:s.b};
+    if(s.type==='rect') return {A:s.a,B:{x:s.b.x,y:s.a.y}};
   }
   return null;
 }
-function drawSmartGuidesHook(){
+function smartGuideHook(){
   clearBadges();
   if(!state.drawing || !state.hover?.screen) return;
-  const h = state.hover;
-  const prevEdge = getPreviousEdgeForContext();
-  function annotate(A_world, B_world, cursor_screen){
-    const L  = segLen(A_world, B_world);
-    const ang= segAng(A_world, B_world);
-    placeBadge(cursor_screen, `${fmtLen(L)}`, 'info');
-    for(const na of GUIDE.niceAngles){
-      if(nearAng(ang, na)){ placeBadge(cursor_screen, `${Math.round(na*180/Math.PI)}°`, 'good'); break; }
+  const h=state.hover, prev=getPrevEdge();
+  const annotate=(A,B,cursor)=>{
+    const L=segLen(A,B), ang=segAng(A,B);
+    placeBadge(cursor, `${L.toFixed(1)}`, 'info');
+    for(const na of GUIDE.nice){ if(nearAng(ang,na)){ placeBadge(cursor, `${Math.round(na*180/Math.PI)}°`, 'good'); break; } }
+    if(prev){
+      const Lp=segLen(prev.A,prev.B), Ap=segAng(prev.A,prev.B);
+      if(nearLen(L,Lp)) placeBadge(cursor,'≡ equal','good');
+      else if(nearAng(ang,Ap)) placeBadge(cursor,'∥ parallel','good');
+      else if(nearAng(ang,Ap+Math.PI/2)) placeBadge(cursor,'⊥ perp','good');
     }
-    if(prevEdge){
-      const Lp=segLen(prevEdge.A, prevEdge.B), Ap=segAng(prevEdge.A, prevEdge.B);
-      if(nearLen(L,Lp)) placeBadge(cursor_screen, '≡ equal', 'good');
-      else if(nearAng(ang,Ap)) placeBadge(cursor_screen, '∥ parallel', 'good');
-      else if(nearAng(ang,Ap+Math.PI/2)) placeBadge(cursor_screen, '⊥ perp', 'good');
-    }
-    stLen.textContent = `len:${fmtLen(L)}`;
-  }
-  if(state.drawing.type==='tempLine'){ annotate(state.drawing.A, h, h.screen); }
+  };
+  if(state.drawing.type==='tempLine') annotate(state.drawing.A, h, h.screen);
   else if(state.drawing.type==='tempPoly'){
     const pts=state.drawing.points; if(pts.length){
-      const A=pts[pts.length-1]; const L=applyAngleLock(A, h); const Lscr=toScreen(L.x,L.y); annotate(A, L, Lscr);
+      const A=pts[pts.length-1]; const L=applyAngleLock(A,h); const Ls=toScreen(L.x,L.y); annotate(A,L,Ls);
     }
   } else if(state.drawing.type==='tempRect'){
-    const A=state.drawing.A; const B=h;
+    const A=state.drawing.A, B=h;
     const w=Math.abs(B.x-A.x), ht=Math.abs(B.y-A.y);
     if(nearLen(w,ht)) placeBadge(toScreen((A.x+B.x)/2,(A.y+B.y)/2),'□ square','good');
   }
 }
 
-/* ========= Grid, snapping (with rbush) ========= */
-const index2D = new RBush();
-function indexSegment(id, a, b){
-  const minX=Math.min(a.x,b.x), minY=Math.min(a.y,b.y);
-  const maxX=Math.max(a.x,b.x), maxY=Math.max(a.y,b.y);
-  index2D.insert({minX,minY,maxX,maxY,id,a,b});
-}
-function rebuildIndex(){
-  index2D.clear();
-  curFloor().shapes.forEach((s,i)=>{
-    if(s.type==='seg'){
-      indexSegment(i, s.a, s.b);
-    } else if(s.type==='rect'){
-      indexSegment(i, s.a, {x:s.b.x,y:s.a.y});
-      indexSegment(i, {x:s.b.x,y:s.a.y}, s.b);
-      indexSegment(i, s.b, {x:s.a.x,y:s.b.y});
-      indexSegment(i, {x:s.a.x,y:s.b.y}, s.a);
-    }
-  });
-}
+/* ---------- Grid & snapping ---------- */
 function gridCentersNear(x,y,range=3){
   const {stepX,stepY}=grid();
   const rr=Math.round(y/stepY), cc=Math.round((x-(rr%2? stepX/2:0))/stepX);
@@ -548,24 +508,47 @@ function gridCentersNear(x,y,range=3){
     }
   return pts.concat(mids);
 }
-function sceneSnapCandidates(worldX,worldY,tol=40/state.zoom){
-  const hits = index2D.search({minX:worldX-tol, minY:worldY-tol, maxX:worldX+tol, maxY:worldY+tol});
+function snapPoint(worldX,worldY,strong=false){
+  if(state.snap==='free') return {x:worldX, y:worldY, kind:'free'};
+  const cand = gridCentersNear(worldX,worldY,strong?4:3);
+  let best=null, bd=1e9;
+  cand.forEach(p=>{
+    const d2=(p.x-worldX)*(p.x-worldX)+(p.y-worldY)*(p.y-worldY);
+    if(d2<bd){ bd=d2; best=p; }
+  });
+  return best||{x:worldX,y:worldY,kind:'free'};
+}
+
+/* selection anchors for drag-snap */
+function shapeAnchors(s){
   const pts=[];
-  hits.forEach(h=>{ pts.push(h.a,h.b); });
+  if(s.type==='seg'){ pts.push(s.a, s.b); }
+  if(s.type==='rect'){ pts.push(s.a, {x:s.b.x,y:s.a.y}, s.b, {x:s.a.x,y:s.b.y}); }
+  if(s.type==='arc'){ pts.push(
+    {x:s.c.x + s.r*Math.cos(s.a1), y:s.c.y + s.r*Math.sin(s.a1)},
+    {x:s.c.x + s.r*Math.cos(s.a2), y:s.c.y + s.r*Math.sin(s.a2)},
+    s.c
+  );}
+  if(s.type==='circ'){ pts.push(s.c); }
+  if(s.type==='dim'){ pts.push(s.a,s.b); }
+  if(s.type==='label'){ pts.push(s.p); }
   return pts;
 }
-function snapPoint(worldX,worldY, strong=false){
-  if(state.snap==='free') return {x:worldX, y:worldY, kind:'free'};
-  const gridPts = gridCentersNear(worldX,worldY,strong?4:3);
-  const objPts  = sceneSnapCandidates(worldX,worldY);
-  let best={x:worldX,y:worldY,kind:'free'}, bd=1e9;
-  function test(px,py){ const d2=(px-worldX)*(px-worldX)+(py-worldY)*(py-worldY); if(d2<bd){ bd=d2; best={x:px,y:py}; } }
+function sceneSnapCandidates(excludeSet){
+  const pts=[]; state.shapes.forEach((s,i)=>{ if(!excludeSet?.has(i)) pts.push(...shapeAnchors(s)); }); return pts;
+}
+function snapWorld(x,y,strong,excludeSet){
+  if(state.snap==='free') return {x,y};
+  const gridPts = gridCentersNear(x,y,strong?4:3);
+  const objPts  = sceneSnapCandidates(excludeSet);
+  let best={x,y}, bd=1e9;
+  function test(px,py){ const d2=(px-x)*(px-x)+(py-y)*(py-y); if(d2<bd){ bd=d2; best={x:px,y:py}; } }
   gridPts.forEach(p=>test(p.x,p.y));
   objPts.forEach(p=>test(p.x,p.y));
   return best;
 }
 
-/* Angle lock */
+/* ---------- Angle lock ---------- */
 function applyAngleLock(a0,a1){
   const mode=state.angleLock;
   if(mode==='off') return a1;
@@ -579,25 +562,31 @@ function applyAngleLock(a0,a1){
   return {x:a0.x+Math.cos(best)*len, y:a0.y+Math.sin(best)*len};
 }
 
-/* ========= Undo ========= */
-function pushUndo(){ state.undo.push(JSON.stringify(state.floors)); state.redo.length=0; }
-function undo(){ if(!state.undo.length) return; const cur=JSON.stringify(state.floors); const prev=state.undo.pop(); state.redo.push(cur); state.floors = JSON.parse(prev); refreshFloors(); }
-function redo(){ if(!state.redo.length) return; const cur=JSON.stringify(state.floors); const next=state.redo.pop(); state.undo.push(cur); state.floors = JSON.parse(next); refreshFloors(); }
+/* ---------- Undo ---------- */
+function pushUndo(){ state.undo.push(JSON.stringify({shapes:state.shapes})); state.redo.length=0; }
+function undo(){ if(!state.undo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const prev=state.undo.pop(); state.redo.push(cur); state.shapes = JSON.parse(prev).shapes; state.selection.clear(); }
+function redo(){ if(!state.redo.length) return; const cur=JSON.stringify({shapes:state.shapes}); const next=state.redo.pop(); state.undo.push(cur); state.shapes = JSON.parse(next).shapes; state.selection.clear(); }
 
-/* ========= Shapes / Drawing ========= */
-function finishLine(B){ const A=state.drawing.A; const L=applyAngleLock(A,B); curFloor().shapes.push({type:'seg', a:A, b:L, wall:state.wallThick||0}); state.drawing=null; rebuildIndex(); }
-function finishArc(B){ const A=state.drawing.A; const C={x:(A.x+B.x)/2, y:(A.y+B.y)/2}; const r=Math.hypot(B.x-A.x,B.y-A.y)/2; const a1=Math.atan2(A.y-C.y,A.x-C.x), a2=Math.atan2(B.y-C.y,B.x-C.x); curFloor().shapes.push({type:'arc', c:C, r, a1, a2}); state.drawing=null; rebuildIndex(); }
-function finishRect(B, kind='rect'){ const A=state.drawing.A; curFloor().shapes.push({type:kind, a:{x:Math.min(A.x,B.x), y:Math.min(A.y,B.y)}, b:{x:Math.max(A.x,B.x), y:Math.max(A.y,B.y)}, wall:state.wallThick||0}); state.drawing=null; rebuildIndex(); }
-function finishCirc(B){ const A=state.drawing.A; const r=Math.hypot(B.x-A.x,B.y-A.y); curFloor().shapes.push({type:'circ', c:A, r}); state.drawing=null; rebuildIndex(); }
-function finishDim(B){ const A=state.drawing.A; const len=Math.hypot(B.x-A.x,B.y-A.y); curFloor().shapes.push({type:'dim', a:A, b:B, text:`${fmtLen(len)}`}); state.drawing=null; rebuildIndex(); }
-function finalizePolyline(){ const pts=state.drawing.points; if(pts.length>=2){ for(let i=0;i<pts.length-1;i++){ curFloor().shapes.push({type:'seg', a:pts[i], b:pts[i+1], wall:state.wallThick||0}); } } state.drawing=null; rebuildIndex(); }
+/* ---------- Finishers ---------- */
+function finishLine(B){ const A=state.drawing.A; const L=applyAngleLock(A,B); state.shapes.push({type:'seg', a:A, b:L, wall:state.wallThick||0}); state.drawing=null; }
+function finishArc(B){ const A=state.drawing.A; const C={x:(A.x+B.x)/2, y:(A.y+B.y)/2}; const r=Math.hypot(B.x-A.x,B.y-A.y)/2; const a1=Math.atan2(A.y-C.y,A.x-C.x), a2=Math.atan2(B.y-C.y,B.x-C.x); state.shapes.push({type:'arc', c:C, r, a1, a2}); state.drawing=null; }
+function finishRect(B){ const A=state.drawing.A; state.shapes.push({type:'rect', a:{x:Math.min(A.x,B.x), y:Math.min(A.y,B.y)}, b:{x:Math.max(A.x,B.x), y:Math.max(A.y,B.y)}, wall:state.wallThick||0}); state.drawing=null; }
+function finishCirc(B){ const A=state.drawing.A; const r=Math.hypot(B.x-A.x,B.y-A.y); state.shapes.push({type:'circ', c:A, r}); state.drawing=null; }
+function finishDim(B){ const A=state.drawing.A; const len=Math.hypot(B.x-A.x,B.y-A.y); state.shapes.push({type:'dim', a:A, b:B, text:`${len.toFixed(1)}`}); state.drawing=null; }
+function finalizePolyline(){ const pts=state.drawing.points; if(pts.length>=2){ for(let i=0;i<pts.length-1;i++){ state.shapes.push({type:'seg', a:pts[i], b:pts[i+1], wall:state.wallThick||0}); } } state.drawing=null; }
+function finishOpening(B){
+  const A=state.drawing.A;
+  const rect = {type:'rect', a:{x:Math.min(A.x,B.x), y:Math.min(A.y,B.y)}, b:{x:Math.max(A.x,B.x), y:Math.max(A.y,B.y)}, opening:true};
+  state.shapes.push(rect); state.drawing=null;
+}
 
+/* ---------- Erase ---------- */
 function eraseNearest(P){
   let bi=-1, bd=1e9;
-  curFloor().shapes.forEach((d,i)=>{
+  state.shapes.forEach((d,i)=>{
     let cx=0,cy=0;
     if(d.type==='seg'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
-    else if(d.type==='rect' || d.type==='open'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
+    else if(d.type==='rect'){ cx=(d.a.x+d.b.x)/2; cy=(d.a.y+d.b.y)/2; }
     else if(d.type==='arc'){ cx=d.c.x; cy=d.c.y; }
     else if(d.type==='circ'){ cx=d.c.x; cy=d.c.y; }
     else if(d.type==='label'){ cx=d.p.x; cy=d.p.y; }
@@ -605,11 +594,10 @@ function eraseNearest(P){
     const d2=(P.x-cx)*(P.x-cx)+(P.y-cy)*(P.y-cy);
     if(d2<bd){ bd=d2; bi=i; }
   });
-  if(bi>=0) curFloor().shapes.splice(bi,1);
-  rebuildIndex();
+  if(bi>=0) state.shapes.splice(bi,1);
 }
 
-/* ========= Selection / Grouping ========= */
+/* ---------- Hit test + selection ---------- */
 function distPointSeg(P,A,B){
   const vx=B.x-A.x, vy=B.y-A.y;
   const wx=P.x-A.x, wy=P.y-A.y;
@@ -618,10 +606,10 @@ function distPointSeg(P,A,B){
 }
 function hitTest(worldP, tol=10/state.zoom){
   let best=-1, bd=1e9;
-  curFloor().shapes.forEach((s,i)=>{
+  state.shapes.forEach((s,i)=>{
     let d=1e9;
     if(s.type==='seg'){ d=distPointSeg(worldP, s.a, s.b); }
-    else if(s.type==='rect' || s.type==='open'){
+    else if(s.type==='rect'){
       const minX=Math.min(s.a.x,s.b.x), maxX=Math.max(s.a.x,s.b.x);
       const minY=Math.min(s.a.y,s.b.y), maxY=Math.max(s.a.y,s.b.y);
       const nearX = Math.min(Math.abs(worldP.x-minX), Math.abs(worldP.x-maxX));
@@ -641,9 +629,9 @@ function centerOfSelection(){
   let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
   function include(x,y){ if(x<minX)minX=x; if(y<minY)minY=y; if(x>maxX)maxX=x; if(y>maxY)maxY=y; }
   state.selection.forEach(i=>{
-    const s=curFloor().shapes[i];
+    const s=state.shapes[i];
     if(s.type==='seg'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
-    if(s.type==='rect' || s.type==='open'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
+    if(s.type==='rect'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
     if(s.type==='arc'){ include(s.c.x-s.r,s.c.y-s.r); include(s.c.x+s.r,s.c.y+s.r); }
     if(s.type==='circ'){ include(s.c.x-s.r,s.c.y-s.r); include(s.c.x+s.r,s.c.y+s.r); }
     if(s.type==='label'){ include(s.p.x,s.p.y); }
@@ -651,21 +639,27 @@ function centerOfSelection(){
   });
   return { x:(minX+maxX)/2, y:(minY+maxY)/2, box:{minX,minY,maxX,maxY} };
 }
-$('#groupBtn').onclick=()=>{ if(state.selection.size<2) return; const gid = state.groupsCounter++; state.selection.forEach(i=>{ curFloor().shapes[i].gid = gid; }); };
-$('#ungroupBtn').onclick=()=>{ if(!state.selection.size) return; state.selection.forEach(i=>{ delete curFloor().shapes[i].gid; }); };
 
-/* ========= Events ========= */
+/* ---------- Events ---------- */
 let dragSel=null;
+let cursorDot = document.createElement('div');
+cursorDot.className = 'cursor-dot';
+overlay.appendChild(cursorDot);
+
 canvas.addEventListener('mousemove', (e)=>{
   lastMouse={x:e.clientX,y:e.clientY};
+  // Yellow dot right at cursor tip
+  cursorDot.style.left = (e.clientX)+'px';
+  cursorDot.style.top  = (e.clientY-1)+'px';
+
   const w = toWorld(e.clientX,e.clientY);
   const snapped = snapPoint(w.x,w.y,false);
   state.hover = {...snapped, screen: toScreen(snapped.x,snapped.y) };
-  stPos.textContent = `x:${fmtLenWorld(snapped.x)} y:${fmtLenWorld(snapped.y)}`;
+  stPos.textContent = `x:${snapped.x.toFixed(1)} y:${snapped.y.toFixed(1)}`;
 
   if(panning || middlePanning){ state.pan.x += e.movementX; state.pan.y += e.movementY; }
 
-  if(dragSel && !state.rotation.active){
+  if(dragSel){
     const now = toWorld(e.clientX,e.clientY);
     const dx = now.x - dragSel.startMouse.x;
     const dy = now.y - dragSel.startMouse.y;
@@ -678,16 +672,16 @@ canvas.addEventListener('mousemove', (e)=>{
       const moved = JSON.parse(JSON.stringify(base));
       const shift = p=>{ p.x += snapDx; p.y += snapDy; };
       if(moved.type==='seg'){ shift(moved.a); shift(moved.b); }
-      if(moved.type==='rect' || moved.type==='open'){ shift(moved.a); shift(moved.b); }
+      if(moved.type==='rect'){ shift(moved.a); shift(moved.b); }
       if(moved.type==='arc'){ shift(moved.c); }
       if(moved.type==='circ'){ shift(moved.c); }
       if(moved.type==='dim'){ shift(moved.a); shift(moved.b); }
       if(moved.type==='label'){ shift(moved.p); }
-      curFloor().shapes[idx]=moved;
+      state.shapes[idx]=moved;
     });
-    rebuildIndex();
   }
 });
+
 canvas.addEventListener('mousedown', (e)=>{
   if(e.button===1){ middlePanning=true; return; }
   if(e.button===2) return;
@@ -695,6 +689,7 @@ canvas.addEventListener('mousedown', (e)=>{
   if(isSpace){ panning=true; return; }
 
   const w = toWorld(e.clientX,e.clientY);
+
   if(state.tool==='select'){
     const idx = hitTest(w);
     if(idx>=0){
@@ -703,12 +698,12 @@ canvas.addEventListener('mousedown', (e)=>{
       }else{
         state.selection = new Set([idx]);
       }
-      const anchors = shapeAnchors(curFloor().shapes[idx]);
+      const anchors = shapeAnchors(state.shapes[idx]);
       let ref=anchors[0], bd=1e9;
       anchors.forEach(p=>{ const d2=(p.x-w.x)*(p.x-w.x)+(p.y-w.y)*(p.y-w.y); if(d2<bd){bd=d2; ref=p;}});
       dragSel = {
         ref: {x:w.x,y:w.y}, ref0:{x:ref.x,y:ref.y}, startMouse: w,
-        base: [...state.selection].map(i=>({i, s: JSON.parse(JSON.stringify(curFloor().shapes[i])) }))
+        base: [...state.selection].map(i=>({i, s: JSON.parse(JSON.stringify(state.shapes[i])) }))
       };
       return;
     }else{
@@ -716,20 +711,21 @@ canvas.addEventListener('mousedown', (e)=>{
     }
   }
 
+  // start drawing
   pushUndo();
   const P = snapPoint(w.x,w.y,e.shiftKey);
   const t=state.tool;
   if(t==='line'){ state.drawing = state.drawing ? (finishLine(P)) : {type:'tempLine', A:P}; }
   else if(t==='pen'){ if(!state.drawing) state.drawing={type:'tempPoly', points:[P]}; else { const pts=state.drawing.points; const A=pts[pts.length-1]; const L=applyAngleLock(A,P); pts.push(L);} }
   else if(t==='arc'){ state.drawing = state.drawing ? (finishArc(P)) : {type:'tempArc', A:P}; }
-  else if(t==='rect'){ state.drawing = state.drawing ? (finishRect(P,'rect')) : {type:'tempRect', A:P}; }
-  else if(t==='open'){ state.drawing = state.drawing ? (finishRect(P,'open')) : {type:'tempRect', A:P}; }
+  else if(t==='rect'){ state.drawing = state.drawing ? (finishRect(P)) : {type:'tempRect', A:P}; }
+  else if(t==='opening'){ state.drawing = state.drawing ? (finishOpening(P)) : {type:'tempOpen', A:P}; }
   else if(t==='circ'){ state.drawing = state.drawing ? (finishCirc(P)) : {type:'tempCirc', A:P}; }
-  else if(t==='text'){ const txt=(state.labelDraft||prompt('Text:','Room')||'Note'); curFloor().shapes.push({type:'label', p:P, text:txt}); rebuildIndex(); }
+  else if(t==='text'){ const txt=(state.labelDraft||prompt('Text:','Room')||'Note'); state.shapes.push({type:'label', p:P, text:txt}); }
   else if(t==='dim'){ state.drawing = state.drawing ? (finishDim(P)) : {type:'tempDim', A:P}; }
   else if(t==='erase'){ eraseNearest(P); }
 });
-addEventListener('mouseup', (e)=>{ if(e.button===1){ middlePanning=false; } dragSel=null; mouseDown=false; panning=false; });
+addEventListener('mouseup', (e)=>{ if(e.button===1){ middlePanning=false; } dragSel=null; mouseDown=false; panning=false; clearBadges(); });
 canvas.addEventListener('wheel', e=>{ e.preventDefault(); zoomAt(Math.exp(-e.deltaY*0.0018), {x:e.clientX,y:e.clientY}); }, {passive:false});
 addEventListener('contextmenu', e=>e.preventDefault());
 addEventListener('keydown', e=>{
@@ -745,70 +741,7 @@ addEventListener('keydown', e=>{
 });
 addEventListener('keyup', e=>{ if(e.code==='Space'){ isSpace=false; } });
 
-/* Rotation handle */
-let handleEl=null;
-function ensureHandle(){
-  if(!state.selection.size) { if(handleEl){ handleEl.remove(); handleEl=null; } return; }
-  const c = centerOfSelection(); if(!c) return;
-  const topScreen = toScreen(c.box.minX + (c.box.maxX-c.box.minX)/2, c.box.minY) ;
-  const yOff = 24;
-  if(!handleEl){ handleEl=document.createElement('div'); handleEl.className='handle'; overlay.appendChild(handleEl); }
-  handleEl.style.left = topScreen.x+'px';
-  handleEl.style.top  = (topScreen.y - yOff)+'px';
-  handleEl.onmousedown = (e)=>{
-    e.preventDefault();
-    state.rotation.active=true;
-    state.rotation.center = {x:c.x,y:c.y};
-    state.rotation.startAng = Math.atan2( toWorld(e.clientX,e.clientY).y - c.y,
-                                          toWorld(e.clientX,e.clientY).x - c.x );
-    state.rotation.base = [...state.selection].map(i=>({i, s: JSON.parse(JSON.stringify(curFloor().shapes[i])) }));
-  };
-}
-document.addEventListener('mousemove', (e)=>{
-  if(!state.rotation.active) return;
-  const cen=state.rotation.center;
-  const curAng = Math.atan2( toWorld(e.clientX,e.clientY).y - cen.y,
-                             toWorld(e.clientX,e.clientY).x - cen.x );
-  let dAng = curAng - state.rotation.startAng;
-
-  const nice=[0, Math.PI/6, Math.PI/4, Math.PI/3, Math.PI/2, 2*Math.PI/3, 3*Math.PI/4, Math.PI];
-  let best=dAng, bd=1e9;
-  nice.concat(nice.map(a=>-a)).forEach(a=>{
-    const diff = Math.abs(((dAng-a+Math.PI)%(2*Math.PI))-Math.PI);
-    if(diff<bd){ bd=diff; best=a; }
-  });
-  if(bd < Math.PI/180*6) dAng = best;
-
-  const sin=Math.sin(dAng), cos=Math.cos(dAng);
-  const cenW=state.rotation.center;
-  const rot = (p)=>({ x: cenW.x + (p.x - cenW.x)*cos - (p.y - cenW.y)*sin,
-                      y: cenW.y + (p.x - cenW.x)*sin + (p.y - cenW.y)*cos });
-
-  state.rotation.base.forEach(({i,s})=>{
-    const m = JSON.parse(JSON.stringify(s));
-    if(m.type==='seg'){ m.a=rot(m.a); m.b=rot(m.b); }
-    if(m.type==='rect' || m.type==='open'){ m.a=rot(m.a); m.b=rot(m.b); }
-    if(m.type==='arc'){ m.c=rot(m.c); }
-    if(m.type==='circ'){ m.c=rot(m.c); }
-    if(m.type==='dim'){ m.a=rot(m.a); m.b=rot(m.b); }
-    if(m.type==='label'){ m.p=rot(m.p); }
-    curFloor().shapes[i]=m;
-  });
-});
-document.addEventListener('mouseup', ()=>{ if(state.rotation.active){ state.rotation.active=false; } });
-
-/* Yellow cursor dot (tighter to pointer) */
-function drawHoverDot(){
-  if(!state.hover?.screen) return;
-  ctx.save();
-  ctx.fillStyle='#ffe36a';
-  ctx.beginPath();
-  ctx.arc(state.hover.screen.x, state.hover.screen.y - 8, 3.2, 0, Math.PI*2); /* sits just above arrow tip */
-  ctx.fill();
-  ctx.restore();
-}
-
-/* Zoom & export */
+/* ---------- Zoom / Export ---------- */
 function zoomAt(factor, screenPoint){
   const before=state.zoom; const after=Math.max(0.25, Math.min(6, before*factor));
   if(after===before) return;
@@ -820,13 +753,12 @@ function zoomAt(factor, screenPoint){
   stZoom.textContent = `Zoom: ${(state.zoom*100).toFixed(0)}%`;
 }
 function zoomToFit(){
-  const shapes=curFloor().shapes;
-  if(!shapes.length){ state.zoom=1; state.pan={x:0,y:0}; stZoom.textContent='Zoom: 100%'; return; }
+  if(!state.shapes.length){ state.zoom=1; state.pan={x:0,y:0}; stZoom.textContent='Zoom: 100%'; return; }
   let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
   function include(x,y){ if(x<minX)minX=x; if(y<minY)minY=y; if(x>maxX)maxX=x; if(y>maxY)maxY=y; }
-  shapes.forEach(s=>{
+  state.shapes.forEach(s=>{
     if(s.type==='seg'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
-    if(s.type==='rect' || s.type==='open'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
+    if(s.type==='rect'){ include(s.a.x,s.a.y); include(s.b.x,s.b.y); }
     if(s.type==='arc'){ include(s.c.x-s.r,s.c.y-s.r); include(s.c.x+s.r,s.c.y+s.r); }
     if(s.type==='circ'){ include(s.c.x-s.r,s.c.y-s.r); include(s.c.x+s.r,s.c.y+s.r); }
     if(s.type==='label'){ include(s.p.x,s.p.y); }
@@ -839,25 +771,31 @@ function zoomToFit(){
   state.pan.y = -((minY+maxY)/2)*state.zoom;
   stZoom.textContent = `Zoom: ${(state.zoom*100).toFixed(0)}%`;
 }
+
+/* ---------- Exports ---------- */
 function exportSVG(){
   const w=canvas.width/DPR, h=canvas.height/DPR, sw=state.strokeW;
   const stroke='#ffffff', gridStroke='#ffffff22';
   const out=[];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none" stroke="${stroke}" stroke-width="${sw}">`);
   const G=grid(); const R=G.R*state.dotScale; const stepX=G.stepX, stepY=G.stepY;
-  out.push(`<g id="grid" stroke="${gridStroke}" stroke-width="${0.9}">`);
-  for(let r=-30;r<60;r++){
-    for(let c=-30;c<60;c++){
+  out.push(`<g id="grid" stroke="${gridStroke}" stroke-width="0.9">`);
+  const cols=Math.ceil(w/(stepX*state.zoom))+4, rows=Math.ceil(h/(stepY*state.zoom))+4;
+  const x0 = -((w/2 + state.pan.x)/state.zoom);
+  const y0 = -((h/2 + state.pan.y)/state.zoom);
+  const cStart = Math.floor((x0 - 2*stepX)/stepX), rStart = Math.floor((y0 - 2*stepY)/stepY);
+  for(let r=rStart;r<rStart+rows;r++){
+    for(let c=cStart;c<cStart+cols;c++){
       const x=c*stepX+(r%2? stepX/2:0), y=r*stepY;
       const p=toScreen(x,y);
       out.push(`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${(R*state.zoom).toFixed(2)}"/>`);
     }
   }
   out.push(`</g><g id="draw">`);
-  curFloor().shapes.forEach(d=>{
+  state.shapes.forEach(d=>{
     if(d.type==='seg'){ const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y); out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"/>`); }
-    if(d.type==='rect' || d.type==='open'){ const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y); const col = (d.type==='open')?'#ff7a7a':stroke; out.push(`<rect x="${Math.min(a.x,b.x)}" y="${Math.min(a.y,b.y)}" width="${Math.abs(b.x-a.x)}" height="${Math.abs(b.y-a.y)}" stroke="${col}"/>`); }
-    if(d.type==='arc'){ const c=toScreen(d.c.x,d.c.y); out.push(`<path d="M ${c.x + d.r*state.zoom} ${c.y} A ${d.r*state.zoom} ${d.r*state.zoom} 0 0 1 ${c.x} ${c.y + d.r*state.zoom}"/>`); }
+    if(d.type==='rect'){ const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y); const clr=d.opening?'#ff6b6b':stroke; out.push(`<rect x="${Math.min(a.x,b.x)}" y="${Math.min(a.y,b.y)}" width="${Math.abs(b.x-a.x)}" height="${Math.abs(b.y-a.y)}" stroke="${clr}"/>`); }
+    if(d.type==='arc'){ const c=toScreen(d.c.x,d.c.y); const x1=c.x+d.r*state.zoom*Math.cos(d.a1), y1=c.y+d.r*state.zoom*Math.sin(d.a1); const x2=c.x+d.r*state.zoom*Math.cos(d.a2), y2=c.y+d.r*state.zoom*Math.sin(d.a2); out.push(`<path d="M ${x1} ${y1} A ${d.r*state.zoom} ${d.r*state.zoom} 0 0 1 ${x2} ${y2}"/>`); }
     if(d.type==='circ'){ const c=toScreen(d.c.x,d.c.y); out.push(`<circle cx="${c.x}" cy="${c.y}" r="${d.r*state.zoom}"/>`); }
     if(d.type==='label'){ const p=toScreen(d.p.x,d.p.y); out.push(`<text x="${p.x}" y="${p.y}" font-size="14" fill="${stroke}" stroke="none">${(d.text||'Label')}</text>`); }
     if(d.type==='dim'){ const a=toScreen(d.a.x,d.a.y), b=toScreen(d.b.x,d.b.y); out.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#cc0000"/>`); const mx=(a.x+b.x)/2, my=(a.y+b.y)/2; out.push(`<text x="${mx+4}" y="${my-4}" font-size="12" fill="#cc0000" stroke="none">${d.text||''}</text>`); }
@@ -867,37 +805,99 @@ function exportSVG(){
 }
 function exportPNG(){ const link=document.createElement('a'); link.download='universe120.png'; link.href=canvas.toDataURL('image/png'); link.click(); }
 
-/* ========= Scale bar draw ========= */
-function drawScaleBar(){
-  const sb=document.getElementById('scalebar');
-  // keep it visible; label already set by updateScaleLabel
+/* ---------- 3D build & glTF ---------- */
+let three = null;
+function ensureThree(){
+  if(three) return three;
+  const mount = document.getElementById('threeMount');
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0d2a55);
+  const camera = new THREE.PerspectiveCamera(50, (mount.clientWidth||420)/(mount.clientHeight||320), 0.1, 1000);
+  camera.position.set(18,14,18);
+  const renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(mount.clientWidth||420, mount.clientHeight||320);
+  mount.innerHTML = ''; mount.appendChild(renderer.domElement);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  const hemi = new THREE.HemisphereLight(0xffffff, 0x223344, 1.0); scene.add(hemi);
+  const dir = new THREE.DirectionalLight(0xffffff, 0.8); dir.position.set(10,15,10); scene.add(dir);
+  const grid3 = new THREE.GridHelper(200, 200, 0x4466aa, 0x224477); grid3.position.y=0; scene.add(grid3);
+  function animate(){ requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera); }
+  animate();
+  three={scene,camera,renderer,controls,mount};
+  return three;
+}
+function build3D(){
+  const {scene} = ensureThree();
+  // remove previous meshes
+  for(let i=scene.children.length-1;i>=0;i--){
+    const o=scene.children[i]; if(o.userData?.u120) scene.remove(o);
+  }
+  const wallH = Math.max(0.1, +($('#wallHeight').value||10));
+  const wire = $('#wireframe').checked;
+  // Collect rect rooms + openings
+  const solids = [], holesFor=[];
+  state.shapes.forEach((s,i)=>{
+    if(s.type==='rect' && !s.opening){
+      const minX=Math.min(s.a.x,s.b.x), maxX=Math.max(s.a.x,s.b.x);
+      const minY=Math.min(s.a.y,s.b.y), maxY=Math.max(s.a.y,s.b.y);
+      solids.push({i,minX,maxX,minY,maxY}); holesFor[i]=[];
+    }
+  });
+  state.shapes.forEach(s=>{
+    if(s.type==='rect' && s.opening){
+      const ominX=Math.min(s.a.x,s.b.x), omaxX=Math.max(s.a.x,s.b.x);
+      const ominY=Math.min(s.a.y,s.b.y), omaxY=Math.max(s.a.y,s.b.y);
+      for(const room of solids){
+        if(ominX>=room.minX && omaxX<=room.maxX && ominY>=room.minY && omaxY<=room.maxY){
+          holesFor[room.i].push({minX:ominX,maxX:omaxX,minY:ominY,maxY:omaxY}); break;
+        }
+      }
+    }
+  });
+  const {stepX, stepY} = grid();
+  const uStep = state.unitScale;
+  const sx = x=> (x/stepX)*uStep;
+  const sy = y=> (y/stepY)*uStep;
+  const mat = new THREE.MeshStandardMaterial({color:0xe9edf7, metalness:0.05, roughness:0.9, wireframe:wire});
+  solids.forEach(room=>{
+    const shape = new THREE.Shape();
+    shape.moveTo(sx(room.minX), 0);
+    shape.lineTo(sx(room.maxX), 0);
+    shape.lineTo(sx(room.maxX), sy(room.maxY-room.minY));
+    shape.lineTo(sx(room.minX), sy(room.maxY-room.minY));
+    shape.lineTo(sx(room.minX), 0);
+    (holesFor[room.i]||[]).forEach(h=>{
+      const hole = new THREE.Path();
+      hole.moveTo(sx(h.minX), sy(h.minY-room.minY));
+      hole.lineTo(sx(h.maxX), sy(h.minY-room.minY));
+      hole.lineTo(sx(h.maxX), sy(h.maxY-room.minY));
+      hole.lineTo(sx(h.minX), sy(h.maxY-room.minY));
+      hole.lineTo(sx(h.minX), sy(h.minY-room.minY));
+      shape.holes.push(hole);
+    });
+    const geom = new THREE.ExtrudeGeometry(shape, {depth:wallH, bevelEnabled:false});
+    geom.rotateX(-Math.PI/2);
+    const mesh = new THREE.Mesh(geom, mat);
+    mesh.userData.u120 = true;
+    scene.add(mesh);
+  });
+}
+function exportGLTF(){
+  build3D();
+  const {scene} = ensureThree();
+  const temp = new THREE.Scene();
+  scene.children.forEach(ch=>{ if(ch.userData?.u120) temp.add(ch.clone(true)); });
+  const exporter = new THREE.GLTFExporter();
+  exporter.parse(temp, (gltf)=>{
+    const blob = new Blob([JSON.stringify(gltf)], {type:'model/gltf+json'});
+    const url = URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download='universe120.gltf'; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1500);
+  });
 }
 
-/* ========= Hover, grid, render ========= */
-function shapeAnchors(s){
-  const pts=[];
-  if(s.type==='seg'){ pts.push(s.a, s.b); }
-  if(s.type==='rect' || s.type==='open'){ pts.push(s.a, {x:s.b.x,y:s.a.y}, s.b, {x:s.a.x,y:s.b.y}); }
-  if(s.type==='arc'){ pts.push(
-    {x:s.c.x + s.r*Math.cos(s.a1), y:s.c.y + s.r*Math.sin(s.a1)},
-    {x:s.c.x + s.r*Math.cos(s.a2), y:s.c.y + s.r*Math.sin(s.a2)},
-    s.c
-  );}
-  if(s.type==='circ'){ pts.push(s.c); }
-  if(s.type==='dim'){ pts.push(s.a,s.b); }
-  if(s.type==='label'){ pts.push(s.p); }
-  return pts;
-}
-function snapWorld(x,y,strong,excludeSet){ // for moving selection
-  if(state.snap==='free') return {x,y};
-  const gridPts = gridCentersNear(x,y,strong?4:3);
-  const objPts  = sceneSnapCandidates(x,y);
-  let best={x,y}, bd=1e9;
-  function test(px,py){ const d2=(px-x)*(px-x)+(py-y)*(py-y); if(d2<bd){ bd=d2; best={x:px,y:py}; } }
-  gridPts.forEach(p=>test(p.x,p.y));
-  objPts.forEach(p=>test(p.x,p.y));
-  return best;
-}
+/* ---------- Draw ---------- */
 function drawGrid(){
   const G=grid(); const R=G.R*state.dotScale; const stepX=G.stepX, stepY=G.stepY;
   const w=canvas.width/DPR, h=canvas.height/DPR;
@@ -917,225 +917,69 @@ function drawGrid(){
   }
   ctx.restore();
 }
+function drawScale(){
+  const {stepX} = grid();
+  const unit = state.unit;
+  const uPerStep = state.unitScale;
+  const pxPerStep = stepX * state.zoom;
+  let steps = 1;
+  if(pxPerStep<40) steps=2;
+  if(pxPerStep<20) steps=5;
+  if(pxPerStep<10) steps=10;
+  const pixels = Math.max(12, (pxPerStep * steps)|0);
+  const label = `${(uPerStep*steps).toFixed(2)} ${unit}`;
+  scaleBar.innerHTML = `<div style="width:${pixels}px;height:6px;background:#cfe0ff;border-radius:4px;margin-bottom:2px"></div><div>${label}</div>`;
+}
 function drawShapes(){
   ctx.save();
   ctx.lineCap='round'; ctx.lineJoin='round';
   ctx.lineWidth=state.strokeW; ctx.strokeStyle='#fff'; ctx.fillStyle='#fff';
-  curFloor().shapes.forEach(s=>{
+  state.shapes.forEach(s=>{
     if(s.type==='seg'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }
-    if(s.type==='rect'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.strokeRect(Math.min(a.x,b.x), Math.min(a.y,b.y), Math.abs(b.x-a.x), Math.abs(b.y-a.y)); }
-    if(s.type==='open'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.save(); ctx.strokeStyle='#ff7a7a'; ctx.strokeRect(Math.min(a.x,b.x), Math.min(a.y,b.y), Math.abs(b.x-a.x), Math.abs(b.y-a.y)); ctx.restore(); }
+    if(s.type==='rect'){
+      const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y);
+      ctx.strokeStyle = s.opening ? '#ff6b6b' : '#fff';
+      ctx.strokeRect(Math.min(a.x,b.x), Math.min(a.y,b.y), Math.abs(b.x-a.x), Math.abs(b.y-a.y));
+      ctx.strokeStyle = '#fff';
+    }
     if(s.type==='arc'){ const c=toScreen(s.c.x,s.c.y); ctx.beginPath(); ctx.arc(c.x,c.y, s.r*state.zoom, s.a1, s.a2); ctx.stroke(); }
     if(s.type==='circ'){ const c=toScreen(s.c.x,s.c.y); ctx.beginPath(); ctx.arc(c.x,c.y, s.r*state.zoom, 0, Math.PI*2); ctx.stroke(); }
     if(s.type==='label'){ const p=toScreen(s.p.x,s.p.y); ctx.font='14px system-ui'; ctx.fillText(s.text||'Label', p.x, p.y); }
-    if(s.type==='dim'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.save(); ctx.strokeStyle='#cc0000'; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); ctx.fillStyle='#cc0000'; ctx.font='12px system-ui'; ctx.fillText(s.text||'', (a.x+b.x)/2+4, (a.y+b.y)/2-4); ctx.restore(); }
+    if(s.type==='dim'){ const a=toScreen(s.a.x,s.a.y), b=toScreen(s.b.x,s.b.y); ctx.strokeStyle='#cc0000'; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); ctx.fillStyle='#cc0000'; ctx.font='12px system-ui'; ctx.fillText(s.text||'', (a.x+b.x)/2+4, (a.y+b.y)/2-4); ctx.strokeStyle='#fff'; ctx.fillStyle='#fff'; }
   });
-  // Preview temp
+  // Previews
   ctx.setLineDash([6,6]); ctx.strokeStyle = '#cbd5ff';
   const h=state.hover?.screen;
   if(state.drawing){
     if(state.drawing.type==='tempLine' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(h.x,h.y); ctx.stroke(); }
     if(state.drawing.type==='tempRect' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); ctx.strokeRect(Math.min(A.x,h.x), Math.min(A.y,h.y), Math.abs(h.x-A.x), Math.abs(h.y-A.y)); }
+    if(state.drawing.type==='tempOpen' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); ctx.strokeStyle='#ff6b6b'; ctx.strokeRect(Math.min(A.x,h.x), Math.min(A.y,h.y), Math.abs(h.x-A.x), Math.abs(h.y-A.y)); ctx.strokeStyle='#cbd5ff'; }
     if(state.drawing.type==='tempCirc' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); const r=Math.hypot(h.x-A.x,h.y-A.y); ctx.beginPath(); ctx.arc(A.x,A.y, r, 0, Math.PI*2); ctx.stroke(); }
     if(state.drawing.type==='tempArc' && h){ const A=toScreen(state.drawing.A.x,state.drawing.A.y); const C={x:(A.x+h.x)/2, y:(A.y+h.y)/2}, r=Math.hypot(h.x-A.x,h.y-A.y)/2; const a1=Math.atan2(A.y-C.y, A.x-C.x), a2=Math.atan2(h.y-C.y, h.x-C.x); ctx.beginPath(); ctx.arc(C.x,C.y,r,a1,a2); ctx.stroke(); }
     if(state.drawing.type==='tempPoly' && h){ const pts=state.drawing.points; const A=pts[pts.length-1]; const L=applyAngleLock(A, state.hover); const pA=toScreen(A.x,A.y), pL=toScreen(L.x,L.y); ctx.beginPath(); ctx.moveTo(pA.x,pA.y); ctx.lineTo(pL.x,pL.y); ctx.stroke(); }
   }
   ctx.setLineDash([]);
-
   // Selection box
   if(state.selection && state.selection.size){
     let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
     function include(x,y){minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);}
-    state.selection.forEach(i=>shapeAnchors(curFloor().shapes[i]).forEach(p=>include(p.x,p.y)));
+    state.selection.forEach(i=>shapeAnchors(state.shapes[i]).forEach(p=>include(p.x,p.y)));
     const pad=12/state.zoom; const a=toScreen(minX-pad,minY-pad), b=toScreen(maxX+pad,maxY+pad);
     ctx.save(); ctx.setLineDash([6,6]); ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--brand')||'#ffe36a'; ctx.strokeRect(a.x,a.y, b.x-a.x, b.y-a.y); ctx.restore();
   }
-
   ctx.restore();
-
-  drawSmartGuidesHook();
-  ensureHandle();
-  drawHoverDot();
-  drawScaleBar();
+  smartGuideHook(); drawScale();
 }
+
+/* ---------- Main loop ---------- */
 function frame(){ ctx.clearRect(0,0,canvas.width,canvas.height); drawGrid(); drawShapes(); requestAnimationFrame(frame); }
-requestAnimationFrame(frame);
 
-/* ========= Length formatting helpers ========= */
-function fmtLen(L){ // world length in "grid coords" → units via unitsPerGrid * R
-  const G=grid(); const worldPerR = state.unitsPerGrid; // user-provided
-  const unitsVal = (L / G.R) * worldPerR; // length in chosen units
-  if(state.units==='ft'){
-    const ft = Math.floor(unitsVal);
-    const inches = (unitsVal - ft)*12;
-    const whole = Math.floor(inches);
-    return `${ft}' ${whole}"`;
-  }else if(state.units==='m'){
-    return `${unitsVal.toFixed(2)} m`;
-  }else{
-    return `${(unitsVal*100).toFixed(1)} cm`;
-  }
-}
-function fmtLenWorld(v){
-  // show a single coordinate value in units
-  const G=grid(); const u=(v/G.R)*state.unitsPerGrid;
-  if(state.units==='ft') return `${u.toFixed(2)} ft`;
-  if(state.units==='m') return `${u.toFixed(2)} m`;
-  return `${(u*100).toFixed(1)} cm`;
-}
+/* ---------- Export PNG helper ---------- */
+function exportPNG(){ const link=document.createElement('a'); link.download='universe120.png'; link.href=canvas.toDataURL('image/png'); link.click(); }
 
-/* ========= 3D Viewer (rect rooms + opening holes) ========= */
-let three = {renderer:null, scene:null, camera:null, orbit:null};
-function open3D(andExport=false){
-  // Build simple meshes from rectangles with “open” holes
-  const rooms = curFloor().shapes.filter(s=>s.type==='rect');
-  const opens = curFloor().shapes.filter(s=>s.type==='open');
-
-  // Build geometry per room
-  const meshes=[];
-  rooms.forEach(r=>{
-    const rx0=Math.min(r.a.x,r.b.x), rx1=Math.max(r.a.x,r.b.x);
-    const ry0=Math.min(r.a.y,r.b.y), ry1=Math.max(r.a.y,r.b.y);
-    // verts in 2D space
-    const outer = [rx0,ry0,  rx1,ry0,  rx1,ry1,  rx0,ry1];
-
-    // find openings contained within this rect
-    const holes=[];
-    opens.forEach(o=>{
-      const ox0=Math.min(o.a.x,o.b.x), ox1=Math.max(o.a.x,o.b.x);
-      const oy0=Math.min(o.a.y,o.b.y), oy1=Math.max(o.a.y,o.b.y);
-      if(ox0>=rx0 && ox1<=rx1 && oy0>=ry0 && oy1<=ry1){
-        holes.push([ox0,oy0,  ox1,oy0,  ox1,oy1,  ox0,oy1]);
-      }
-    });
-
-    // Triangulate with earcut (outer + holes)
-    const verts=[...outer]; const holeIdx=[];
-    let ofs = outer.length/2;
-    holes.forEach(h=>{ holeIdx.push(ofs); ofs+=h.length/2; verts.push(...h); });
-    const idx = earcut(verts, holeIdx, 2);
-
-    // Build THREE geometry (extrude up by floor height)
-    const h = curFloor().height || 10;
-    const G=grid(); const scale = (state.units==='ft'? 1: (state.units==='m'? 3.28084: 0.0328084)); // convert chosen units to feet-ish visualization
-    const unitPerR = state.unitsPerGrid; // user mapping
-    const worldPerCoord = (unitPerR / G.R) * scale; // crude scale
-
-    const positions=[];
-    for(let i=0;i<idx.length;i+=3){
-      const i0=idx[i]*2, i1=idx[i+1]*2, i2=idx[i+2]*2;
-      const t0=[verts[i0]*worldPerCoord, 0, verts[i0+1]*worldPerCoord];
-      const t1=[verts[i1]*worldPerCoord, 0, verts[i1+1]*worldPerCoord];
-      const t2=[verts[i2]*worldPerCoord, 0, verts[i2+1]*worldPerCoord];
-      // bottom
-      positions.push(...t0, ...t1, ...t2);
-      // top (shift by height)
-      positions.push(t0[0],h,t0[2],  t2[0],h,t2[2],  t1[0],h,t1[2]);
-    }
-    const geom = new THREE.BufferGeometry();
-    const pos = new Float32Array(positions);
-    geom.setAttribute('position', new THREE.BufferAttribute(pos,3));
-    geom.computeVertexNormals();
-    const mat = new THREE.MeshStandardMaterial({color:0x5ea0ff, metalness:0.1, roughness:0.8});
-    const mesh = new THREE.Mesh(geom, mat);
-    meshes.push(mesh);
-  });
-
-  // Init viewer
-  const box = document.getElementById('viewer3d');
-  box.style.display='flex';
-  const stage = document.getElementById('stage3d');
-  stage.innerHTML='';
-  const w = stage.clientWidth, h = stage.clientHeight;
-
-  const renderer = new THREE.WebGLRenderer({antialias:true});
-  renderer.setSize(w,h);
-  stage.appendChild(renderer.domElement);
-
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x081a33);
-  const camera = new THREE.PerspectiveCamera(50, w/h, 0.1, 1000);
-  camera.position.set(30,30,30);
-
-  const amb = new THREE.AmbientLight(0xffffff, 0.6);
-  const dir = new THREE.DirectionalLight(0xffffff, 0.8); dir.position.set(20,40,10);
-  scene.add(amb,dir);
-
-  const gridFloor = new THREE.GridHelper(200, 20, 0x3355aa, 0x0a1e3f);
-  scene.add(gridFloor);
-
-  meshes.forEach(m=>scene.add(m));
-
-  // simple orbit controls (minimal)
-  let isDragging=false, last={x:0,y:0}, az=0, el=0, dist=80;
-  function updateCam(){
-    const radA=az, radE=el;
-    camera.position.set(
-      Math.cos(radA)*Math.cos(radE)*dist,
-      Math.sin(radE)*dist,
-      Math.sin(radA)*Math.cos(radE)*dist
-    );
-    camera.lookAt(0,0,0);
-  }
-  updateCam();
-  stage.addEventListener('mousedown', e=>{ isDragging=true; last={x:e.clientX,y:e.clientY}; });
-  addEventListener('mouseup', ()=>{ isDragging=false; });
-  addEventListener('mousemove', e=>{
-    if(!isDragging) return;
-    const dx=(e.clientX-last.x)/180, dy=(e.clientY-last.y)/180;
-    az += dx; el = Math.max(-1.2, Math.min(1.2, el + dy));
-    last={x:e.clientX,y:e.clientY}; updateCam();
-  }, {passive:true});
-  stage.addEventListener('wheel', e=>{ e.preventDefault(); dist = Math.max(5, Math.min(400, dist*(1 + e.deltaY*0.001))); updateCam(); }, {passive:false});
-
-  function render(){ renderer.render(scene,camera); requestAnimationFrame(render); }
-  render();
-
-  // Wireframe
-  let wire=false;
-  document.getElementById('toggleWire').onclick=()=>{
-    wire=!wire; meshes.forEach(m=>m.material.wireframe=wire);
-  };
-  // Presets
-  document.getElementById('presetIso').onclick=()=>{ az=Math.PI/4; el=0.6; dist=80; updateCam(); };
-  document.getElementById('presetTop').onclick=()=>{ az=0; el=1.2; dist=100; updateCam(); };
-  document.getElementById('presetFront').onclick=()=>{ az=0; el=0.0; dist=80; updateCam(); };
-
-  // Wall height live
-  const wallHeightInput = document.getElementById('wallHeight3d');
-  wallHeightInput.value = curFloor().height;
-  wallHeightInput.oninput = ()=>{
-    const hNew=+wallHeightInput.value||10;
-    curFloor().height=hNew;
-    // (for this simple mesh we didn't param all verts per-room; rebuild would be needed in a full version)
-  };
-
-  // Export glTF
-  document.getElementById('exportGLTF3d').onclick=()=>{
-    const exporter = new THREE.GLTFExporter();
-    exporter.parse(scene, (gltf)=>{
-      const blob = new Blob([JSON.stringify(gltf)],{type:'model/gltf+json'});
-      const url = URL.createObjectURL(blob); const a=document.createElement('a');
-      a.href=url; a.download='universe120.glb.gltf'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1500);
-    }, {binary:false});
-  };
-
-  document.getElementById('close3d').onclick=()=>{ box.style.display='none'; renderer.dispose(); };
-  // Optional direct export without opening viewer
-  if(andExport){
-    document.getElementById('exportGLTF3d').click();
-  }
-}
-
-/* ========= Render loop ========= */
-function frameTick(){ requestAnimationFrame(frameTick); }
-frameTick();
-
-/* ========= Utilities ========= */
-function sceneShapes(){ return curFloor().shapes; }
-
-function rebuildAll(){ rebuildIndex(); }
-rebuildAll();
-</script>
+/* ---------- Init ---------- */
+function init(){ resize(); setTool('select'); stZoom.textContent='Zoom: 100%'; requestAnimationFrame(frame); }
+init();
+  </script>
 </body>
 </html>
