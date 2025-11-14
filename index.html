@@ -251,14 +251,21 @@ const overlay = document.getElementById('overlay');
 const ctx = canvas.getContext('2d',{alpha:true});
 let DPR = Math.min(devicePixelRatio||1,2);
 
+function getCanvasRect(){ return canvas.getBoundingClientRect(); }
+
+let lastMouse={x:0, y:0};
+
 function resize(){
   const w=innerWidth, h=innerHeight-112-28; /* nav+topbar, status */
   canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR);
   canvas.style.width=w+'px'; canvas.style.height=h+'px';
   ctx.setTransform(DPR,0,0,DPR,0,0);
-  onResize3D();
+  // keep lastMouse at canvas center by default
+  const r = getCanvasRect();
+  lastMouse = { x: r.left + r.width/2, y: r.top + r.height/2 };
 }
-addEventListener('resize', resize); resize();
+addEventListener('resize', resize); 
+resize();
 
 /* ========= STATE ========= */
 const stTool=$('#stTool'), stSnap=$('#stSnap'), stZoom=$('#stZoom'), stPos=$('#stPos');
@@ -275,7 +282,6 @@ const state = {
 };
 const Rbase=26; function grid(){ const R=Rbase*state.gridScale; return {R,stepX:R, stepY:R*Math.sqrt(3)/2}; }
 
-let lastMouse={x:canvas.width/DPR/2, y:canvas.height/DPR/2};
 let mouseDown=false, panning=false, isSpace=false, middlePanning=false;
 
 /* ========= UI WIRING ========= */
@@ -318,7 +324,6 @@ function setTool(name){
 }
 
 /* ========= ACCURATE COORDS (cursor fix) ========= */
-function getCanvasRect(){ return canvas.getBoundingClientRect(); }
 function toWorld(sx, sy){
   const r = getCanvasRect();
   const cx = canvas.width / DPR / 2;
@@ -337,7 +342,7 @@ function toScreen(x, y){
   };
 }
 
-/* ========= SMART GUIDES (light) ========= */
+/* ========= SMART GUIDES ========= */
 const GUIDE = { tolLenRatio: 0.015, tolAngRad: Math.PI/180*2, niceAngles:[0,Math.PI/6,Math.PI/4,Math.PI/3,Math.PI/2,2*Math.PI/3,3*Math.PI/4,Math.PI] };
 function segLen(a,b){ return Math.hypot(b.x-a.x, b.y-a.y); }
 function segAng(a,b){ return Math.atan2(b.y-a.y, b.x-a.x); }
@@ -620,7 +625,11 @@ canvas.addEventListener('mousedown', (e)=>{
   else if(t==='dim'){ state.drawing = state.drawing ? (finishDim(P)) : {type:'tempDim', A:P}; }
   else if(t==='erase'){ eraseNearest(P); }
 });
-addEventListener('mouseup', (e)=>{ if(e.button===1){ middlePanning=false; } dragSel=null; mouseDown=false; panning=false; });
+addEventListener('mouseup', (e)=>{ 
+  if(e.button===1){ middlePanning=false; } 
+  dragSel=null; mouseDown=false; panning=false; 
+  state.rotation.active = false;
+});
 canvas.addEventListener('wheel', e=>{ e.preventDefault(); zoomAt(Math.exp(-e.deltaY*0.0018), {x:e.clientX,y:e.clientY}); }, {passive:false});
 addEventListener('contextmenu', e=>e.preventDefault());
 addEventListener('keydown', e=>{
@@ -636,7 +645,7 @@ addEventListener('keydown', e=>{
 });
 addEventListener('keyup', e=>{ if(e.code==='Space'){ isSpace=false; } });
 
-/* Rotation handle (kept) */
+/* Rotation handle (visual + interaction) */
 let handleEl=null;
 function ensureHandle(){
   if(!state.selection.size) { if(handleEl){ handleEl.remove(); handleEl=null; } return; }
@@ -648,15 +657,68 @@ function ensureHandle(){
   handleEl.style.top  = (topScreen.y - yOff)+'px';
 }
 
+/* Rotation behavior */
+function rotPoint(p,c,ang){
+  const dx=p.x-c.x, dy=p.y-c.y;
+  const cs=Math.cos(ang), sn=Math.sin(ang);
+  return { x: c.x + dx*cs - dy*sn, y: c.y + dx*sn + dy*cs };
+}
+function snapRotation(delta){
+  const mode=state.angleLock;
+  if(mode==='off') return delta;
+  let snaps=[];
+  if(mode==='ortho') snaps=[0,Math.PI/2,Math.PI,3*Math.PI/2];
+  else if(mode==='thirty') snaps=[0,Math.PI/6,Math.PI/3,Math.PI/2,2*Math.PI/3,5*Math.PI/6,Math.PI,7*Math.PI/6,4*Math.PI/3,3*Math.PI/2,5*Math.PI/3,11*Math.PI/6];
+  else if(mode==='fortyfive') snaps=[0,Math.PI/4,Math.PI/2,3*Math.PI/4,Math.PI,5*Math.PI/4,3*Math.PI/2,7*Math.PI/4];
+  let best=delta,bd=1e9; 
+  snaps.forEach(s=>{const d=Math.abs(((delta-s+Math.PI)%(2*Math.PI))-Math.PI); if(d<bd){bd=d;best=s;}});
+  return best;
+}
+function rotateShape(base, center, ang){
+  const out = JSON.parse(JSON.stringify(base));
+  const rp = p=>rotPoint(p, center, ang);
+  if(base.type==='seg'){ out.a = rp(base.a); out.b = rp(base.b); }
+  if(base.type==='rect'){ out.a = rp(base.a); out.b = rp(base.b); }
+  if(base.type==='arc'){ out.c = rp(base.c); out.a1 = base.a1 + ang; out.a2 = base.a2 + ang; }
+  if(base.type==='circ'){ out.c = rp(base.c); }
+  if(base.type==='dim'){ out.a = rp(base.a); out.b = rp(base.b); }
+  if(base.type==='label'){ out.p = rp(base.p); }
+  return out;
+}
+overlay.addEventListener('mousedown', e=>{
+  if(e.target !== handleEl) return;
+  e.preventDefault();
+  const c = centerOfSelection(); if(!c) return;
+  const cScreen = toScreen(c.x, c.y);
+  state.rotation.active = true;
+  state.rotation.center = c;
+  state.rotation.base = [...state.selection].map(i=>({i, s: JSON.parse(JSON.stringify(state.shapes[i]))}));
+  state.rotation.startAng = Math.atan2(e.clientY - cScreen.y, e.clientX - cScreen.x);
+});
+addEventListener('mousemove', e=>{
+  if(!state.rotation.active || !state.rotation.center) return;
+  const c = state.rotation.center;
+  const cScreen = toScreen(c.x, c.y);
+  let delta = Math.atan2(e.clientY - cScreen.y, e.clientX - cScreen.x) - state.rotation.startAng;
+  delta = snapRotation(delta);
+  state.rotation.base.forEach(({i,s})=>{
+    state.shapes[i] = rotateShape(s, c, delta);
+  });
+});
+
 /* ========= ZOOM / EXPORT ========= */
 function zoomAt(factor, screenPoint){
-  const before=state.zoom; const after=Math.max(0.25, Math.min(6, before*factor));
+  const before=state.zoom; 
+  const after=Math.max(0.25, Math.min(6, before*factor));
   if(after===before) return;
-  const wx = (screenPoint.x - canvas.width/DPR/2 - state.pan.x)/before;
-  const wy = (screenPoint.y - canvas.height/DPR/2 - state.pan.y)/before;
+  const r = getCanvasRect();
+  const sx = screenPoint.x - r.left;
+  const sy = screenPoint.y - r.top;
+  const wx = (sx - canvas.width/DPR/2 - state.pan.x)/before;
+  const wy = (sy - canvas.height/DPR/2 - state.pan.y)/before;
   state.zoom = after;
-  state.pan.x = screenPoint.x - canvas.width/DPR/2 - wx*after;
-  state.pan.y = screenPoint.y - canvas.height/DPR/2 - wy*after;
+  state.pan.x = sx - canvas.width/DPR/2 - wx*after;
+  state.pan.y = sy - canvas.height/DPR/2 - wy*after;
   stZoom.textContent = `Zoom: ${(state.zoom*100).toFixed(0)}%`;
 }
 function zoomToFit(){
@@ -797,6 +859,17 @@ async function loadThreeIfNeeded(){
 }
 
 let three = {scene:null, camera:null, renderer:null, controls:null, wire:false, meshes:[]};
+
+function onResize3D(){
+  if(!three.renderer) return;
+  const r = viewerEl.getBoundingClientRect();
+  const cw = Math.max(280, r.width-20);
+  const ch = Math.max(220, r.height-80);
+  three.renderer.setSize(cw, ch, false);
+  if(three.camera){ three.camera.aspect = cw/ch; three.camera.updateProjectionMatrix(); }
+}
+window.addEventListener('resize', onResize3D);
+
 function ensureThree(){
   if(three.scene) return;
   const { THREE } = window;
@@ -811,14 +884,6 @@ function ensureThree(){
   const dir = new THREE.DirectionalLight(0xffffff, 0.6); dir.position.set(300,600,300); three.scene.add(dir);
   onResize3D();
   (function loop(){ three.renderer.render(three.scene, three.camera); requestAnimationFrame(loop); })();
-}
-function onResize3D(){
-  if(!three.renderer) return;
-  const r = viewerEl.getBoundingClientRect();
-  const cw = Math.max(280, r.width-20);
-  const ch = Math.max(220, r.height-80);
-  three.renderer.setSize(cw, ch, false);
-  if(three.camera){ three.camera.aspect = cw/ch; three.camera.updateProjectionMatrix(); }
 }
 function setPresetView(mode){
   if(!three.camera) return;
