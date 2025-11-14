@@ -241,6 +241,11 @@ body.viewer-open #toolsFlyout{ right: 432px; }
   <div id="stPos">x:– y:–</div>
 </div>
 
+<!-- Three.js from local libs (no CDN) -->
+<script src="libs/three.min.js"></script>
+<script src="libs/OrbitControls.js"></script>
+<script src="libs/GLTFExporter.js"></script>
+
 <script>
 /* ========= DOM & CANVAS ========= */
 const $ = q=>document.querySelector(q);
@@ -260,7 +265,6 @@ function resize(){
   canvas.width=Math.round(w*DPR); canvas.height=Math.round(h*DPR);
   canvas.style.width=w+'px'; canvas.style.height=h+'px';
   ctx.setTransform(DPR,0,0,DPR,0,0);
-  // keep lastMouse at canvas center by default
   const r = getCanvasRect();
   lastMouse = { x: r.left + r.width/2, y: r.top + r.height/2 };
 }
@@ -834,7 +838,7 @@ function drawShapes(){
 function frame(){ ctx.clearRect(0,0,canvas.width,canvas.height); drawGrid(); drawShapes(); requestAnimationFrame(frame); }
 requestAnimationFrame(frame);
 
-/* ========= 3D VIEWER — robust loader & controls ========= */
+/* ========= 3D VIEWER — local Three.js ========= */
 const viewerEl = document.getElementById('viewer');
 const btn3D = document.getElementById('btnViewer');
 const btnRebuild3D = document.getElementById('btnRebuild3D');
@@ -845,16 +849,7 @@ const wallHeightEl = document.getElementById('wallHeight');
 const glcanvas = document.getElementById('glcanvas');
 
 async function loadThreeIfNeeded(){
-  if (window.THREE && THREE.OrbitControls && THREE.GLTFExporter) return true;
-  const need = [];
-  if (!window.THREE) need.push('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js');
-  if (!window.THREE?.OrbitControls) need.push('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js');
-  if (!window.THREE?.GLTFExporter) need.push('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/exporters/GLTFExporter.js');
-  for (const src of need){
-    await new Promise((res, rej)=>{
-      const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s);
-    }).catch(()=>{});
-  }
+  // Scripts are loaded from local /libs scripts above
   return !!(window.THREE && THREE.OrbitControls && THREE.GLTFExporter);
 }
 
@@ -938,7 +933,10 @@ btn3D.onclick = async () => {
   document.body.classList.toggle('viewer-open', opening);
   if(opening){
     const ok = await loadThreeIfNeeded();
-    if(!ok){ document.getElementById('threeHint').textContent = 'Could not load Three.js (network blocker). Try another browser or disable strict blockers.'; return; }
+    if(!ok){ 
+      document.getElementById('threeHint').textContent = 'Could not load Three.js from /libs. Check that three.min.js, OrbitControls.js, and GLTFExporter.js exist.'; 
+      return; 
+    }
     ensureThree();
     setPresetView(selPreset.value);
     build3D();
